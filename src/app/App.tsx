@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Landing } from "./screens/landing";
 import { Login } from "./screens/login";
 import { OTPVerification } from "./screens/otp-verification";
+import { BusinessModelConfirmation } from "./screens/business-model-confirmation";
 import { UnderstandingConsent } from "./screens/understanding-consent";
 import { ProfileCreation } from "./screens/profile-creation";
 import type { ProfileData } from "./screens/profile-creation";
@@ -35,6 +36,7 @@ type Screen =
   | "landing"
   | "login"
   | "otp"
+  | "business-model"
   | "consent"
   | "profile"
   | "enterprise"
@@ -205,12 +207,25 @@ export default function App() {
         setCurrentScreen("questionnaire");
       } else {
         console.log(is_new_user ? 'New user, starting onboarding' : 'Starting fresh onboarding');
-        const startResponse = await startOnboarding();
-        setSessionId(startResponse.session_id);
-        setCurrentScreen("consent");
+        // Show business model confirmation first for new users
+        setCurrentScreen("business-model");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBusinessModelContinue = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const startResponse = await startOnboarding();
+      setSessionId(startResponse.session_id);
+      setCurrentScreen("consent");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start onboarding');
     } finally {
       setLoading(false);
     }
@@ -500,6 +515,11 @@ export default function App() {
           onResend={handleResendOTP}
           error={error}
           loading={loading}
+        />
+      )}
+      {currentScreen === "business-model" && (
+        <BusinessModelConfirmation
+          onContinue={handleBusinessModelContinue}
         />
       )}
       {currentScreen === "consent" && (

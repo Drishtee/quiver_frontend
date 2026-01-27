@@ -10,7 +10,6 @@ import { createMeeting } from "../../services/api";
 export interface MeetingDetails {
   date: Date;
   time: string;
-  mentor: string;
   type: string;
   notes: string;
   enableWhatsAppReminder: boolean;
@@ -26,7 +25,6 @@ interface ScheduleMeetingProps {
 export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
-  const [selectedMentor, setSelectedMentor] = useState("");
   const [meetingType, setMeetingType] = useState("");
   const [videoPlatform, setVideoPlatform] = useState("google_meet");
   const [notes, setNotes] = useState("");
@@ -35,8 +33,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
   const [isScheduling, setIsScheduling] = useState(false);
 
   const videoPlatforms = [
-    { id: "google_meet", name: "Google Meet", icon: "video" },
-    { id: "zoom", name: "Zoom", icon: "video" }
+    { id: "google_meet", name: "Google Meet", icon: "video" }
   ];
 
   const timeSlots = [
@@ -44,23 +41,16 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
     "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
   ];
 
-  const mentors = [
-    { id: "priya", name: "Priya Sharma", expertise: "Growth Strategy" },
-    { id: "rajesh", name: "Rajesh Kumar", expertise: "Finance" },
-    { id: "sarah", name: "Sarah Johnson", expertise: "Operations" },
-    { id: "amit", name: "Amit Patel", expertise: "Marketing" }
-  ];
-
   const meetingTypes = [
-    { id: "consultation", name: "Initial Consultation" },
-    { id: "strategy", name: "Growth Strategy Session" },
-    { id: "finance", name: "Financial Review" },
-    { id: "operations", name: "Operations Planning" },
-    { id: "followup", name: "Follow-up Meeting" }
+    { id: "consultation", name: "Initial Consultation | प्रारंभिक परामर्श" },
+    { id: "onboarding", name: "Onboarding Support | ऑनबोर्डिंग सहायता" },
+    { id: "business", name: "Business Discussion | व्यापार चर्चा" },
+    { id: "support", name: "General Support | सामान्य सहायता" },
+    { id: "followup", name: "Follow-up Meeting | फॉलो-अप मीटिंग" }
   ];
 
   const handleSchedule = async () => {
-    if (selectedDate && selectedTime && selectedMentor && meetingType) {
+    if (selectedDate && selectedTime && meetingType) {
       setIsScheduling(true);
       try {
         // Parse time string (e.g., "9:00 AM") to hours
@@ -81,10 +71,9 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         endDate.setHours(endDate.getHours() + 1);
         const end_time = endDate.toISOString();
 
-        // Get mentor name for title
-        const mentorInfo = mentors.find(m => m.id === selectedMentor);
+        // Meeting title with Quiver Team
         const meetingTypeInfo = meetingTypes.find(t => t.id === meetingType);
-        const title = `${meetingTypeInfo?.name || meetingType} with ${mentorInfo?.name || 'Mentor'}`;
+        const title = `${meetingTypeInfo?.name.split('|')[0].trim() || meetingType} - Quiver Team`;
 
         // Schedule meeting via API
         await createMeeting({
@@ -100,7 +89,6 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         onSchedule({
           date: selectedDate,
           time: selectedTime,
-          mentor: selectedMentor,
           type: meetingType,
           notes,
           enableWhatsAppReminder,
@@ -124,7 +112,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
     );
   };
 
-  const isFormValid = selectedDate && selectedTime && selectedMentor && meetingType;
+  const isFormValid = selectedDate && selectedTime && meetingType;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -198,27 +186,16 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
               </div>
             </div>
 
-            {/* Mentor Selection */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
+            {/* Meeting With Info */}
+            <div className="bg-gradient-to-br from-primary/10 to-blue-50 rounded-2xl border border-primary/20 p-6 space-y-2">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
                 <User className="w-5 h-5 text-primary" />
-                Select Mentor
+                Meeting With
               </h3>
-              <Select value={selectedMentor} onValueChange={setSelectedMentor}>
-                <SelectTrigger className="h-12 bg-input-background border-border">
-                  <SelectValue placeholder="Choose a mentor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mentors.map((mentor) => (
-                    <SelectItem key={mentor.id} value={mentor.id}>
-                      <div className="flex flex-col items-start">
-                        <span className="font-medium">{mentor.name}</span>
-                        <span className="text-xs text-muted-foreground">{mentor.expertise}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <p className="text-lg font-medium text-primary">Quiver Team</p>
+              <p className="text-sm text-muted-foreground">
+                Our team will help you with onboarding, business strategy, and support.
+              </p>
             </div>
 
             {/* Meeting Type */}
