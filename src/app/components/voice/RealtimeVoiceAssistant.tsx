@@ -57,7 +57,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
   const t = {
     en: {
       title: 'Voice Assistant',
-      subtitle: 'Powered by OpenAI',
+      subtitle: 'Quiver AI',
       connecting: 'Connecting...',
       connected: 'Connected',
       disconnected: 'Disconnected',
@@ -83,7 +83,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
     },
     hi: {
       title: 'वॉयस असिस्टेंट',
-      subtitle: 'OpenAI द्वारा संचालित',
+      subtitle: 'Quiver AI',
       connecting: 'कनेक्ट हो रहा है...',
       connected: 'कनेक्टेड',
       disconnected: 'डिस्कनेक्टेड',
@@ -109,7 +109,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
     },
     as: {
       title: 'ভয়েচ সহায়ক',
-      subtitle: 'OpenAI দ্বাৰা পৰিচালিত',
+      subtitle: 'Quiver AI',
       connecting: 'সংযোগ হৈ আছে...',
       connected: 'সংযুক্ত',
       disconnected: 'বিচ্ছিন্ন',

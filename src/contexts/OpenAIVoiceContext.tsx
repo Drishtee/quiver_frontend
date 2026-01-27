@@ -198,13 +198,33 @@ Start by greeting the user warmly and asking how you can help them today.`;
 
       if (openAIKey) {
         // Direct connection using frontend API key (development mode)
-        console.log('OpenAI Voice: Using direct API key');
+        console.log('Voice: Using direct API key');
         token = openAIKey;
       } else {
         // Use backend token endpoint (production mode)
-        console.log('OpenAI Voice: Fetching token from backend');
+        console.log('Voice: Fetching token from backend');
         const tokenData = await getVoiceAgentToken();
-        token = tokenData.client_secret?.value || tokenData.token;
+        console.log('Voice: Token response:', JSON.stringify(tokenData, null, 2));
+
+        // Extract token from various possible response formats
+        if (typeof tokenData === 'string') {
+          token = tokenData;
+        } else if (tokenData.client_secret?.value) {
+          token = tokenData.client_secret.value;
+        } else if (tokenData.token) {
+          token = tokenData.token;
+        } else if ((tokenData as any).data?.client_secret?.value) {
+          token = (tokenData as any).data.client_secret.value;
+        } else if ((tokenData as any).data?.token) {
+          token = (tokenData as any).data.token;
+        } else {
+          console.error('Voice: Could not extract token from response:', tokenData);
+          throw new Error('Invalid token response from server');
+        }
+      }
+
+      if (!token || typeof token !== 'string') {
+        throw new Error('Voice service token is invalid');
       }
 
       // Connect to OpenAI Realtime API via WebSocket
