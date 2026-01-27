@@ -227,9 +227,15 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         token = openAIKey;
       } else {
         // Use backend token endpoint (production mode)
-        console.log('Voice: Fetching token from backend');
+        console.log('Quiver Voice: Fetching token from backend');
         const tokenData = await getVoiceAgentToken();
-        console.log('Voice: Token response:', JSON.stringify(tokenData, null, 2));
+        console.log('Quiver Voice: Token response:', tokenData);
+
+        // Check for error in response
+        if (tokenData.error) {
+          console.error('Quiver Voice: Backend returned error:', tokenData.error);
+          throw new Error(tokenData.error);
+        }
 
         // Extract token from various possible response formats
         if (typeof tokenData === 'string') {
@@ -243,9 +249,11 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         } else if ((tokenData as any).data?.token) {
           token = (tokenData as any).data.token;
         } else {
-          console.error('Voice: Could not extract token from response:', tokenData);
+          console.error('Quiver Voice: Could not extract token from response:', tokenData);
           throw new Error('Invalid token response from server');
         }
+
+        console.log('Quiver Voice: Extracted token:', token ? `${token.substring(0, 20)}...` : 'NONE');
       }
 
       if (!token || typeof token !== 'string') {
