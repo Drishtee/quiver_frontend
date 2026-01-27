@@ -1,0 +1,155 @@
+/* Quiver Landing Page - Custom Styles */
+
+/* CSS Variables for Custom Colors */
+:root {
+  --primary: #2D6A4F;
+  --secondary: #40916C;
+  --accent: #52B788;
+  --warm: #F4A261;
+  --earth: #E76F51;
+}
+
+/* Background Colors */
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.bg-warm {
+  background-color: var(--warm);
+}
+
+.bg-earth {
+  background-color: var(--earth);
+}
+
+/* Text Colors */
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.text-warm {
+  color: var(--warm);
+}
+
+.text-earth {
+  color: var(--earth);
+}
+
+/* Border Colors */
+.border-primary {
+  border-color: var(--primary);
+}
+
+.border-secondary {
+  border-color: var(--secondary);
+}
+
+.border-accent {
+  border-color: var(--accent);
+}
+
+/* Hover States */
+.hover\:bg-primary:hover {
+  background-color: var(--primary);
+}
+
+.hover\:bg-secondary:hover {
+  background-color: var(--secondary);
+}
+
+.hover\:bg-earth:hover {
+  background-color: var(--earth);
+}
+
+.hover\:text-secondary:hover {
+  color: var(--secondary);
+}
+
+.hover\:border-primary:hover {
+  border-color: var(--primary);
+}
+
+/* Gradient Support */
+.from-primary {
+  --tw-gradient-from: var(--primary);
+  --tw-gradient-to: rgb(45 106 79 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-secondary {
+  --tw-gradient-to: var(--secondary);
+}
+
+.from-accent {
+  --tw-gradient-from: var(--accent);
+  --tw-gradient-to: rgb(82 183 136 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-accent {
+  --tw-gradient-to: var(--accent);
+}
+
+.from-warm {
+  --tw-gradient-from: var(--warm);
+  --tw-gradient-to: rgb(244 162 97 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-earth {
+  --tw-gradient-to: var(--earth);
+}
+
+/* Custom Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+/* Custom Fonts */
+.font-display {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Scrollbar Hidden */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Additional utility classes for better compatibility */
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

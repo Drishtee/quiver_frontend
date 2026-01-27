@@ -1,0 +1,513 @@
+{
+  "common": {
+    "continue": "Continue",
+    "back": "Back",
+    "submit": "Submit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "error": "Error",
+    "success": "Success",
+    "yes": "Yes",
+    "no": "No",
+    "maybe": "Maybe",
+    "step": "Step {{current}} of {{total}}",
+    "required": "Required",
+    "optional": "Optional",
+    "select": "Select",
+    "search": "Search",
+    "filter": "Filter",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "completed": "completed"
+  },
+  "languages": {
+    "en": "English",
+    "hi": "Hindi",
+    "as": "Assamese",
+    "selectLanguage": "Select Language"
+  },
+  "landing": {
+    "nav": {
+      "login": "Login",
+      "startGrowing": "Start Growing",
+      "language": "Language"
+    },
+    "hero": {
+      "badge": "Growth Partner for Your Business",
+      "title": "We grow your business.",
+      "titleHighlight": "We earn only when you do.",
+      "subtitle": "Quiver partners with small businesses to provide money, mentorship, and education — based on what you need.",
+      "features": {
+        "simple": "Simple & Clear",
+        "noHidden": "No Hidden Terms",
+        "yourControl": "Your Control"
+      }
+    },
+    "avatar": {
+      "title": "Talk to Our Growth Expert",
+      "subtitle": "Voice or text — your choice, your language",
+      "listening": "Listening...",
+      "speakLanguage": "Speak in your language",
+      "aiReady": "AI Assistant Ready",
+      "startVoice": "Start Voice Conversation",
+      "chatText": "Chat with Text",
+      "enterPhone": "Enter Your Phone Number",
+      "features": {
+        "languages": "3 Languages",
+        "secure": "Secure & Private",
+        "available": "Available 24/7"
+      }
+    },
+    "whatQuiverDoes": {
+      "title": "What Quiver Does for You",
+      "subtitle": "You don't get everything. You get what your business actually needs.",
+      "funding": {
+        "title": "Funding",
+        "description": "Money to grow your business — only if you need it, only what you need."
+      },
+      "mentorship": {
+        "title": "Mentorship",
+        "description": "Guidance from experienced people who understand your challenges."
+      },
+      "education": {
+        "title": "Education",
+        "description": "Learn new skills to run your business better and smarter."
+      },
+      "tools": {
+        "title": "Tools & Support",
+        "description": "Practical help and tools to make your work easier every day."
+      }
+    },
+    "equity": {
+      "badge": "Understanding Partnership",
+      "title": "What Does \"Equity\" Mean?",
+      "subtitle": "It's simple: Partnership, not control. You remain the owner.",
+      "before": {
+        "title": "Before Quiver",
+        "ownership": "Your Business",
+        "percent": "100%",
+        "limited": "Limited Resources",
+        "description": "You work alone with limited resources"
+      },
+      "after": {
+        "title": "With Quiver Partnership",
+        "youOwn": "You Own",
+        "percent": "85-90%",
+        "quiverPercent": "10-15%",
+        "description": "You grow faster with support, money & guidance"
+      },
+      "benefits": {
+        "title": "Like a Partner Who Helps You Grow",
+        "subtitle": "And grows with you",
+        "stayOwner": {
+          "title": "You Stay the Owner",
+          "description": "Your business, your decisions"
+        },
+        "supportGrowth": {
+          "title": "We Support Growth",
+          "description": "Money, guidance, tools"
+        },
+        "earnTogether": {
+          "title": "We Earn Together",
+          "description": "Only when you succeed"
+        }
+      }
+    },
+    "notEquity": {
+      "title": "What Equity is NOT",
+      "subtitle": "Clear answers to build your trust",
+      "noTakeover": {
+        "title": "We DON'T Take Over",
+        "description": "Your business remains yours. We don't become the boss."
+      },
+      "noInterfere": {
+        "title": "We DON'T Interfere Daily",
+        "description": "You run your business. We guide when you need us."
+      },
+      "noEarnAlone": {
+        "title": "We DON'T Earn if You Don't",
+        "description": "Our success is tied to your success. We grow together."
+      },
+      "noHidden": {
+        "title": "NO Hidden Terms",
+        "description": "Everything is explained clearly in your language."
+      },
+      "weGuide": {
+        "title": "We Guide",
+        "description": "With experience and care"
+      },
+      "weSupport": {
+        "title": "We Support",
+        "description": "With money and resources"
+      },
+      "weAlign": {
+        "title": "We Stay Aligned",
+        "description": "Your goals are our goals"
+      }
+    },
+    "howItWorks": {
+      "title": "How Quiver Decides What You Need",
+      "subtitle": "Simple steps. You're always in control.",
+      "step1": {
+        "title": "1. You Tell Us About Your Business",
+        "description": "Use voice or answer simple questions in your language. No complicated forms."
+      },
+      "step2": {
+        "title": "2. We Understand Your Challenges",
+        "description": "Our team listens carefully and identifies what will help you grow most."
+      },
+      "step3": {
+        "title": "3. We Suggest Support",
+        "description": "Money, mentorship, education, or tools — only what makes sense for you."
+      },
+      "step4": {
+        "title": "4. You Decide — Always",
+        "description": "Nothing is forced. Everything is explained. You choose what's right for you."
+      },
+      "bottomNote": "Nothing is forced. Everything is explained."
+    },
+    "cta": {
+      "title": "You Build the Business.",
+      "titleLine2": "We Help It Grow.",
+      "subtitle": "Quiver is not a lender. Not a boss. A growth partner.",
+      "stats": {
+        "businesses": "Businesses Growing",
+        "support": "Support Provided",
+        "states": "States Covered"
+      },
+      "continueLanguage": "Continue in Your Language",
+      "startVoice": "Start with Voice",
+      "features": {
+        "safe": "100% Safe",
+        "yourLanguage": "Your Language",
+        "madeForYou": "Made for You"
+      }
+    },
+    "trust": {
+      "title": "Trusted by Small Businesses Across India",
+      "retail": "Retail Shops",
+      "restaurants": "Restaurants",
+      "logistics": "Logistics",
+      "services": "Services"
+    },
+    "footer": {
+      "tagline": "Your growth partner for building a better business.",
+      "company": "Company",
+      "aboutUs": "About Us",
+      "howItWorks": "How It Works",
+      "successStories": "Success Stories",
+      "support": "Support",
+      "helpCenter": "Help Center",
+      "contactUs": "Contact Us",
+      "faqs": "FAQs",
+      "language": "Language",
+      "copyright": "Made with ❤️ for Indian Entrepreneurs."
+    },
+    "video": {
+      "title": "Watch How Quiver Works",
+      "description": "A 2-minute video explaining our partnership model",
+      "watchNow": "Watch Now"
+    }
+  },
+  "consent": {
+    "title": "What is QUIVER & Why We Exist",
+    "subtitle": "Understanding our partnership model",
+    "selectLanguage": "Preferred Language | पसंदीदा भाषा",
+    "description": "Quiver is a rural enterprise growth and investment partnership platform. We work with rural and semi-rural entrepreneurs who already run businesses but face challenges in scaling due to lack of systems, market access, strategic guidance, and patient capital.",
+    "challenge": "Quiver exists because capital alone does not build strong businesses — and systems without capital cannot grow. We partner long-term with entrepreneurs to strengthen business fundamentals, enable market access, and explore growth capital when enterprises are ready.",
+    "whyQuiver": "Why Quiver exists:",
+    "reasons": [
+      "Loans or grants alone don't build strong businesses",
+      "Capital without systems becomes a risk",
+      "And systems without capital remain incomplete"
+    ],
+    "whatWeDo": "Quiver works in long-term partnership with entrepreneurs. We:",
+    "services": [
+      "Understand your business deeply",
+      "Strengthen sales, costs, profits and operations",
+      "Connect you to markets, networks and experts",
+      "And when the business is ready, explore growth capital (investment / revenue-share)"
+    ],
+    "notProgram": "Quiver is not a grant or subsidy program.",
+    "partner": "Entrepreneurs are partners in a shared growth journey. Our goal is to build dignified, sustainable, and investment-ready rural enterprises.",
+    "consentTitle": "Consent | सहमति",
+    "consent1": "I am interested in exploring a structured business-growth journey with Quiver",
+    "consent2": "I understand that Quiver is not a grant or subsidy program",
+    "consent3": "I consent to Quiver processing my data to assess my business and provide partnership support",
+    "agreedAt": "Agreed at",
+    "pleaseAgreeAll": "Please agree to all terms to continue",
+    "allConsentsRecorded": "All consents recorded with timestamps. You can proceed.",
+    "aiHelp": "Have questions? I'm here to help!",
+    "preferredLanguage": "Preferred Language",
+    "mobileNumber": "Mobile Number",
+    "otpVerified": "OTP verified",
+    "agreeAndContinue": "I Agree & Continue"
+  },
+  "profile": {
+    "title": "Your Profile",
+    "subtitle": "Tell us about yourself",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email (optional)",
+    "gender": "Gender",
+    "genderOptions": {
+      "female": "Female",
+      "male": "Male",
+      "other": "Other"
+    },
+    "age": "Age",
+    "agePlaceholder": "Enter your age",
+    "education": "Education Level",
+    "educationOptions": {
+      "noFormal": "No formal schooling",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "graduate": "Graduate or higher"
+    },
+    "state": "State",
+    "statePlaceholder": "Select your state",
+    "district": "District",
+    "districtPlaceholder": "Select your district"
+  },
+  "industry": {
+    "title": "Business Details",
+    "subtitle": "Tell us about your enterprise",
+    "businessName": "Business Name",
+    "businessNamePlaceholder": "Enter your business name",
+    "sector": "Business Sector",
+    "sectorOptions": {
+      "foodProcessing": "Food Processing",
+      "agriculture": "Agriculture & Allied Activities",
+      "livestock": "Livestock/Dairy/Poultry",
+      "textile": "Textile/Handicraft",
+      "services": "Services",
+      "other": "Other"
+    },
+    "yearStarted": "Year Started",
+    "yearStartedPlaceholder": "When did you start?",
+    "ownershipType": "Ownership Type",
+    "ownershipOptions": {
+      "individual": "Individual",
+      "family": "Family",
+      "shg": "SHG/Collective",
+      "partnership": "Partnership"
+    },
+    "role": "Your Role",
+    "roleOptions": {
+      "owner": "Owner",
+      "cofounder": "Co-founder",
+      "manager": "Manager"
+    }
+  },
+  "questionnaire": {
+    "title": "Business Questionnaire",
+    "subtitle": "Help us understand your business better",
+    "sections": {
+      "productMarket": "Product, Market & Dependency",
+      "financial": "Financial Snapshot & Digital Behaviour",
+      "assets": "Assets, Compliance & Agency",
+      "mindset": "Time, Mindset & Growth Intent"
+    }
+  },
+  "equity": {
+    "title": "Equity & Partnership",
+    "subtitle": "Understanding investment partnership",
+    "explainer": {
+      "title": "Understanding Equity Investment",
+      "meaning": "Equity means when a partner invests money to grow your business and, in return, takes a limited share in the business's profits and decisions. There is no compulsory monthly repayment.",
+      "notJustMoney": "Working with Quiver is not just about receiving money. It is about entering a long-term partnership.",
+      "loanVsEquity": "In many cases, loans are not enough for business growth.",
+      "loanFeatures": {
+        "monthly": "Monthly repayments are compulsory",
+        "struggle": "Repayment is required even if the business struggles"
+      },
+      "equityFeatures": {
+        "partner": "Quiver becomes a growth partner in your business",
+        "invest": "Quiver invests money, time, and guidance to help the business grow",
+        "growBenefit": "If the business grows well, both benefit",
+        "riskShared": "If the business faces challenges, the risk is shared"
+      },
+      "noMonthlyPressure": "There is no fixed monthly repayment pressure",
+      "sameGoal": "Both Quiver and the entrepreneur work toward the same goal: business growth",
+      "ownership": {
+        "question": "Does this mean Quiver owns the business?",
+        "answer": "No.",
+        "yours": "The business remains yours",
+        "decisions": "You continue to play a key role in decisions",
+        "clear": "The partnership is defined clearly and transparently"
+      },
+      "whenDiscuss": {
+        "title": "When does Quiver discuss equity or revenue-sharing?",
+        "understand": "First understands the business deeply",
+        "strengthen": "Helps strengthen systems",
+        "ready": "Discusses equity or revenue-sharing only when the business is ready",
+        "notEveryone": "Not every entrepreneur takes investment",
+        "openness": "But openness to understanding this model is important"
+      }
+    },
+    "question": "Are you open to understanding investment/revenue-share based partnership in the future?",
+    "options": {
+      "yes": "Yes",
+      "maybe": "Maybe",
+      "no": "No"
+    }
+  },
+  "review": {
+    "title": "Review & Submit",
+    "subtitle": "Please review your information before submitting",
+    "sections": {
+      "profile": "Personal Profile",
+      "enterprise": "Enterprise Details",
+      "questionnaire": "Business Answers",
+      "equity": "Partnership Preference"
+    },
+    "declaration": {
+      "title": "Declaration",
+      "infoCorrect": "The information provided is correct",
+      "readyMeeting": "I am ready for a meeting"
+    },
+    "meetingMode": "Preferred Meeting Mode",
+    "meetingOptions": {
+      "phone": "Phone",
+      "online": "Online"
+    },
+    "submitApplication": "Submit Application"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "tabs": {
+      "overview": "Overview",
+      "meetings": "Meetings",
+      "progress": "Progress"
+    },
+    "overview": {
+      "upcomingMeetings": "Upcoming Meetings",
+      "milestones": "Milestones Completed",
+      "pendingDocs": "Pending Documents",
+      "nextMeeting": "Next Meeting",
+      "joinMeeting": "Join Meeting",
+      "scheduleMeeting": "Schedule Meeting",
+      "viewGrowthPlan": "View Growth Plan"
+    },
+    "meetings": {
+      "upcoming": "Upcoming Meetings",
+      "past": "Past Meetings",
+      "noUpcoming": "No upcoming meetings",
+      "scheduleFirst": "Schedule your first meeting with a mentor"
+    },
+    "progress": {
+      "title": "Your Journey Progress",
+      "milestones": {
+        "profile": "Profile Completed",
+        "consultation": "Initial Consultation",
+        "businessReview": "Business Review",
+        "growthPlan": "Growth Plan Created",
+        "capitalReady": "Capital Ready"
+      }
+    }
+  },
+  "meeting": {
+    "schedule": {
+      "title": "Schedule a Meeting",
+      "selectDate": "Select Date",
+      "selectTime": "Select Time",
+      "selectMentor": "Select Mentor",
+      "meetingType": "Meeting Type",
+      "types": {
+        "consultation": "Initial Consultation",
+        "strategy": "Strategy Discussion",
+        "finance": "Financial Review",
+        "operations": "Operations Planning",
+        "followup": "Follow-up Meeting"
+      },
+      "notes": "Additional Notes",
+      "notesPlaceholder": "Any specific topics you'd like to discuss?",
+      "whatsappReminder": "Send WhatsApp Reminder",
+      "reminderTime": "Reminder Time",
+      "reminderOptions": {
+        "24h": "24 hours before",
+        "1h": "1 hour before",
+        "15m": "15 minutes before"
+      },
+      "scheduleMeeting": "Schedule Meeting"
+    },
+    "confirmation": {
+      "title": "Meeting Scheduled!",
+      "subtitle": "Your meeting has been confirmed",
+      "details": {
+        "date": "Date",
+        "time": "Time",
+        "mentor": "Mentor",
+        "type": "Meeting Type",
+        "link": "Meeting Link"
+      },
+      "actions": {
+        "addCalendar": "Add to Calendar",
+        "shareWhatsApp": "Share on WhatsApp",
+        "copyLink": "Copy Link",
+        "done": "Done"
+      },
+      "whatsappSent": "WhatsApp confirmation sent!"
+    }
+  },
+  "growthPathway": {
+    "title": "Your Growth Pathway",
+    "subtitle": "AI-generated personalized roadmap for your business",
+    "generating": "Generating your personalized growth pathway...",
+    "based": "Based on your industry and business profile",
+    "timeline": "Recommended Timeline",
+    "resources": "Resources",
+    "milestones": "Key Milestones",
+    "recommendations": "Our Recommendations",
+    "estimatedGrowth": "Estimated Growth Potential",
+    "downloadPdf": "Download as PDF",
+    "listenAudio": "Listen to Explanation"
+  },
+  "resume": {
+    "title": "Welcome Back!",
+    "subtitle": "You have an incomplete application",
+    "lastStep": "You were at step {{step}}",
+    "lastSaved": "Last saved: {{time}}",
+    "progress": "{{percent}}% completed",
+    "resume": "Resume Application",
+    "startFresh": "Start Fresh",
+    "warning": "Starting fresh will clear your previous progress"
+  },
+  "otp": {
+    "title": "Verify Your Number",
+    "subtitle": "Enter the 6-digit code sent to",
+    "resend": "Resend OTP",
+    "resendIn": "Resend in {{seconds}}s",
+    "verify": "Verify",
+    "didntReceive": "Didn't receive the code?"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "invalidOtp": "Invalid OTP. Please try again.",
+    "otpExpired": "OTP expired. Please request a new one.",
+    "sessionExpired": "Your session has expired. Please login again.",
+    "saveFailed": "Failed to save. Your changes are stored locally."
+  },
+  "success": {
+    "title": "Welcome to Quiver!",
+    "subtitle": "Your profile has been successfully submitted",
+    "message": "Our team will contact you soon.",
+    "goToDashboard": "Go to Dashboard",
+    "viewAdmin": "View Admin Dashboard"
+  },
+  "autoSave": {
+    "saving": "Saving...",
+    "saved": "All changes saved",
+    "lastSaved": "Last saved {{time}}",
+    "offline": "You're offline. Changes will be saved when you reconnect.",
+    "error": "Failed to save. Retrying..."
+  }
+}
