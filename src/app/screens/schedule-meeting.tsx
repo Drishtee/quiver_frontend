@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Calendar } from "../components/ui/calendar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Textarea } from "../components/ui/textarea";
 import { Checkbox } from "../components/ui/checkbox";
 import { ArrowLeft, Clock, User, Video, Calendar as CalendarIcon, MessageCircle, Bell } from "lucide-react";
@@ -25,32 +24,18 @@ interface ScheduleMeetingProps {
 export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
-  const [meetingType, setMeetingType] = useState("");
-  const [videoPlatform, setVideoPlatform] = useState("google_meet");
   const [notes, setNotes] = useState("");
   const [enableWhatsAppReminder, setEnableWhatsAppReminder] = useState(true);
   const [reminderTimes, setReminderTimes] = useState<string[]>(["24h", "1h"]);
   const [isScheduling, setIsScheduling] = useState(false);
-
-  const videoPlatforms = [
-    { id: "google_meet", name: "Google Meet", icon: "video" }
-  ];
 
   const timeSlots = [
     "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
     "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
   ];
 
-  const meetingTypes = [
-    { id: "consultation", name: "Initial Consultation | प्रारंभिक परामर्श" },
-    { id: "onboarding", name: "Onboarding Support | ऑनबोर्डिंग सहायता" },
-    { id: "business", name: "Business Discussion | व्यापार चर्चा" },
-    { id: "support", name: "General Support | सामान्य सहायता" },
-    { id: "followup", name: "Follow-up Meeting | फॉलो-अप मीटिंग" }
-  ];
-
   const handleSchedule = async () => {
-    if (selectedDate && selectedTime && meetingType) {
+    if (selectedDate && selectedTime) {
       setIsScheduling(true);
       try {
         // Parse time string (e.g., "9:00 AM") to hours
@@ -71,15 +56,11 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         endDate.setHours(endDate.getHours() + 1);
         const end_time = endDate.toISOString();
 
-        // Meeting title with Quiver Team
-        const meetingTypeInfo = meetingTypes.find(t => t.id === meetingType);
-        const title = `${meetingTypeInfo?.name.split('|')[0].trim() || meetingType} - Quiver Team`;
-
-        // Schedule meeting via API
+        // Schedule meeting via API - always with Quiver Team
         await createMeeting({
-          title,
+          title: "Meeting with Quiver Team",
           description: notes || undefined,
-          meeting_type: meetingType as any,
+          meeting_type: "consultation" as any,
           start_time,
           end_time,
           timezone: "Asia/Kolkata",
@@ -89,11 +70,11 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         onSchedule({
           date: selectedDate,
           time: selectedTime,
-          type: meetingType,
+          type: "consultation",
           notes,
           enableWhatsAppReminder,
           reminderTimes,
-          videoPlatform
+          videoPlatform: "google_meet"
         });
       } catch (error) {
         console.error('Failed to schedule meeting:', error);
@@ -112,7 +93,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
     );
   };
 
-  const isFormValid = selectedDate && selectedTime && meetingType;
+  const isFormValid = selectedDate && selectedTime;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -198,52 +179,14 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
               </p>
             </div>
 
-            {/* Meeting Type */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
+            {/* Google Meet Info */}
+            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-2">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
                 <Video className="w-5 h-5 text-primary" />
-                Meeting Type
+                Video Call via Google Meet
               </h3>
-              <Select value={meetingType} onValueChange={setMeetingType}>
-                <SelectTrigger className="h-12 bg-input-background border-border">
-                  <SelectValue placeholder="Select meeting type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {meetingTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Video Platform Selection */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
-              <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <Video className="w-5 h-5 text-primary" />
-                Video Platform
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {videoPlatforms.map((platform) => (
-                  <button
-                    key={platform.id}
-                    onClick={() => setVideoPlatform(platform.id)}
-                    className={`h-12 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
-                      videoPlatform === platform.id
-                        ? "border-primary bg-blue-50 text-primary font-medium"
-                        : "border-border hover:border-gray-300 text-foreground"
-                    }`}
-                  >
-                    <Video className="w-4 h-4" />
-                    {platform.name}
-                  </button>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {videoPlatform === 'google_meet'
-                  ? 'A Google Meet link will be generated automatically'
-                  : 'A Zoom link will be shared after confirmation'}
+              <p className="text-sm text-muted-foreground">
+                A Google Meet link will be generated automatically and shared with you.
               </p>
             </div>
 

@@ -207,8 +207,11 @@ export default function App() {
         setCurrentScreen("questionnaire");
       } else {
         console.log(is_new_user ? 'New user, starting onboarding' : 'Starting fresh onboarding');
-        // Show business model confirmation first for new users
-        setCurrentScreen("business-model");
+        // Start onboarding with consent screen
+        const startResponse = await startOnboarding();
+        setSessionId(startResponse.session_id);
+        onboarding.setSessionId(startResponse.session_id);
+        setCurrentScreen("consent");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify OTP');
@@ -568,11 +571,11 @@ export default function App() {
             // Show confirmation modal
             setConfirmedMeeting({
               id: Date.now().toString(),
-              title: details.meetingType,
+              title: "Meeting with Quiver Team",
               date: details.date,
               time: details.time,
-              mentor: details.mentor,
-              type: details.meetingType,
+              mentor: "Quiver Team",
+              type: details.type,
               meetLink: `https://meet.google.com/${Date.now()}`
             });
             setShowMeetingConfirmation(true);
