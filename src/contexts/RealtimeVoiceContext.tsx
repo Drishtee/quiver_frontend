@@ -197,15 +197,34 @@ Keep responses concise and conversational.`;
       }
 
       const model = import.meta.env.VITE_OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17';
-      const ws = new WebSocket(`${wsUrl}?model=${model}`, [
-        'realtime',
-        `openai-insecure-api-key.${token}`,
-        'openai-beta.realtime-v1'
-      ]);
+
+      // For ephemeral tokens (production), connect WITHOUT subprotocols
+      // For direct API keys (development), use subprotocols
+      let ws: WebSocket;
+      if (openAIKey) {
+        // Development mode - use subprotocols with direct API key
+        ws = new WebSocket(`${wsUrl}?model=${model}`, [
+          'realtime',
+          `openai-insecure-api-key.${token}`,
+          'openai-beta.realtime-v1'
+        ]);
+      } else {
+        // Production mode - NO subprotocols for ephemeral tokens
+        ws = new WebSocket(`${wsUrl}?model=${model}`);
+      }
       wsRef.current = ws;
 
       ws.onopen = () => {
         console.log('Realtime Voice: WebSocket connected');
+
+        // For ephemeral tokens, send auth message FIRST
+        if (!openAIKey) {
+          console.log('Realtime Voice: Sending session.auth for ephemeral token');
+          ws.send(JSON.stringify({
+            type: 'session.auth',
+            client_secret: token
+          }));
+        }
 
         // Send session configuration
         ws.send(JSON.stringify({
@@ -258,15 +277,6 @@ Keep responses concise and conversational.`;
             ]
           }
         }));
-
-        // Note: When using direct API key, authentication is via WebSocket subprotocol
-        // When using backend token, we may need to send auth message
-        if (!openAIKey && token) {
-          ws.send(JSON.stringify({
-            type: 'session.auth',
-            client_secret: token
-          }));
-        }
 
         setState(prev => ({ ...prev, connectionStatus: 'connected' }));
         startAudioCapture();
