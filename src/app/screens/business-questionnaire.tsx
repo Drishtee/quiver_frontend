@@ -36,6 +36,30 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [autoSaved, setAutoSaved] = useState(false);
 
+  // Listen for voice field updates
+  useEffect(() => {
+    const handleVoiceFieldsApplied = (event: CustomEvent<Record<string, any>>) => {
+      const fields = event.detail;
+      setAnswers(prev => {
+        const updated = { ...prev };
+        // Map voice fields to questionnaire fields
+        Object.entries(fields).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            updated[key] = value;
+          }
+        });
+        return updated;
+      });
+      setAutoSaved(true);
+      setTimeout(() => setAutoSaved(false), 2000);
+    };
+
+    window.addEventListener('voiceFieldsApplied', handleVoiceFieldsApplied as EventListener);
+    return () => {
+      window.removeEventListener('voiceFieldsApplied', handleVoiceFieldsApplied as EventListener);
+    };
+  }, []);
+
   const updateAnswer = (key: string, value: string | string[]) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
     setAutoSaved(true);

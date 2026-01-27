@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { ProgressIndicator } from "../components/progress-indicator";
@@ -25,6 +25,29 @@ interface EquityPartnershipProps {
 export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
   const [openToEquity, setOpenToEquity] = useState<string>('');
   const [showHindi, setShowHindi] = useState(true);
+
+  // Listen for voice field updates
+  useEffect(() => {
+    const handleVoiceFieldsApplied = (event: CustomEvent<Record<string, any>>) => {
+      const fields = event.detail;
+      if (fields.openToEquity || fields.equity || fields.partnership) {
+        // Normalize various ways user might express this
+        const value = (fields.openToEquity || fields.equity || fields.partnership || '').toLowerCase();
+        if (value.includes('yes') || value.includes('हाँ') || value === 'yes') {
+          setOpenToEquity('yes');
+        } else if (value.includes('maybe') || value.includes('शायद') || value === 'maybe') {
+          setOpenToEquity('maybe');
+        } else if (value.includes('no') || value.includes('नहीं') || value === 'no') {
+          setOpenToEquity('no');
+        }
+      }
+    };
+
+    window.addEventListener('voiceFieldsApplied', handleVoiceFieldsApplied as EventListener);
+    return () => {
+      window.removeEventListener('voiceFieldsApplied', handleVoiceFieldsApplied as EventListener);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-20">
