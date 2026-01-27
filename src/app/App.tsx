@@ -194,20 +194,15 @@ export default function App() {
       const response = await verifyOTP(phone, otp);
       setIsAuthenticated(true);
 
-      const { is_new_user, onboarding_completed, has_in_progress_onboarding } = response;
+      const { onboarding_completed } = response;
 
-      // Route based on onboarding status (same logic as handleLogin)
+      // Route based on onboarding status
       if (onboarding_completed) {
         console.log('User has completed onboarding, going to dashboard');
         setCurrentScreen("dashboard");
-      } else if (has_in_progress_onboarding) {
-        console.log('Resuming incomplete onboarding');
-        const startResponse = await startOnboarding();
-        setSessionId(startResponse.session_id);
-        setCurrentScreen("questionnaire");
       } else {
-        console.log(is_new_user ? 'New user, starting onboarding' : 'Starting fresh onboarding');
-        // Start onboarding with consent screen
+        // Always show consent screen for users who haven't completed onboarding
+        console.log('Starting/resuming onboarding with consent screen');
         const startResponse = await startOnboarding();
         setSessionId(startResponse.session_id);
         onboarding.setSessionId(startResponse.session_id);
@@ -352,30 +347,20 @@ export default function App() {
     setIsAuthenticated(true);
     setPhone(data.phone);
 
-    const { is_new_user, onboarding_completed, has_in_progress_onboarding } = data.response;
+    const { onboarding_completed } = data.response;
 
     // Route based on onboarding status
     if (onboarding_completed) {
       // User has completed onboarding → Dashboard
       console.log('User has completed onboarding, going to dashboard');
       setCurrentScreen("dashboard");
-    } else if (has_in_progress_onboarding) {
-      // User has incomplete onboarding → Resume onboarding
-      console.log('Resuming incomplete onboarding');
-      try {
-        const startResponse = await startOnboarding();
-        setSessionId(startResponse.session_id);
-        setCurrentScreen("questionnaire"); // Resume at questionnaire
-      } catch (err) {
-        console.error('Failed to resume onboarding:', err);
-        setCurrentScreen("consent"); // Fallback to start
-      }
     } else {
-      // User has no onboarding session → Start onboarding
-      console.log(is_new_user ? 'New user, starting onboarding' : 'Starting fresh onboarding');
+      // Always show consent screen for users who haven't completed onboarding
+      console.log('Starting/resuming onboarding with consent screen');
       try {
         const startResponse = await startOnboarding();
         setSessionId(startResponse.session_id);
+        onboarding.setSessionId(startResponse.session_id);
         setCurrentScreen("consent");
       } catch (err) {
         console.error('Failed to start onboarding:', err);

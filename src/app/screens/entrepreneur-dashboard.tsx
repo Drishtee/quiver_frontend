@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { AIAssistant } from "../components/ai-assistant";
 import { UserMenu } from "../components/user-menu";
 import { LanguageSelector } from "../components/language-selector";
+import { listMeetings } from "../../services/api";
 import {
   Calendar as CalendarIcon,
   Video,
@@ -24,7 +25,8 @@ import {
   ChevronRight,
   Briefcase,
   BarChart3,
-  Handshake
+  Handshake,
+  Loader2
 } from "lucide-react";
 
 interface EntrepreneurDashboardProps {
@@ -33,6 +35,20 @@ interface EntrepreneurDashboardProps {
   onJoinMeeting: (meetingId: string) => void;
   onLogout: () => void;
   onViewGrowthPlan?: () => void;
+}
+
+interface Meeting {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  duration: string;
+  mentor: string;
+  mentorRole: string;
+  type: string;
+  status: string;
+  avatar: string;
+  meetLink?: string;
 }
 
 export function EntrepreneurDashboard({
@@ -44,51 +60,67 @@ export function EntrepreneurDashboard({
 }: EntrepreneurDashboardProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("overview");
+  const [upcomingMeetings, setUpcomingMeetings] = useState<Meeting[]>([]);
+  const [pastMeetings, setPastMeetings] = useState<Meeting[]>([]);
+  const [loadingMeetings, setLoadingMeetings] = useState(true);
 
   const userName = profileData?.fullName || localStorage.getItem('user_name') || 'Entrepreneur';
   const businessName = profileData?.businessName || localStorage.getItem('business_name') || 'Your Business';
 
-  const upcomingMeetings = [
-    {
-      id: "1",
-      title: "Growth Strategy Session",
-      date: "Jan 18, 2026",
-      time: "2:00 PM",
-      duration: "1 hour",
-      mentor: "Priya Sharma",
-      mentorRole: "Growth Mentor",
-      type: "Strategy",
-      status: "upcoming",
-      avatar: "PS"
-    },
-    {
-      id: "2",
-      title: "Financial Planning Review",
-      date: "Jan 20, 2026",
-      time: "10:00 AM",
-      duration: "1 hour",
-      mentor: "Rajesh Kumar",
-      mentorRole: "Finance Expert",
-      type: "Finance",
-      status: "upcoming",
-      avatar: "RK"
-    }
-  ];
+  // Fetch meetings from API
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        setLoadingMeetings(true);
+        const response = await listMeetings();
 
-  const pastMeetings = [
-    {
-      id: "3",
-      title: "Onboarding Session",
-      date: "Jan 15, 2026",
-      time: "3:00 PM",
-      duration: "1 hour",
-      mentor: "Sarah Johnson",
-      mentorRole: "Onboarding Specialist",
-      type: "Onboarding",
-      status: "completed",
-      avatar: "SJ"
-    }
-  ];
+        const now = new Date();
+        const upcoming: Meeting[] = [];
+        const past: Meeting[] = [];
+
+        (response.meetings || []).forEach((meeting: any) => {
+          const startTime = new Date(meeting.start_time);
+          // Use meet_link if it's a real Google Meet link, otherwise use calendar link
+          let meetLink = meeting.google_meet_room?.meet_link;
+          const calendarLink = meeting.google_meet_room?.calendar_link;
+
+          // If meet link is a demo link (not a real Google Meet), prefer calendar link
+          if (meetLink && !meetLink.includes('meet.google.com/')) {
+            meetLink = calendarLink || meetLink;
+          }
+
+          const formattedMeeting: Meeting = {
+            id: meeting.id || meeting.meeting_id,
+            title: meeting.title || 'Meeting with Quiver Team',
+            date: startTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            time: startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
+            duration: '1 hour',
+            mentor: 'Quiver Team',
+            mentorRole: 'Support Team',
+            type: meeting.meeting_type || 'Consultation',
+            status: meeting.status,
+            avatar: 'QT',
+            meetLink: meetLink || calendarLink
+          };
+
+          if (startTime > now && meeting.status === 'scheduled') {
+            upcoming.push(formattedMeeting);
+          } else {
+            past.push(formattedMeeting);
+          }
+        });
+
+        setUpcomingMeetings(upcoming);
+        setPastMeetings(past);
+      } catch (error) {
+        console.error('Failed to fetch meetings:', error);
+      } finally {
+        setLoadingMeetings(false);
+      }
+    };
+
+    fetchMeetings();
+  }, []);
 
   const milestones = [
     { id: 1, title: t('dashboard.progress.milestones.profile'), status: "completed", date: "Jan 15, 2026", icon: User },
@@ -287,7 +319,13 @@ export function EntrepreneurDashboard({
                   </div>
                   <Button
                     className="w-full bg-primary hover:bg-primary/90 rounded-xl h-12 text-base font-semibold shadow-sm"
-                    onClick={() => onJoinMeeting(upcomingMeetings[0].id)}
+                    onClick={() => {
+                      if (upcomingMeetings[0].meetLink) {
+                        window.open(upcomingMeetings[0].meetLink, '_blank');
+                      } else {
+                        onJoinMeeting(upcomingMeetings[0].id);
+                      }
+                    }}
                   >
                     <Video className="w-5 h-5 mr-2" />
                     {t('dashboard.overview.joinMeeting')}
@@ -420,7 +458,13 @@ export function EntrepreneurDashboard({
                     </div>
                     <Button
                       className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm w-full sm:w-auto"
-                      onClick={() => onJoinMeeting(meeting.id)}
+                      onClick={() => {
+                        if (meeting.meetLink) {
+                          window.open(meeting.meetLink, '_blank');
+                        } else {
+                          onJoinMeeting(meeting.id);
+                        }
+                      }}
                     >
                       <Video className="w-4 h-4 mr-2" />
                       Join
@@ -465,7 +509,12 @@ export function EntrepreneurDashboard({
               </div>
             </div>
 
-            {upcomingMeetings.length === 0 && (
+            {loadingMeetings ? (
+              <Card className="p-12 border-primary/10 rounded-2xl text-center">
+                <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground">Loading meetings...</p>
+              </Card>
+            ) : upcomingMeetings.length === 0 && (
               <Card className="p-12 border-primary/10 rounded-2xl text-center">
                 <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <CalendarIcon className="w-8 h-8 text-primary" />
