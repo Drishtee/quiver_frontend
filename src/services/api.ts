@@ -699,22 +699,27 @@ export interface VoiceAgentSubmitResponse {
  * Get ephemeral token for OpenAI Realtime API WebSocket connection
  */
 export const getVoiceAgentToken = async (): Promise<VoiceAgentTokenResponse> => {
-  console.log('Fetching voice agent token...');
+  console.log('Fetching voice agent token from:', `${API_BASE_URL}/auth/voice-agent/token/`);
 
   const response = await fetch(`${API_BASE_URL}/auth/voice-agent/token/`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
 
+  console.log('Voice token response status:', response.status);
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({
       error: 'unknown_error',
       message: 'Failed to get voice agent token',
     }));
+    console.error('Voice token error:', error);
     throw new Error(error.message || error.error);
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log('Voice token data:', JSON.stringify(data, null, 2));
+  return data;
 };
 
 /**

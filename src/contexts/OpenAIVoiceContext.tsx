@@ -234,6 +234,10 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         // Check for error in response
         if (tokenData.error) {
           console.error('Quiver Voice: Backend returned error:', tokenData.error);
+          // Log debug info if available
+          if ((tokenData as any).debug) {
+            console.error('Quiver Voice: Debug info:', (tokenData as any).debug);
+          }
           throw new Error(tokenData.error);
         }
 
@@ -249,24 +253,32 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         } else if ((tokenData as any).data?.token) {
           token = (tokenData as any).data.token;
         } else {
-          console.error('Quiver Voice: Could not extract token from response:', tokenData);
-          throw new Error('Invalid token response from server');
+          console.error('Quiver Voice: Could not extract token from response:', JSON.stringify(tokenData));
+          throw new Error('Invalid token response from server - no token found');
         }
 
-        console.log('Quiver Voice: Extracted token:', token ? `${token.substring(0, 20)}...` : 'NONE');
+        console.log('Quiver Voice: Extracted token:', token ? `${token.substring(0, 30)}...` : 'NONE', 'length:', token?.length);
       }
 
-      if (!token || typeof token !== 'string') {
+      if (!token || typeof token !== 'string' || token.length < 10) {
+        console.error('Quiver Voice: Invalid token:', { token, type: typeof token, length: token?.length });
         throw new Error('Voice service token is invalid');
       }
 
+      console.log('Quiver Voice: Token valid, length:', token.length, 'prefix:', token.substring(0, 30));
+
       // Connect to Realtime API via WebSocket
       const wsUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
-      const ws = new WebSocket(wsUrl, [
+
+      // For ephemeral tokens, use the standard auth subprotocol
+      const protocols = [
         'realtime',
         `openai-insecure-api-key.${token}`,
         'openai-beta.realtime-v1'
-      ]);
+      ];
+      console.log('Quiver Voice: Connecting with protocols:', protocols[0], protocols[1].substring(0, 50) + '...', protocols[2]);
+
+      const ws = new WebSocket(wsUrl, protocols);
       wsRef.current = ws;
 
       ws.onopen = () => {
