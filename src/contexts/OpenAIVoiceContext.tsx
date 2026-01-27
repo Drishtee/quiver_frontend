@@ -163,25 +163,32 @@ ${languageInstructions[currentLanguage] || languageInstructions.en}
 
 You MUST respond in the user's language. If they speak Hindi, respond in Hindi. If they speak Assamese, respond in Assamese. Match their language.
 
+CRITICAL RULES - FOLLOW STRICTLY:
+1. NEVER assume or guess information the user did not explicitly say
+2. NEVER auto-fill fields based on partial or unclear audio
+3. ALWAYS repeat back what you heard and ask for confirmation before saving ANY field
+4. If audio is unclear or you're not 100% certain, ASK the user to repeat
+5. Ask ONE question at a time and wait for a CLEAR response
+6. Only call update_form_field AFTER the user confirms the information is correct
+
 Your role:
 1. Guide users through filling out form fields naturally through conversation
-2. Ask ONE question at a time and wait for response
-3. Extract information from their responses
-4. Confirm each piece of information before saving
+2. Ask ONE question at a time and wait for a clear response
+3. When you hear an answer, repeat it back: "I heard [value], is that correct?"
+4. Only save the field AFTER user confirms with "yes", "हाँ", "correct", etc.
 5. Be patient, supportive, and encouraging
 
 Current form section: ${state.currentScreen || 'general'}
 Fields to collect:
 ${fieldsList || 'No specific fields - just help the user with their questions'}
 
-When you extract information, call the update_form_field function.
-Always confirm with the user before finalizing each field.
+IMPORTANT: Do NOT call update_form_field until the user explicitly confirms the value.
 Keep responses concise (1-2 sentences) and conversational.
 
 Start by greeting the user warmly and asking how you can help them today.`;
   }, [state.currentScreen, currentLanguage]);
 
-  // Connect to OpenAI Realtime API
+  // Connect to Voice Realtime API
   const connect = useCallback(async () => {
     if (state.connectionStatus === 'connecting' || state.connectionStatus === 'connected') {
       return;
@@ -190,7 +197,7 @@ Start by greeting the user warmly and asking how you can help them today.`;
     setState(prev => ({ ...prev, connectionStatus: 'connecting', error: null }));
 
     try {
-      // Check for direct OpenAI key (development) or use backend token
+      // Check for direct API key (development) or use backend token
       const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
       const model = import.meta.env.VITE_OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17';
 
@@ -227,7 +234,7 @@ Start by greeting the user warmly and asking how you can help them today.`;
         throw new Error('Voice service token is invalid');
       }
 
-      // Connect to OpenAI Realtime API via WebSocket
+      // Connect to Realtime API via WebSocket
       const wsUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
       const ws = new WebSocket(wsUrl, [
         'realtime',
@@ -237,7 +244,7 @@ Start by greeting the user warmly and asking how you can help them today.`;
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('OpenAI Voice: WebSocket connected');
+        console.log('Quiver Voice: WebSocket connected');
 
         // Send session configuration
         ws.send(JSON.stringify({
@@ -253,9 +260,9 @@ Start by greeting the user warmly and asking how you can help them today.`;
             },
             turn_detection: {
               type: 'server_vad',
-              threshold: 0.5,
-              prefix_padding_ms: 300,
-              silence_duration_ms: 600
+              threshold: 0.7,           // Higher = less sensitive to background noise
+              prefix_padding_ms: 500,   // More buffer before speech starts
+              silence_duration_ms: 1200 // Wait longer before considering speech ended
             },
             tools: [
               {
@@ -301,7 +308,7 @@ Start by greeting the user warmly and asking how you can help them today.`;
       };
 
       ws.onerror = (event) => {
-        console.error('OpenAI Voice: WebSocket error', event);
+        console.error('Quiver Voice: WebSocket error', event);
         setState(prev => ({
           ...prev,
           connectionStatus: 'error',
@@ -310,13 +317,13 @@ Start by greeting the user warmly and asking how you can help them today.`;
       };
 
       ws.onclose = () => {
-        console.log('OpenAI Voice: WebSocket closed');
+        console.log('Quiver Voice: WebSocket closed');
         setState(prev => ({ ...prev, connectionStatus: 'disconnected' }));
         stopAudioCapture();
       };
 
     } catch (err) {
-      console.error('OpenAI Voice: Failed to connect', err);
+      console.error('Quiver Voice: Failed to connect', err);
       setState(prev => ({
         ...prev,
         connectionStatus: 'error',
@@ -329,7 +336,7 @@ Start by greeting the user warmly and asking how you can help them today.`;
   const handleRealtimeMessage = useCallback((message: any) => {
     switch (message.type) {
       case 'session.created':
-        console.log('OpenAI Voice: Session created');
+        console.log('Quiver Voice: Session created');
         // Trigger initial greeting
         wsRef.current?.send(JSON.stringify({
           type: 'response.create',

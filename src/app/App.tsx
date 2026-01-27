@@ -600,7 +600,7 @@ export default function App() {
         />
       )}
 
-      {/* Quiver AI Voice Assistant - OpenAI powered, shown on onboarding screens */}
+      {/* Quiver AI Voice Assistant - shown on onboarding screens */}
       {showVoiceAgent && (
         <QuiverAIAssistant currentScreen={getVoiceAgentScreen()} />
       )}
