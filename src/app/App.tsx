@@ -107,6 +107,11 @@ export default function App() {
     return screenMap[currentScreen];
   };
 
+  // Debug: Monitor screen changes
+  useEffect(() => {
+    console.log('>>> Screen changed to:', currentScreen);
+  }, [currentScreen]);
+
   // Check authentication status and saved progress on mount
   useEffect(() => {
     const accessToken = localStorage.getItem('access_token');
@@ -355,26 +360,36 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
-    console.log('handleSubmit called, sessionId:', sessionId);
+    console.log('=== handleSubmit START ===');
+    console.log('sessionId:', sessionId);
+    console.log('currentScreen before:', currentScreen);
+
     setSubmitting(true);
+
     try {
       // Submit to backend
       if (sessionId) {
-        console.log('Submitting onboarding for session:', sessionId);
-        await submitOnboarding(sessionId);
-        console.log('Onboarding submitted successfully');
+        console.log('Calling submitOnboarding API...');
+        const result = await submitOnboarding(sessionId);
+        console.log('API result:', result);
       } else {
         console.warn('No sessionId available for submission');
       }
-      // Mark final step as completed and clear progress (onboarding complete)
+
+      // Mark final step as completed and clear progress
+      console.log('Clearing storage...');
       onboardingStorage.completeStep(5);
-      onboardingStorage.clearAll();
+      onboardingStorage.clear();
+
+      console.log('Setting screen to success...');
       setCurrentScreen("success");
+      console.log('=== handleSubmit SUCCESS ===');
+
     } catch (error) {
-      console.error('Failed to submit onboarding:', error);
+      console.error('=== handleSubmit ERROR ===', error);
       // Still show success since data was saved via bulkUpdateFields earlier
       onboardingStorage.completeStep(5);
-      onboardingStorage.clearAll();
+      onboardingStorage.clear();
       setCurrentScreen("success");
     } finally {
       setSubmitting(false);
