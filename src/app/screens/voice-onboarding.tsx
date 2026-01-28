@@ -32,6 +32,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const playbackQueueRef = useRef<ArrayBuffer[]>([]);
   const isPlayingRef = useRef(false);
+  const processedCallIdsRef = useRef<Set<string>>(new Set()); // Track processed function calls
 
   // Field labels for display
   const fieldLabels: Record<string, string> = {
@@ -52,6 +53,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   const connectToVoiceAgent = useCallback(async () => {
     setConnectionStatus("connecting");
     setError(null);
+    processedCallIdsRef.current.clear(); // Reset for new session
 
     try {
       // Check for direct API key (like QuiverAIAssistant does)
@@ -135,6 +137,11 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   }, []);
 
   const handleRealtimeMessage = (message: any) => {
+    // Log all message types for debugging
+    if (!message.type?.includes('audio.delta')) {
+      console.log("Realtime message:", message.type, message);
+    }
+
     switch (message.type) {
       case "session.created":
         console.log("Session created");
@@ -178,28 +185,90 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
         }
         break;
 
-      case "response.function_call_arguments.done":
+      case "response.function_call_arguments.done": {
         // Handle function calls (field updates)
+        // IMPORTANT: We must use the exact call_id from the message to respond
+        const callId = message.call_id;
+        console.log("Function call received:", message.name, "call_id:", callId);
+
+        // Prevent duplicate processing
+        if (processedCallIdsRef.current.has(callId)) {
+          console.log("Call already processed, skipping:", callId);
+          break;
+        }
+        processedCallIdsRef.current.add(callId);
+
         if (message.name === "update_form_field") {
           try {
             const args = JSON.parse(message.arguments);
-            handleFieldUpdate(args.field, args.value);
+            handleFieldUpdate(args.field, args.value, callId);
           } catch (e) {
             console.error("Failed to parse function call:", e);
           }
         } else if (message.name === "complete_onboarding") {
-          handleOnboardingComplete();
+          handleOnboardingComplete(callId);
         }
+        break;
+      }
+
+      case "response.done":
+        // Response completed - log for debugging
+        console.log("Response completed:", message.response?.status);
+        break;
+
+      case "response.output_item.done": {
+        // An output item (text, audio, or function call) completed
+        console.log("Output item done:", message.item?.type, message.item);
+
+        // Also handle function calls here as a fallback
+        if (message.item?.type === "function_call" && message.item?.call_id) {
+          const item = message.item;
+          const itemCallId = item.call_id;
+
+          // Prevent duplicate processing
+          if (processedCallIdsRef.current.has(itemCallId)) {
+            console.log("Call already processed (from output_item), skipping:", itemCallId);
+            break;
+          }
+          processedCallIdsRef.current.add(itemCallId);
+
+          console.log("Function call from output_item.done:", item.name, "call_id:", itemCallId);
+
+          if (item.name === "update_form_field" && item.arguments) {
+            try {
+              const args = JSON.parse(item.arguments);
+              handleFieldUpdate(args.field, args.value, itemCallId);
+            } catch (e) {
+              console.error("Failed to parse function call from output_item:", e);
+            }
+          } else if (item.name === "complete_onboarding") {
+            handleOnboardingComplete(itemCallId);
+          }
+        }
+        break;
+      }
+
+      case "input_audio_buffer.speech_started":
+        console.log("User started speaking");
+        break;
+
+      case "input_audio_buffer.speech_stopped":
+        console.log("User stopped speaking");
         break;
 
       case "error":
         console.error("Realtime API error:", message.error);
-        setError(message.error?.message || "An error occurred");
+        // Don't show "Tool call ID not found" errors to user - these are handled internally
+        if (!message.error?.message?.includes("Tool call ID")) {
+          setError(message.error?.message || "An error occurred");
+        }
         break;
     }
   };
 
-  const handleFieldUpdate = (field: string, value: string) => {
+  const handleFieldUpdate = (field: string, value: string, callId: string) => {
+    console.log("Updating field:", field, "=", value, "for call_id:", callId);
+
     setCollectedFields(prev => {
       // Update existing field or add new one
       const existing = prev.findIndex(f => f.field === field);
@@ -211,19 +280,46 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       return [...prev, { field, value, timestamp: new Date() }];
     });
 
-    // Send function call result back
-    wsRef.current?.send(JSON.stringify({
-      type: "conversation.item.create",
-      item: {
-        type: "function_call_output",
-        call_id: `call_${Date.now()}`,
-        output: JSON.stringify({ success: true, field, value }),
-      }
-    }));
+    // Send function call result back using the EXACT call_id from OpenAI
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      // Step 1: Send the function call output with the correct call_id
+      wsRef.current.send(JSON.stringify({
+        type: "conversation.item.create",
+        item: {
+          type: "function_call_output",
+          call_id: callId,  // Use the exact call_id from OpenAI
+          output: JSON.stringify({ success: true, field, value }),
+        }
+      }));
+      console.log("Function output sent for call_id:", callId);
+
+      // Step 2: Trigger a new response so the AI continues the conversation
+      wsRef.current.send(JSON.stringify({
+        type: "response.create",
+        response: {
+          modalities: ["text", "audio"],
+        }
+      }));
+      console.log("Triggered new response to continue conversation");
+    }
   };
 
-  const handleOnboardingComplete = async () => {
+  const handleOnboardingComplete = async (callId?: string) => {
     setIsSubmitting(true);
+
+    // If this was triggered by a function call, send the response first
+    if (callId && wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: "conversation.item.create",
+        item: {
+          type: "function_call_output",
+          call_id: callId,
+          output: JSON.stringify({ success: true, message: "Onboarding completed" }),
+        }
+      }));
+      console.log("Function output sent for complete_onboarding, call_id:", callId);
+    }
+
     try {
       // Convert collected fields to voice_data format
       const voiceData: Record<string, string> = {};
@@ -249,6 +345,8 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
 
   const startAudioCapture = async () => {
     try {
+      console.log("Starting audio capture...");
+
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 24000,
@@ -257,15 +355,26 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
           noiseSuppression: true,
         }
       });
+      console.log("Microphone access granted");
       mediaStreamRef.current = stream;
 
       audioContextRef.current = new AudioContext({ sampleRate: 24000 });
+
+      // Resume AudioContext if suspended (required by browsers)
+      if (audioContextRef.current.state === 'suspended') {
+        console.log("AudioContext suspended, resuming...");
+        await audioContextRef.current.resume();
+      }
+      console.log("AudioContext state:", audioContextRef.current.state);
+
       const source = audioContextRef.current.createMediaStreamSource(stream);
 
       // Create processor for capturing audio
       processorRef.current = audioContextRef.current.createScriptProcessor(4096, 1, 1);
+      let audioPacketCount = 0;
       processorRef.current.onaudioprocess = (e) => {
-        if (isRecording && !isMuted && wsRef.current?.readyState === WebSocket.OPEN) {
+        // Always send audio when WebSocket is open (don't rely on stale isRecording state)
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
           const inputData = e.inputBuffer.getChannelData(0);
           const pcm16 = float32ToPCM16(inputData);
           const base64 = arrayBufferToBase64(pcm16.buffer);
@@ -274,12 +383,18 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
             type: "input_audio_buffer.append",
             audio: base64,
           }));
+
+          audioPacketCount++;
+          if (audioPacketCount % 50 === 0) {
+            console.log(`Audio packets sent: ${audioPacketCount}`);
+          }
         }
       };
 
       source.connect(processorRef.current);
       processorRef.current.connect(audioContextRef.current.destination);
 
+      console.log("Audio capture started successfully!");
       setIsRecording(true);
     } catch (err) {
       console.error("Failed to access microphone:", err);
