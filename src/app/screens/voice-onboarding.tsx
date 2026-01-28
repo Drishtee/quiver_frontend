@@ -63,9 +63,16 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log("WebSocket connected");
+        console.log("WebSocket connected - sending auth first");
 
-        // Send session configuration
+        // IMPORTANT: Authenticate FIRST with ephemeral token
+        ws.send(JSON.stringify({
+          type: "session.auth",
+          client_secret: tokenData.token,
+        }));
+        console.log("Auth message sent");
+
+        // Then send session configuration
         ws.send(JSON.stringify({
           type: "session.update",
           session: {
@@ -79,12 +86,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
             tools: config.tools,
           }
         }));
-
-        // Authenticate with ephemeral token
-        ws.send(JSON.stringify({
-          type: "session.auth",
-          client_secret: tokenData.token,
-        }));
+        console.log("Session config sent");
 
         setConnectionStatus("connected");
         startAudioCapture();
