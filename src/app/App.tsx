@@ -53,11 +53,20 @@ type Screen =
   | "video-meeting"
   | "voice-onboarding";
 
+// Get initial screen from URL path
+const getInitialScreen = (): Screen => {
+  const path = window.location.pathname;
+  if (path === '/admin') return 'admin';
+  if (path === '/dashboard') return 'dashboard';
+  if (path === '/login') return 'login';
+  return 'landing';
+};
+
 export default function App() {
   const { t } = useTranslation();
   const onboarding = useOnboarding();
 
-  const [currentScreen, setCurrentScreen] = useState<Screen>("landing");
+  const [currentScreen, setCurrentScreen] = useState<Screen>(getInitialScreen);
   const [phone, setPhone] = useState("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [enterpriseData, setEnterpriseData] = useState<EnterpriseData | null>(null);
@@ -107,9 +116,15 @@ export default function App() {
     return screenMap[currentScreen];
   };
 
+  // Track if initial routing has been handled
+  const [initialRouteHandled, setInitialRouteHandled] = useState(false);
+
   // Debug: Monitor screen changes and update URL
   useEffect(() => {
     console.log('>>> Screen changed to:', currentScreen);
+    // Only update URL after initial routing is done
+    if (!initialRouteHandled) return;
+
     // Update URL to reflect current screen (without page reload)
     const screenToPath: Record<string, string> = {
       'landing': '/',
@@ -122,84 +137,87 @@ export default function App() {
     if (path && window.location.pathname !== path) {
       window.history.pushState({}, '', path);
     }
-  }, [currentScreen]);
+  }, [currentScreen, initialRouteHandled]);
 
-  // Handle URL-based routing on mount and browser back/forward
+  // Combined routing and auth check on mount
   useEffect(() => {
-    const handleRoute = () => {
-      const path = window.location.pathname;
-      console.log('Routing based on path:', path);
-
-      // Direct routes that don't require auth check
-      if (path === '/admin') {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-          setIsAuthenticated(true);
-          setCurrentScreen('admin');
-        } else {
-          // Redirect to login, then to admin
-          localStorage.setItem('redirect_after_login', '/admin');
-          setCurrentScreen('login');
-        }
-        return true;
-      }
-
-      if (path === '/dashboard') {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-          setIsAuthenticated(true);
-          setCurrentScreen('dashboard');
-        } else {
-          localStorage.setItem('redirect_after_login', '/dashboard');
-          setCurrentScreen('login');
-        }
-        return true;
-      }
-
-      if (path === '/login') {
-        setCurrentScreen('login');
-        return true;
-      }
-
-      return false;
-    };
-
-    // Handle initial route
-    const handled = handleRoute();
-
-    // Listen for browser back/forward
-    const handlePopState = () => {
-      handleRoute();
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  // Check authentication status and saved progress on mount
-  useEffect(() => {
-    // Skip if URL routing already handled the navigation
     const path = window.location.pathname;
-    if (path === '/admin' || path === '/dashboard' || path === '/login') {
-      return; // URL routing useEffect handles these
+    const accessToken = localStorage.getItem('access_token');
+
+    console.log('Initial routing - path:', path, 'hasToken:', !!accessToken, 'currentScreen:', currentScreen);
+
+    // Handle /admin route
+    if (path === '/admin') {
+      if (accessToken) {
+        setIsAuthenticated(true);
+        // Screen already set to 'admin' by getInitialScreen, just confirm auth
+      } else {
+        // Need to login first
+        localStorage.setItem('redirect_after_login', '/admin');
+        setCurrentScreen('login');
+      }
+      setInitialRouteHandled(true);
+      return;
     }
 
-    const accessToken = localStorage.getItem('access_token');
+    // Handle /dashboard route
+    if (path === '/dashboard') {
+      if (accessToken) {
+        setIsAuthenticated(true);
+        // Screen already set to 'dashboard' by getInitialScreen
+      } else {
+        localStorage.setItem('redirect_after_login', '/dashboard');
+        setCurrentScreen('login');
+      }
+      setInitialRouteHandled(true);
+      return;
+    }
+
+    // Handle /login route
+    if (path === '/login') {
+      // Screen already set to 'login' by getInitialScreen
+      setInitialRouteHandled(true);
+      return;
+    }
+
+    // Default behavior for root path or other paths
     if (accessToken) {
       setIsAuthenticated(true);
-      // Check for saved onboarding progress
       const savedData = onboardingStorage.getData();
       if (savedData.sessionId && !savedData.completedSteps.includes(5)) {
-        // Has incomplete onboarding
         setSavedProgress({
           step: savedData.currentStep,
           lastSaved: savedData.lastSaved ? new Date(savedData.lastSaved) : null
         });
         setShowResumeModal(true);
       } else {
-        setCurrentScreen("dashboard");
+        setCurrentScreen('dashboard');
       }
     }
+    // If no token and root path, stay on landing (default state)
+
+    setInitialRouteHandled(true);
+  }, []);
+
+  // Handle browser back/forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      const accessToken = localStorage.getItem('access_token');
+
+      if (path === '/admin' && accessToken) {
+        setCurrentScreen('admin');
+      } else if (path === '/dashboard' && accessToken) {
+        setCurrentScreen('dashboard');
+      } else if (path === '/login') {
+        setCurrentScreen('login');
+      } else if (path === '/') {
+        setCurrentScreen('landing');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   // Handle resume journey
