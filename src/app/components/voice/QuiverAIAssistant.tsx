@@ -177,7 +177,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
 
   const statusInfo = getStatusInfo();
 
-  // Floating button when collapsed
+  // Floating button when collapsed - Mobile optimized
   if (!voice.isActive) {
     return (
       <button
@@ -185,31 +185,31 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
           voice.activate();
           voice.connect();
         }}
-        className="fixed bottom-6 right-6 z-50 group"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 group"
         aria-label="Open Quiver AI Assistant"
       >
-        {/* Outer glow animation */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-50 blur-lg animate-pulse" />
+        {/* Outer glow animation - smaller on mobile */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-40 blur-md md:blur-lg animate-pulse" />
 
-        {/* Main button */}
-        <div className="relative flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105">
+        {/* Main button - compact on mobile */}
+        <div className="relative flex items-center gap-2 md:gap-3 px-3 py-2 md:px-5 md:py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 shadow-lg md:shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105">
           {/* Sparkle icon */}
           <div className="relative">
-            <Sparkles className="w-6 h-6 text-white" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping" />
+            <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            <span className="absolute -top-1 -right-1 w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full animate-ping" />
           </div>
 
-          {/* Text */}
-          <span className="text-white font-semibold text-base whitespace-nowrap">
+          {/* Text - hidden on very small screens */}
+          <span className="hidden xs:inline text-white font-semibold text-sm md:text-base whitespace-nowrap">
             {texts.brandName}
           </span>
 
           {/* Mic icon */}
-          <Mic className="w-5 h-5 text-white/80" />
+          <Mic className="w-4 h-4 md:w-5 md:h-5 text-white/80" />
         </div>
 
-        {/* Tooltip */}
-        <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+        {/* Tooltip - hidden on mobile */}
+        <div className="hidden md:block absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
           {texts.tapToStart}
           <div className="absolute bottom-0 right-6 transform translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900" />
         </div>
@@ -217,130 +217,130 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
     );
   }
 
-  // Minimized pill state
+  // Minimized pill state - Mobile optimized
   if (voice.isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
-        {/* Status pill */}
-        <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg ${statusInfo.bg} border border-gray-200`}>
-          {voice.connectionStatus === 'connecting' && <Loader2 className="w-4 h-4 animate-spin text-amber-600" />}
+      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex items-center gap-1.5 md:gap-2">
+        {/* Status pill - compact on mobile */}
+        <div className={`flex items-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 rounded-full shadow-lg ${statusInfo.bg} border border-gray-200`}>
+          {voice.connectionStatus === 'connecting' && <Loader2 className="w-3.5 h-3.5 md:w-4 md:h-4 animate-spin text-amber-600" />}
           {voice.isRecording && (
-            <span className="relative flex h-3 w-3">
+            <span className="relative flex h-2.5 w-2.5 md:h-3 md:w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 md:h-3 md:w-3 bg-red-500"></span>
             </span>
           )}
-          {voice.isSpeaking && <AudioLines className="w-4 h-4 animate-pulse text-blue-600" />}
-          <span className={`text-sm font-medium ${statusInfo.color}`}>{statusInfo.text}</span>
+          {voice.isSpeaking && <AudioLines className="w-3.5 h-3.5 md:w-4 md:h-4 animate-pulse text-blue-600" />}
+          <span className={`text-xs md:text-sm font-medium ${statusInfo.color}`}>{statusInfo.text}</span>
         </div>
 
-        {/* Mute button */}
+        {/* Mute button - smaller on mobile */}
         <button
           onClick={voice.toggleMute}
-          className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${
+          className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${
             voice.isMuted
               ? 'bg-red-500 text-white hover:bg-red-600'
               : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
           }`}
         >
-          {voice.isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          {voice.isMuted ? <MicOff className="w-4 h-4 md:w-5 md:h-5" /> : <Mic className="w-4 h-4 md:w-5 md:h-5" />}
         </button>
 
         {/* Expand button */}
         <button
           onClick={voice.restore}
-          className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200"
+          className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200"
         >
-          <Maximize2 className="w-5 h-5 text-gray-700" />
+          <Maximize2 className="w-4 h-4 md:w-5 md:h-5 text-gray-700" />
         </button>
 
         {/* Close button */}
         <button
           onClick={voice.deactivate}
-          className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200"
+          className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200"
         >
-          <X className="w-5 h-5 text-gray-700" />
+          <X className="w-4 h-4 md:w-5 md:h-5 text-gray-700" />
         </button>
       </div>
     );
   }
 
-  // Full expanded panel
+  // Full expanded panel - Mobile optimized (full width on mobile, fixed width on desktop)
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-[400px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
-      {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 px-5 py-4 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-white" />
+    <div className="fixed inset-x-2 bottom-2 md:inset-auto md:bottom-6 md:right-6 z-50 md:w-[380px] max-h-[80vh] md:max-h-[85vh] bg-white rounded-2xl md:rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
+      {/* Header with gradient - compact on mobile */}
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 px-4 py-3 md:px-5 md:py-4 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+            <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-white text-lg">{texts.brandName}</h3>
-            <p className="text-xs text-white/70">{texts.subtitle}</p>
+            <h3 className="font-bold text-white text-base md:text-lg">{texts.brandName}</h3>
+            <p className="text-[10px] md:text-xs text-white/70">{texts.subtitle}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 md:gap-1">
           <button
             onClick={voice.minimize}
-            className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+            className="p-1.5 md:p-2 rounded-lg hover:bg-white/20 transition-colors"
             aria-label="Minimize"
           >
-            <Minimize2 className="w-5 h-5 text-white" />
+            <Minimize2 className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </button>
           <button
             onClick={voice.deactivate}
-            className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+            className="p-1.5 md:p-2 rounded-lg hover:bg-white/20 transition-colors"
             aria-label="Close"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </button>
         </div>
       </div>
 
-      {/* Status bar */}
-      <div className={`px-5 py-2.5 ${statusInfo.bg} flex items-center justify-between flex-shrink-0 border-b border-gray-100`}>
-        <div className={`flex items-center gap-2 ${statusInfo.color} text-sm font-medium`}>
-          {voice.connectionStatus === 'connecting' && <Loader2 className="w-4 h-4 animate-spin" />}
+      {/* Status bar - compact on mobile */}
+      <div className={`px-3 py-2 md:px-5 md:py-2.5 ${statusInfo.bg} flex items-center justify-between flex-shrink-0 border-b border-gray-100`}>
+        <div className={`flex items-center gap-1.5 md:gap-2 ${statusInfo.color} text-xs md:text-sm font-medium`}>
+          {voice.connectionStatus === 'connecting' && <Loader2 className="w-3.5 h-3.5 md:w-4 md:h-4 animate-spin" />}
           {voice.connectionStatus === 'connected' && voice.isRecording && (
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-red-500"></span>
             </span>
           )}
           {voice.connectionStatus === 'connected' && voice.isSpeaking && (
-            <AudioLines className="w-4 h-4 animate-pulse" />
+            <AudioLines className="w-3.5 h-3.5 md:w-4 md:h-4 animate-pulse" />
           )}
           <span>{statusInfo.text}</span>
         </div>
         {voice.connectionStatus === 'connected' && (
           <button
             onClick={voice.disconnect}
-            className="flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 font-medium px-2 py-1 rounded-md hover:bg-red-50 transition-colors"
+            className="flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs text-red-600 hover:text-red-700 font-medium px-1.5 py-0.5 md:px-2 md:py-1 rounded-md hover:bg-red-50 transition-colors"
           >
-            <PhoneOff className="w-3.5 h-3.5" />
+            <PhoneOff className="w-3 h-3 md:w-3.5 md:h-3.5" />
             {texts.endCall}
           </button>
         )}
       </div>
 
-      {/* Conversation area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[180px] max-h-[260px] bg-gradient-to-b from-gray-50 to-white">
+      {/* Conversation area - smaller on mobile */}
+      <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 md:space-y-3 min-h-[140px] md:min-h-[180px] max-h-[200px] md:max-h-[260px] bg-gradient-to-b from-gray-50 to-white">
         {voice.conversationHistory.length === 0 ? (
-          <div className="text-center py-8">
+          <div className="text-center py-4 md:py-8">
             {voice.connectionStatus === 'connected' ? (
               <>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-violet-100 to-fuchsia-100 flex items-center justify-center">
-                  <AudioLines className="w-8 h-8 text-violet-500" />
+                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-xl md:rounded-2xl bg-gradient-to-br from-violet-100 to-fuchsia-100 flex items-center justify-center">
+                  <AudioLines className="w-6 h-6 md:w-8 md:h-8 text-violet-500" />
                 </div>
-                <p className="text-gray-600 font-medium">{texts.listening}</p>
-                <p className="text-gray-400 text-sm mt-1">{texts.noFieldsYet}</p>
+                <p className="text-gray-600 font-medium text-sm md:text-base">{texts.listening}</p>
+                <p className="text-gray-400 text-xs md:text-sm mt-1">{texts.noFieldsYet}</p>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
-                  <MessageCircle className="w-8 h-8 text-gray-400" />
+                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-xl md:rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                  <MessageCircle className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
                 </div>
-                <p className="text-gray-500 text-sm">{texts.tapToStart}</p>
+                <p className="text-gray-500 text-xs md:text-sm">{texts.tapToStart}</p>
               </>
             )}
           </div>
@@ -352,21 +352,21 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                 className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[88%] md:max-w-[85%] rounded-xl md:rounded-2xl px-3 py-2 md:px-4 md:py-3 ${
                     message.type === 'user'
-                      ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-br-md'
-                      : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm'
+                      ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-br-sm md:rounded-br-md'
+                      : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm md:rounded-bl-md shadow-sm'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
+                  <p className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
                   {message.extractedFields && message.extractedFields.length > 0 && (
-                    <div className="mt-2 pt-2 border-t border-white/20 flex flex-wrap gap-1">
+                    <div className="mt-1.5 md:mt-2 pt-1.5 md:pt-2 border-t border-white/20 flex flex-wrap gap-1">
                       {message.extractedFields.map((field, idx) => (
                         <span
                           key={idx}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs rounded-full"
+                          className="inline-flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] md:text-xs rounded-full"
                         >
-                          <Check className="w-3 h-3" />
+                          <Check className="w-2.5 h-2.5 md:w-3 md:h-3" />
                           {field.fieldKey}
                         </span>
                       ))}
@@ -380,70 +380,70 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
         )}
       </div>
 
-      {/* Collected fields */}
+      {/* Collected fields - Mobile optimized */}
       {voice.collectedFields.length > 0 && (
-        <div className="px-4 py-3 bg-emerald-50 border-t border-emerald-100 flex-shrink-0">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-emerald-800 flex items-center gap-1">
-              <Check className="w-3.5 h-3.5" />
+        <div className="px-3 py-2 md:px-4 md:py-3 bg-emerald-50 border-t border-emerald-100 flex-shrink-0">
+          <div className="flex items-center justify-between mb-1.5 md:mb-2">
+            <p className="text-[10px] md:text-xs font-semibold text-emerald-800 flex items-center gap-1">
+              <Check className="w-3 h-3 md:w-3.5 md:h-3.5" />
               {texts.collectedFields}
             </p>
             <button
               onClick={voice.applyFieldsToForm}
-              className="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 transition-colors font-medium shadow-sm"
+              className="text-[10px] md:text-xs bg-emerald-600 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md md:rounded-lg hover:bg-emerald-700 transition-colors font-medium shadow-sm"
             >
               {texts.applyToForm}
             </button>
           </div>
-          <div className="space-y-2 max-h-[100px] overflow-y-auto">
+          <div className="space-y-1.5 md:space-y-2 max-h-[80px] md:max-h-[100px] overflow-y-auto">
             {voice.collectedFields.map((field) => (
               <div
                 key={field.field}
-                className="flex items-center justify-between bg-white rounded-xl px-3 py-2 shadow-sm border border-emerald-100"
+                className="flex items-center justify-between bg-white rounded-lg md:rounded-xl px-2 py-1.5 md:px-3 md:py-2 shadow-sm border border-emerald-100"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-gray-600 truncate">{field.field}</p>
+                  <p className="text-[10px] md:text-xs font-medium text-gray-600 truncate">{field.field}</p>
                   {editingField === field.field ? (
                     <input
                       type="text"
                       value={editValue}
                       onChange={(e) => setEditValue(e.target.value)}
-                      className="w-full text-sm border border-gray-200 rounded-lg px-2 py-1 mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                      className="w-full text-xs md:text-sm border border-gray-200 rounded-md md:rounded-lg px-1.5 py-0.5 md:px-2 md:py-1 mt-0.5 md:mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500"
                       autoFocus
                     />
                   ) : (
-                    <p className="text-sm text-gray-900 font-medium truncate">{String(field.value)}</p>
+                    <p className="text-xs md:text-sm text-gray-900 font-medium truncate">{String(field.value)}</p>
                   )}
                 </div>
-                <div className="flex items-center gap-1 ml-2">
+                <div className="flex items-center gap-0.5 md:gap-1 ml-1.5 md:ml-2">
                   {editingField === field.field ? (
                     <button
                       onClick={() => handleSaveEdit(field.field)}
-                      className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+                      className="p-1 md:p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-md md:rounded-lg transition-colors"
                     >
-                      <Check className="w-4 h-4" />
+                      <Check className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     </button>
                   ) : (
                     <>
                       <button
                         onClick={() => handleEditField(field.field, field.value)}
-                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-1 md:p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md md:rounded-lg transition-colors"
                       >
-                        <Edit3 className="w-3.5 h-3.5" />
+                        <Edit3 className="w-3 h-3 md:w-3.5 md:h-3.5" />
                       </button>
                       {!field.confirmed && (
                         <button
                           onClick={() => voice.confirmField(field.field)}
-                          className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+                          className="p-1 md:p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-md md:rounded-lg transition-colors"
                         >
-                          <Check className="w-4 h-4" />
+                          <Check className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </button>
                       )}
                     </>
                   )}
                   {field.confirmed && (
-                    <span className="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5" />
+                    <span className="w-5 h-5 md:w-6 md:h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+                      <Check className="w-3 h-3 md:w-3.5 md:h-3.5" />
                     </span>
                   )}
                 </div>
@@ -513,70 +513,70 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
         </div>
       )}
 
-      {/* Controls */}
-      <div className="p-4 border-t border-gray-100 bg-white flex-shrink-0">
+      {/* Controls - Mobile optimized */}
+      <div className="p-3 md:p-4 border-t border-gray-100 bg-white flex-shrink-0">
         {voice.connectionStatus !== 'connected' ? (
           <button
             onClick={voice.connect}
             disabled={voice.connectionStatus === 'connecting'}
-            className="w-full h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:from-violet-700 hover:to-fuchsia-700 transition-all disabled:opacity-50 shadow-lg"
+            className="w-full h-10 md:h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg md:rounded-xl font-semibold text-sm md:text-base flex items-center justify-center gap-2 hover:from-violet-700 hover:to-fuchsia-700 transition-all disabled:opacity-50 shadow-lg"
           >
             {voice.connectionStatus === 'connecting' ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
                 {texts.connecting}
               </>
             ) : (
               <>
-                <Phone className="w-5 h-5" />
+                <Phone className="w-4 h-4 md:w-5 md:h-5" />
                 {texts.startCall}
               </>
             )}
           </button>
         ) : (
           <>
-            {/* Main mic button */}
-            <div className="flex items-center justify-center mb-4">
+            {/* Main mic button - smaller on mobile */}
+            <div className="flex items-center justify-center mb-3 md:mb-4">
               <button
                 onClick={voice.toggleMute}
-                className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+                className={`relative w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all ${
                   voice.isMuted
                     ? 'bg-red-500 hover:bg-red-600'
                     : 'bg-gradient-to-br from-violet-600 to-fuchsia-600 hover:shadow-lg'
                 }`}
               >
                 {voice.isMuted ? (
-                  <MicOff className="w-7 h-7 text-white" />
+                  <MicOff className="w-5 h-5 md:w-7 md:h-7 text-white" />
                 ) : (
-                  <Mic className="w-7 h-7 text-white" />
+                  <Mic className="w-5 h-5 md:w-7 md:h-7 text-white" />
                 )}
                 {!voice.isMuted && voice.isRecording && (
                   <>
                     <span className="absolute inset-0 rounded-full bg-red-500/40 animate-ping" />
-                    <span className="absolute inset-[-4px] rounded-full border-2 border-red-300 animate-pulse" />
+                    <span className="absolute inset-[-3px] md:inset-[-4px] rounded-full border-2 border-red-300 animate-pulse" />
                   </>
                 )}
                 {voice.isSpeaking && (
-                  <span className="absolute inset-[-4px] rounded-full border-2 border-violet-300 animate-pulse" />
+                  <span className="absolute inset-[-3px] md:inset-[-4px] rounded-full border-2 border-violet-300 animate-pulse" />
                 )}
               </button>
             </div>
 
-            {/* Text input */}
-            <form onSubmit={handleTextSubmit} className="flex gap-2">
+            {/* Text input - compact on mobile */}
+            <form onSubmit={handleTextSubmit} className="flex gap-1.5 md:gap-2">
               <input
                 type="text"
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 placeholder={texts.typeMessage}
-                className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500"
+                className="flex-1 px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm border border-gray-200 rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500"
               />
               <button
                 type="submit"
                 disabled={!textInput.trim()}
-                className="px-4 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-xl hover:from-violet-700 hover:to-fuchsia-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="px-3 py-2 md:px-4 md:py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg md:rounded-xl hover:from-violet-700 hover:to-fuchsia-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </button>
             </form>
           </>

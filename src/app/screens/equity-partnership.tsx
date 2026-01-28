@@ -3,6 +3,7 @@ import { Button } from "../components/ui/button";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { ProgressIndicator } from "../components/progress-indicator";
 import { AIAssistant } from "../components/ai-assistant";
+import { onboardingStorage } from "../../utils/storage";
 import {
   Handshake,
   Crown,
@@ -25,6 +26,22 @@ interface EquityPartnershipProps {
 export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
   const [openToEquity, setOpenToEquity] = useState<string>('');
   const [showHindi, setShowHindi] = useState(true);
+
+  // Load saved data on mount
+  useEffect(() => {
+    const savedData = onboardingStorage.getData();
+    if (savedData.formData.openToEquity) {
+      setOpenToEquity(savedData.formData.openToEquity);
+      console.log("Restored equity answer:", savedData.formData.openToEquity);
+    }
+  }, []);
+
+  // Save when value changes
+  useEffect(() => {
+    if (openToEquity) {
+      onboardingStorage.updateField('openToEquity', openToEquity);
+    }
+  }, [openToEquity]);
 
   // Listen for voice field updates
   useEffect(() => {

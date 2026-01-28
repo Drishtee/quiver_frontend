@@ -6,6 +6,8 @@ import { Checkbox } from "../components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { ProgressIndicator } from "../components/progress-indicator";
 import { AIAssistant } from "../components/ai-assistant";
+import { useOnboarding } from "../../contexts/OnboardingContext";
+import { onboardingStorage } from "../../utils/storage";
 import {
   Mic,
   Save,
@@ -31,10 +33,47 @@ interface BusinessQuestionnaireProps {
 
 type Section = 'D' | 'E' | 'F' | 'G';
 
+// Keys for questionnaire fields to filter from storage
+const QUESTIONNAIRE_KEYS = [
+  'productDescription', 'primaryCustomers', 'salesGeography', 'avgCustomers',
+  'salesChannel', 'salesConcentration', 'businessIndependence',
+  'monthlyRevenue', 'monthlyExpenses', 'currentStatus', 'salesTrend',
+  'paidWorkers', 'familyWorkers', 'paymentFrequency', 'digitalTransactions', 'recordsType',
+  'keyAssets', 'workspaceType', 'registrations', 'incomeControl',
+  'hoursPerDay', 'openToChange', 'priority', 'quiverSupport', 'investmentAmount', 'fundingUse',
+  'currentSection_questionnaire'
+];
+
 export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps) {
+  const onboarding = useOnboarding();
   const [currentSection, setCurrentSection] = useState<Section>('D');
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [autoSaved, setAutoSaved] = useState(false);
+  const [hasRestoredData, setHasRestoredData] = useState(false);
+
+  // Load saved data on mount
+  useEffect(() => {
+    const savedData = onboardingStorage.getData();
+    const restoredAnswers: Record<string, string | string[]> = {};
+    let hasData = false;
+
+    QUESTIONNAIRE_KEYS.forEach(key => {
+      if (savedData.formData[key] !== undefined) {
+        restoredAnswers[key] = savedData.formData[key];
+        hasData = true;
+      }
+    });
+
+    if (hasData) {
+      setAnswers(restoredAnswers);
+      // Restore section if saved
+      if (restoredAnswers.currentSection_questionnaire) {
+        setCurrentSection(restoredAnswers.currentSection_questionnaire as Section);
+      }
+      setHasRestoredData(true);
+      console.log("Restored questionnaire data:", Object.keys(restoredAnswers).length, "fields");
+    }
+  }, []);
 
   // Listen for voice field updates
   useEffect(() => {
@@ -62,9 +101,16 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
 
   const updateAnswer = (key: string, value: string | string[]) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
+    // Persist to localStorage
+    onboardingStorage.updateField(key, value);
     setAutoSaved(true);
     setTimeout(() => setAutoSaved(false), 2000);
   };
+
+  // Save current section when it changes
+  useEffect(() => {
+    onboardingStorage.updateField('currentSection_questionnaire', currentSection);
+  }, [currentSection]);
 
   const toggleMultiSelect = (key: string, value: string) => {
     const current = (answers[key] as string[]) || [];
@@ -172,55 +218,62 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
 
           {/* Section D: Product, Market & Dependency */}
           {currentSection === 'D' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Product Description */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <ShoppingCart className="w-5 h-5 text-primary" />
-                  उत्पाद / सेवा का विवरण | Product/Service Description <span className="text-red-500">*</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आप क्या बनाते / बेचते हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">What do you make or sell? <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
                 <div className="relative">
                   <Textarea
-                    placeholder="अपने उत्पाद या सेवा के बारे में बताएं..."
+                    placeholder="उदाहरण: मैं घर पर अचार बनाती हूँ और स्थानीय बाज़ार में बेचती हूँ..."
                     value={(answers.productDescription as string) || ''}
                     onChange={(e) => updateAnswer('productDescription', e.target.value)}
-                    className="min-h-[120px] bg-gray-50 border-gray-200 rounded-xl resize-none"
+                    className="min-h-[100px] md:min-h-[120px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
                   />
-                  <button className="absolute right-3 bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
-                    <Mic className="w-5 h-5 text-primary" />
+                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                    <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </button>
                 </div>
               </div>
 
               {/* Primary Customers */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Users className="w-5 h-5 text-primary" />
-                  मुख्य ग्राहक | Primary Customers <span className="text-red-500">*</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <Users className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आपके मुख्य ग्राहक कौन हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">Who are your main customers? <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'households', labelHi: 'परिवार', labelEn: 'Households' },
-                    { value: 'retailers', labelHi: 'दुकानदार', labelEn: 'Retailers' },
-                    { value: 'wholesalers', labelHi: 'थोक', labelEn: 'Wholesalers' },
-                    { value: 'institutions', labelHi: 'संस्थान', labelEn: 'Institutions' },
+                    { value: 'households', labelHi: 'घर-परिवार', labelEn: 'Households' },
+                    { value: 'retailers', labelHi: 'दुकानदार', labelEn: 'Shops' },
+                    { value: 'wholesalers', labelHi: 'थोक व्यापारी', labelEn: 'Wholesalers' },
+                    { value: 'institutions', labelHi: 'संस्थान/होटल', labelEn: 'Hotels/Offices' },
                     { value: 'online', labelHi: 'ऑनलाइन', labelEn: 'Online' }
                   ].map((option) => {
                     const selected = ((answers.primaryCustomers as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
                           selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('primaryCustomers', option.value)}
+                          className="h-4 w-4"
                         />
-                        <div>
-                          <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
-                          <span className="text-xs text-gray-500 block">{option.labelEn}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -229,33 +282,37 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Sales Geography */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  बिक्री क्षेत्र | Sales Geography <span className="text-red-500">*</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आप कहाँ तक बेचते हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">Where do you sell? <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'village', labelHi: 'गाँव', labelEn: 'Village' },
-                    { value: 'block', labelHi: 'ब्लॉक', labelEn: 'Block' },
-                    { value: 'district', labelHi: 'ज़िला', labelEn: 'District' },
-                    { value: 'state', labelHi: 'राज्य', labelEn: 'State' }
+                    { value: 'village', labelHi: 'अपने गाँव में', labelEn: 'My Village' },
+                    { value: 'block', labelHi: 'आस-पास के गाँव', labelEn: 'Nearby Areas' },
+                    { value: 'district', labelHi: 'पूरे ज़िले में', labelEn: 'Whole District' },
+                    { value: 'state', labelHi: 'राज्य/देश भर में', labelEn: 'State/Country' }
                   ].map((option) => {
                     const selected = ((answers.salesGeography as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
                           selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('salesGeography', option.value)}
+                          className="h-4 w-4"
                         />
-                        <div>
-                          <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
-                          <span className="text-xs text-gray-500 block">{option.labelEn}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -264,45 +321,50 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Avg Customers per Month */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  प्रति माह औसत ग्राहक | Avg. customers per month
+                  <span>हर महीने कितने ग्राहक आते हैं?</span>
+                  <span className="block text-xs text-gray-500 font-normal">How many customers per month?</span>
                 </label>
                 <Input
                   type="number"
-                  placeholder="जैसे: 50"
+                  placeholder="उदाहरण: 50"
                   value={(answers.avgCustomers as string) || ''}
                   onChange={(e) => updateAnswer('avgCustomers', e.target.value)}
-                  className="h-12 bg-gray-50 border-gray-200 rounded-xl"
+                  className="h-11 md:h-12 bg-gray-50 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base"
                 />
               </div>
 
               {/* Sales Channel */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  बिक्री का तरीका | Sales Channel <span className="text-red-500">*</span>
+                  <span>आप कैसे बेचते हैं?</span>
+                  <span className="block text-xs text-gray-500 font-normal">How do you sell? <span className="text-red-500">*</span></span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'direct', labelHi: 'सीधे', labelEn: 'Direct' },
-                    { value: 'retail', labelHi: 'खुदरा', labelEn: 'Retail' },
-                    { value: 'middlemen', labelHi: 'बिचौलिए', labelEn: 'Middlemen' },
-                    { value: 'online', labelHi: 'ऑनलाइन', labelEn: 'Online' }
+                    { value: 'direct', labelHi: 'सीधे ग्राहक को', labelEn: 'Direct to Customer' },
+                    { value: 'retail', labelHi: 'दुकान के ज़रिए', labelEn: 'Through Shops' },
+                    { value: 'middlemen', labelHi: 'बिचौलियों से', labelEn: 'Via Middlemen' },
+                    { value: 'online', labelHi: 'ऑनलाइन/डिजिटल', labelEn: 'Online/Digital' }
                   ].map((option) => {
                     const selected = ((answers.salesChannel as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
                           selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('salesChannel', option.value)}
+                          className="h-4 w-4"
                         />
-                        <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
-                        <span className="text-xs text-gray-500">| {option.labelEn}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                        </div>
                       </label>
                     );
                   })}
@@ -310,60 +372,68 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Dependency Questions */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-6">
-                <div className="space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-5 md:space-y-6">
+                <div className="space-y-3 md:space-y-4">
                   <label className="text-sm font-medium text-gray-900">
-                    क्या आपकी 30% से अधिक बिक्री केवल 1–2 ग्राहकों से आती है?
-                    <span className="block text-xs text-gray-500">Do more than 30% of your sales come from 1–2 customers?</span>
+                    <span>क्या आपकी ज़्यादातर बिक्री 1-2 बड़े ग्राहकों से होती है?</span>
+                    <span className="block text-xs text-gray-500 font-normal">Do most sales come from 1-2 big customers?</span>
                   </label>
-                  <RadioGroup
-                    value={(answers.salesConcentration as string) || ''}
-                    onValueChange={(value) => updateAnswer('salesConcentration', value)}
-                    className="flex gap-4"
-                  >
+                  <div className="flex flex-wrap gap-2 md:gap-3">
                     {[
-                      { value: 'yes', label: 'हाँ | Yes' },
-                      { value: 'no', label: 'नहीं | No' }
+                      { value: 'yes', labelHi: 'हाँ', labelEn: 'Yes' },
+                      { value: 'no', labelHi: 'नहीं', labelEn: 'No' }
                     ].map((option) => (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                          answers.salesConcentration === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                        className={`flex items-center gap-2 px-4 py-2.5 md:px-5 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                          answers.salesConcentration === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
+                        onClick={() => updateAnswer('salesConcentration', option.value)}
                       >
-                        <RadioGroupItem value={option.value} />
-                        <span className="text-sm font-medium">{option.label}</span>
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                          answers.salesConcentration === option.value ? 'border-primary' : 'border-gray-300'
+                        }`}>
+                          {answers.salesConcentration === option.value && (
+                            <div className="w-2 h-2 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
+                        <span className="text-xs text-gray-500">| {option.labelEn}</span>
                       </label>
                     ))}
-                  </RadioGroup>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="border-t border-gray-100 pt-4 md:pt-5 space-y-3 md:space-y-4">
                   <label className="text-sm font-medium text-gray-900">
-                    अगर आप 7 दिन के लिए व्यवसाय से दूर रहें, तो क्या व्यवसाय चलेगा?
-                    <span className="block text-xs text-gray-500">If you step away for 7 days, will the business run?</span>
+                    <span>अगर आप 7 दिन के लिए छुट्टी लें, तो क्या काम चलेगा?</span>
+                    <span className="block text-xs text-gray-500 font-normal">If you take 7 days off, will business continue?</span>
                   </label>
-                  <RadioGroup
-                    value={(answers.businessIndependence as string) || ''}
-                    onValueChange={(value) => updateAnswer('businessIndependence', value)}
-                    className="flex gap-4"
-                  >
+                  <div className="flex flex-wrap gap-2 md:gap-3">
                     {[
-                      { value: 'yes', label: 'हाँ | Yes' },
-                      { value: 'partial', label: 'आंशिक | Partial' },
-                      { value: 'no', label: 'नहीं | No' }
+                      { value: 'yes', labelHi: 'हाँ, चलेगा', labelEn: 'Yes' },
+                      { value: 'partial', labelHi: 'थोड़ा-बहुत', labelEn: 'Partially' },
+                      { value: 'no', labelHi: 'नहीं चलेगा', labelEn: 'No' }
                     ].map((option) => (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                          answers.businessIndependence === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                        className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                          answers.businessIndependence === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
+                        onClick={() => updateAnswer('businessIndependence', option.value)}
                       >
-                        <RadioGroupItem value={option.value} />
-                        <span className="text-sm font-medium">{option.label}</span>
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                          answers.businessIndependence === option.value ? 'border-primary' : 'border-gray-300'
+                        }`}>
+                          {answers.businessIndependence === option.value && (
+                            <div className="w-2 h-2 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                        <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                       </label>
                     ))}
-                  </RadioGroup>
+                  </div>
                 </div>
               </div>
             </div>
@@ -371,213 +441,246 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
 
           {/* Section E: Financial Snapshot */}
           {currentSection === 'E' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Monthly Revenue */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-5 h-5 text-primary" />
-                  औसत मासिक बिक्री (₹) | Avg. Monthly Revenue <span className="text-red-500">*</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>हर महीने कितनी बिक्री होती है? (₹)</span>
+                    <span className="block text-xs text-gray-500 font-normal">Monthly sales/revenue <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
                 <Input
                   type="number"
-                  placeholder="जैसे: 50000"
+                  placeholder="उदाहरण: 50000"
                   value={(answers.monthlyRevenue as string) || ''}
                   onChange={(e) => updateAnswer('monthlyRevenue', e.target.value)}
-                  className="h-12 bg-gray-50 border-gray-200 rounded-xl"
+                  className="h-11 md:h-12 bg-gray-50 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base"
                 />
               </div>
 
               {/* Monthly Expenses */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-5 h-5 text-red-500" />
-                  औसत मासिक खर्च (₹) | Avg. Monthly Expenses <span className="text-red-500">*</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>हर महीने कुल कितना खर्च होता है? (₹)</span>
+                    <span className="block text-xs text-gray-500 font-normal">Monthly expenses <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
                 <Input
                   type="number"
-                  placeholder="जैसे: 35000"
+                  placeholder="उदाहरण: 35000"
                   value={(answers.monthlyExpenses as string) || ''}
                   onChange={(e) => updateAnswer('monthlyExpenses', e.target.value)}
-                  className="h-12 bg-gray-50 border-gray-200 rounded-xl"
+                  className="h-11 md:h-12 bg-gray-50 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base"
                 />
               </div>
 
               {/* Current Status */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  वर्तमान स्थिति | Current Status <span className="text-red-500">*</span>
+                  <span>अभी व्यवसाय की स्थिति क्या है?</span>
+                  <span className="block text-xs text-gray-500 font-normal">Current business status <span className="text-red-500">*</span></span>
                 </label>
-                <RadioGroup
-                  value={(answers.currentStatus as string) || ''}
-                  onValueChange={(value) => updateAnswer('currentStatus', value)}
-                  className="flex flex-wrap gap-3"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: 'profit', labelHi: 'मुनाफ़ा', labelEn: 'Profit', color: 'green' },
-                    { value: 'breakeven', labelHi: 'बराबर', labelEn: 'Break-even', color: 'yellow' },
-                    { value: 'loss', labelHi: 'नुकसान', labelEn: 'Loss', color: 'red' }
+                    { value: 'profit', labelHi: 'फ़ायदे में', labelEn: 'In Profit', bgColor: 'bg-green-50', borderColor: 'border-green-500' },
+                    { value: 'breakeven', labelHi: 'बराबरी पर', labelEn: 'Break-even', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-500' },
+                    { value: 'loss', labelHi: 'घाटे में', labelEn: 'In Loss', bgColor: 'bg-red-50', borderColor: 'border-red-500' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
                         answers.currentStatus === option.value
-                          ? `border-${option.color}-500 bg-${option.color}-50`
+                          ? `${option.borderColor} ${option.bgColor}`
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('currentStatus', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-sm text-gray-500">| {option.labelEn}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.currentStatus === option.value ? option.borderColor : 'border-gray-300'
+                      }`}>
+                        {answers.currentStatus === option.value && (
+                          <div className={`w-2 h-2 rounded-full ${option.borderColor.replace('border', 'bg')}`} />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Sales Trend */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <TrendingUp className="w-5 h-5 text-primary" />
-                  पिछले 12 महीनों में आपकी बिक्री | Sales trend in last 12 months <span className="text-red-500">*</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>पिछले साल बिक्री कैसी रही?</span>
+                    <span className="block text-xs text-gray-500 font-normal">Sales trend last 12 months <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
-                <RadioGroup
-                  value={(answers.salesTrend as string) || ''}
-                  onValueChange={(value) => updateAnswer('salesTrend', value)}
-                  className="flex flex-wrap gap-3"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
                     { value: 'increased', labelHi: 'बढ़ी', labelEn: 'Increased' },
-                    { value: 'same', labelHi: 'समान रही', labelEn: 'Same' },
-                    { value: 'decreased', labelHi: 'घटी', labelEn: 'Decreased' }
+                    { value: 'same', labelHi: 'वही रही', labelEn: 'Same' },
+                    { value: 'decreased', labelHi: 'कम हुई', labelEn: 'Decreased' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.salesTrend === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.salesTrend === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('salesTrend', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-sm text-gray-500">| {option.labelEn}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.salesTrend === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.salesTrend === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Workers */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Users className="w-5 h-5 text-primary" />
-                  काम करने वाले लोग | Workers
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <Users className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आपके साथ कितने लोग काम करते हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">How many people work with you?</span>
+                  </div>
                 </label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs text-gray-600">वेतनभोगी | Paid</label>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="space-y-1.5 md:space-y-2">
+                    <label className="text-xs text-gray-600">वेतन पर | Paid Workers</label>
                     <Input
                       type="number"
                       placeholder="0"
                       value={(answers.paidWorkers as string) || ''}
                       onChange={(e) => updateAnswer('paidWorkers', e.target.value)}
-                      className="h-10 bg-gray-50 border-gray-200 rounded-lg"
+                      className="h-10 md:h-11 bg-gray-50 border-gray-200 rounded-lg text-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs text-gray-600">परिवार | Family</label>
+                  <div className="space-y-1.5 md:space-y-2">
+                    <label className="text-xs text-gray-600">परिवार से | Family Members</label>
                     <Input
                       type="number"
                       placeholder="0"
                       value={(answers.familyWorkers as string) || ''}
                       onChange={(e) => updateAnswer('familyWorkers', e.target.value)}
-                      className="h-10 bg-gray-50 border-gray-200 rounded-lg"
+                      className="h-10 md:h-11 bg-gray-50 border-gray-200 rounded-lg text-sm"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Payment Frequency */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  औसतन कर्मचारियों को कैसे भुगतान किया जाता है? | Payment frequency
+                  <span>कर्मचारियों को कैसे पैसे देते हैं?</span>
+                  <span className="block text-xs text-gray-500 font-normal">How do you pay workers?</span>
                 </label>
-                <RadioGroup
-                  value={(answers.paymentFrequency as string) || ''}
-                  onValueChange={(value) => updateAnswer('paymentFrequency', value)}
-                  className="flex flex-wrap gap-3"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: 'daily', labelHi: 'दैनिक', labelEn: 'Daily' },
-                    { value: 'weekly', labelHi: 'साप्ताहिक', labelEn: 'Weekly' },
-                    { value: 'monthly', labelHi: 'मासिक', labelEn: 'Monthly' }
+                    { value: 'daily', labelHi: 'रोज़ाना', labelEn: 'Daily' },
+                    { value: 'weekly', labelHi: 'हफ़्ते में', labelEn: 'Weekly' },
+                    { value: 'monthly', labelHi: 'महीने में', labelEn: 'Monthly' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.paymentFrequency === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.paymentFrequency === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('paymentFrequency', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-sm text-gray-500">| {option.labelEn}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.paymentFrequency === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.paymentFrequency === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Bank/UPI Transactions */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  क्या व्यवसाय के लेन-देन बैंक खाते / UPI से होते हैं?
-                  <span className="block text-xs text-gray-500">Are business transactions done via Bank/UPI?</span>
+                  <span>क्या आप UPI/बैंक से लेन-देन करते हैं?</span>
+                  <span className="block text-xs text-gray-500 font-normal">Do you use UPI/Bank for transactions?</span>
                 </label>
-                <RadioGroup
-                  value={(answers.digitalTransactions as string) || ''}
-                  onValueChange={(value) => updateAnswer('digitalTransactions', value)}
-                  className="flex gap-4"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: 'yes', label: 'हाँ | Yes' },
-                    { value: 'partial', label: 'आंशिक | Partial' },
-                    { value: 'no', label: 'नहीं | No' }
+                    { value: 'yes', labelHi: 'हाँ, पूरा', labelEn: 'Yes, Fully' },
+                    { value: 'partial', labelHi: 'कुछ', labelEn: 'Partially' },
+                    { value: 'no', labelHi: 'नहीं, नकद', labelEn: 'No, Cash' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.digitalTransactions === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.digitalTransactions === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('digitalTransactions', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="text-sm font-medium">{option.label}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.digitalTransactions === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.digitalTransactions === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Records */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <FileText className="w-5 h-5 text-primary" />
-                  क्या रिकॉर्ड रखते हैं? | Records maintained?
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <FileText className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आप हिसाब-किताब कैसे रखते हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">How do you keep records?</span>
+                  </div>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'notebook', labelHi: 'कॉपी/रजिस्टर', labelEn: 'Notebook' },
-                    { value: 'app', labelHi: 'ऐप', labelEn: 'App' },
-                    { value: 'excel', labelHi: 'एक्सेल', labelEn: 'Excel' },
-                    { value: 'none', labelHi: 'कोई नहीं', labelEn: 'None' }
+                    { value: 'notebook', labelHi: 'कॉपी/बही में', labelEn: 'Notebook' },
+                    { value: 'app', labelHi: 'मोबाइल ऐप में', labelEn: 'Mobile App' },
+                    { value: 'excel', labelHi: 'एक्सेल/कंप्यूटर', labelEn: 'Excel/Computer' },
+                    { value: 'none', labelHi: 'नहीं रखते', labelEn: 'None' }
                   ].map((option) => {
                     const selected = ((answers.recordsType as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200'
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('recordsType', option.value)}
+                          className="h-4 w-4"
                         />
-                        <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
-                        <span className="text-xs text-gray-500">| {option.labelEn}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                        </div>
                       </label>
                     );
                   })}
@@ -588,80 +691,92 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
 
           {/* Section F: Assets & Compliance */}
           {currentSection === 'F' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Key Assets */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Building className="w-5 h-5 text-primary" />
-                  प्रमुख मशीनें/उपकरण | Key Assets/Machines
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <Building className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आपके पास कौन-कौन सी मशीनें/उपकरण हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">What machines/equipment do you have?</span>
+                  </div>
                 </label>
                 <div className="relative">
                   <Textarea
-                    placeholder="मशीनों और उपकरणों की सूची..."
+                    placeholder="उदाहरण: सिलाई मशीन, ओवरलॉक मशीन, कटिंग टेबल..."
                     value={(answers.keyAssets as string) || ''}
                     onChange={(e) => updateAnswer('keyAssets', e.target.value)}
-                    className="min-h-[100px] bg-gray-50 border-gray-200 rounded-xl resize-none"
+                    className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
                   />
-                  <button className="absolute right-3 bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
-                    <Mic className="w-5 h-5 text-primary" />
+                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                    <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </button>
                 </div>
               </div>
 
               {/* Workspace Type */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  कार्यस्थल | Workspace Type <span className="text-red-500">*</span>
+                  <span>आप कहाँ से काम करते हैं?</span>
+                  <span className="block text-xs text-gray-500 font-normal">Where do you work from? <span className="text-red-500">*</span></span>
                 </label>
-                <RadioGroup
-                  value={(answers.workspaceType as string) || ''}
-                  onValueChange={(value) => updateAnswer('workspaceType', value)}
-                  className="flex flex-wrap gap-3"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: 'home', labelHi: 'घर', labelEn: 'Home' },
-                    { value: 'rented', labelHi: 'किराए पर', labelEn: 'Rented' },
-                    { value: 'owned', labelHi: 'खुद का', labelEn: 'Owned' }
+                    { value: 'home', labelHi: 'अपने घर से', labelEn: 'From Home' },
+                    { value: 'rented', labelHi: 'किराए की जगह', labelEn: 'Rented Space' },
+                    { value: 'owned', labelHi: 'खुद की दुकान', labelEn: 'Own Shop' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.workspaceType === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.workspaceType === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('workspaceType', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-sm text-gray-500">| {option.labelEn}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.workspaceType === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.workspaceType === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Registrations */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  पंजीकरण | Registrations
+                  <span>क्या आपके पास कोई पंजीकरण है?</span>
+                  <span className="block text-xs text-gray-500 font-normal">Do you have any registrations?</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'udyam', label: 'Udyam' },
-                    { value: 'gst', label: 'GST' },
-                    { value: 'fssai', label: 'FSSAI' },
-                    { value: 'none', labelHi: 'कोई नहीं', label: 'None' }
+                    { value: 'udyam', labelHi: 'उद्यम', labelEn: 'Udyam' },
+                    { value: 'gst', labelHi: 'जीएसटी', labelEn: 'GST' },
+                    { value: 'fssai', labelHi: 'FSSAI', labelEn: 'FSSAI (Food)' },
+                    { value: 'none', labelHi: 'कोई नहीं', labelEn: 'None' }
                   ].map((option) => {
                     const selected = ((answers.registrations as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200'
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('registrations', option.value)}
+                          className="h-4 w-4"
                         />
-                        <span className="text-sm font-medium text-gray-900">{option.label}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                        </div>
                       </label>
                     );
                   })}
@@ -669,129 +784,148 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Income Decision Control */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  क्या व्यवसाय से होने वाली आय पर आपका निर्णय होता है?
-                  <span className="block text-xs text-gray-500">Do you decide how business income is used?</span>
+                  <span>क्या कमाई पर आपका फ़ैसला चलता है?</span>
+                  <span className="block text-xs text-gray-500 font-normal">Do you decide how to use business income?</span>
                 </label>
-                <RadioGroup
-                  value={(answers.incomeControl as string) || ''}
-                  onValueChange={(value) => updateAnswer('incomeControl', value)}
-                  className="flex gap-4"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: 'yes', label: 'हाँ | Yes' },
-                    { value: 'partial', label: 'आंशिक | Partial' },
-                    { value: 'no', label: 'नहीं | No' }
+                    { value: 'yes', labelHi: 'हाँ, पूरा', labelEn: 'Yes, Fully' },
+                    { value: 'partial', labelHi: 'कुछ हद तक', labelEn: 'Partially' },
+                    { value: 'no', labelHi: 'नहीं', labelEn: 'No' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.incomeControl === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.incomeControl === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('incomeControl', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="text-sm font-medium">{option.label}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.incomeControl === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.incomeControl === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
             </div>
           )}
 
           {/* Section G: Time & Growth Intent */}
           {currentSection === 'G' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Hours per Day */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Clock className="w-5 h-5 text-primary" />
-                  आप रोज़ाना कितने घंटे व्यवसाय पर काम करते हैं? <span className="text-red-500">*</span>
-                  <span className="block text-xs text-gray-500 font-normal">Hours per day on business</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>रोज़ाना कितने घंटे काम करते हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">How many hours do you work daily? <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
-                <RadioGroup
-                  value={(answers.hoursPerDay as string) || ''}
-                  onValueChange={(value) => updateAnswer('hoursPerDay', value)}
-                  className="flex flex-wrap gap-3"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: '1-3', label: '1-3 घंटे' },
-                    { value: '3-6', label: '3-6 घंटे' },
-                    { value: '6+', label: '6+ घंटे' }
+                    { value: '1-3', labelHi: '1-3 घंटे', labelEn: '1-3 hrs' },
+                    { value: '3-6', labelHi: '3-6 घंटे', labelEn: '3-6 hrs' },
+                    { value: '6+', labelHi: '6+ घंटे', labelEn: '6+ hrs' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.hoursPerDay === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.hoursPerDay === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('hoursPerDay', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="font-medium text-gray-900">{option.label}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.hoursPerDay === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.hoursPerDay === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Open to Change */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Lightbulb className="w-5 h-5 text-primary" />
-                  क्या आप नए तरीकों को आज़माने और बदलाव करने में सहज हैं? <span className="text-red-500">*</span>
-                  <span className="block text-xs text-gray-500 font-normal">Are you open to trying new methods?</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>क्या आप नए तरीके आज़माने को तैयार हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">Are you open to trying new methods? <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
-                <RadioGroup
-                  value={(answers.openToChange as string) || ''}
-                  onValueChange={(value) => updateAnswer('openToChange', value)}
-                  className="flex gap-4"
-                >
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
-                    { value: 'yes', label: 'हाँ | Yes' },
-                    { value: 'sometimes', label: 'कभी-कभी | Sometimes' },
-                    { value: 'no', label: 'नहीं | No' }
+                    { value: 'yes', labelHi: 'हाँ, ज़रूर', labelEn: 'Yes' },
+                    { value: 'sometimes', labelHi: 'कभी-कभी', labelEn: 'Sometimes' },
+                    { value: 'no', labelHi: 'नहीं', labelEn: 'No' }
                   ].map((option) => (
                     <label
                       key={option.value}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                        answers.openToChange === option.value ? 'border-primary bg-green-50' : 'border-gray-200'
+                      className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                        answers.openToChange === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
+                      onClick={() => updateAnswer('openToChange', option.value)}
                     >
-                      <RadioGroupItem value={option.value} />
-                      <span className="text-sm font-medium">{option.label}</span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        answers.openToChange === option.value ? 'border-primary' : 'border-gray-300'
+                      }`}>
+                        {answers.openToChange === option.value && (
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        )}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Priority */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Target className="w-5 h-5 text-primary" />
-                  अगले 12 महीनों में आपकी प्राथमिकता क्या है? <span className="text-red-500">*</span>
-                  <span className="block text-xs text-gray-500 font-normal">Your priority for next 12 months</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <Target className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>अगले साल आप क्या चाहते हैं?</span>
+                    <span className="block text-xs text-gray-500 font-normal">Your goals for next 12 months <span className="text-red-500">*</span></span>
+                  </div>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'sales', labelHi: 'बिक्री', labelEn: 'Sales' },
-                    { value: 'profit', labelHi: 'मुनाफ़ा', labelEn: 'Profit' },
-                    { value: 'capacity', labelHi: 'क्षमता', labelEn: 'Capacity' },
-                    { value: 'new-market', labelHi: 'नया बाज़ार', labelEn: 'New Market' },
-                    { value: 'working-capital', labelHi: 'कार्यशील पूंजी', labelEn: 'Working Capital' }
+                    { value: 'sales', labelHi: 'ज़्यादा बिक्री', labelEn: 'More Sales' },
+                    { value: 'profit', labelHi: 'ज़्यादा मुनाफ़ा', labelEn: 'More Profit' },
+                    { value: 'capacity', labelHi: 'ज़्यादा उत्पादन', labelEn: 'More Production' },
+                    { value: 'new-market', labelHi: 'नया बाज़ार', labelEn: 'New Markets' },
+                    { value: 'working-capital', labelHi: 'चलती पूंजी', labelEn: 'Working Capital' }
                   ].map((option) => {
                     const selected = ((answers.priority as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200'
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('priority', option.value)}
+                          className="h-4 w-4"
                         />
-                        <div>
-                          <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
-                          <span className="text-xs text-gray-500 block">{option.labelEn}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -800,33 +934,34 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Quiver Support */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  Quiver से आप क्या सहयोग चाहते हैं? <span className="text-red-500">*</span>
-                  <span className="block text-xs text-gray-500">What support do you want from Quiver?</span>
+                  <span>Quiver से आपको क्या मदद चाहिए?</span>
+                  <span className="block text-xs text-gray-500 font-normal">What help do you need from Quiver? <span className="text-red-500">*</span></span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
-                    { value: 'mentorship', labelHi: 'मार्गदर्शन', labelEn: 'Mentorship' },
-                    { value: 'market-access', labelHi: 'बाज़ार पहुंच', labelEn: 'Market Access' },
-                    { value: 'systems', labelHi: 'सिस्टम', labelEn: 'Systems' },
-                    { value: 'growth-capital', labelHi: 'ग्रोथ कैपिटल', labelEn: 'Growth Capital' }
+                    { value: 'mentorship', labelHi: 'सलाह/मार्गदर्शन', labelEn: 'Guidance' },
+                    { value: 'market-access', labelHi: 'नए ग्राहक', labelEn: 'New Customers' },
+                    { value: 'systems', labelHi: 'बेहतर सिस्टम', labelEn: 'Better Systems' },
+                    { value: 'growth-capital', labelHi: 'पैसों की मदद', labelEn: 'Funding' }
                   ].map((option) => {
                     const selected = ((answers.quiverSupport as string[]) || []).includes(option.value);
                     return (
                       <label
                         key={option.value}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 cursor-pointer transition-all ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200'
+                        className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
+                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() => toggleMultiSelect('quiverSupport', option.value)}
+                          className="h-4 w-4"
                         />
-                        <div>
-                          <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
-                          <span className="text-xs text-gray-500 block">{option.labelEn}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
+                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -835,36 +970,38 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Investment Amount */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-5 h-5 text-primary" />
-                  आप Quiver से कितनी निवेश राशि चाहते हैं?
-                  <span className="block text-xs text-gray-500 font-normal">How much investment do you want from Quiver?</span>
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+                <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span>आपको कितने पैसों की ज़रूरत है? (₹)</span>
+                    <span className="block text-xs text-gray-500 font-normal">How much funding do you need?</span>
+                  </div>
                 </label>
                 <Input
                   type="number"
-                  placeholder="जैसे: 500000"
+                  placeholder="उदाहरण: 500000"
                   value={(answers.investmentAmount as string) || ''}
                   onChange={(e) => updateAnswer('investmentAmount', e.target.value)}
-                  className="h-12 bg-gray-50 border-gray-200 rounded-xl"
+                  className="h-11 md:h-12 bg-gray-50 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base"
                 />
               </div>
 
               {/* Funding Use */}
-              <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
-                  Quiver से मिलने वाली फंडिंग का उपयोग आप किस काम के लिए करेंगे?
-                  <span className="block text-xs text-gray-500">How will you use the funding from Quiver?</span>
+                  <span>पैसों का इस्तेमाल किसमें करेंगे?</span>
+                  <span className="block text-xs text-gray-500 font-normal">How will you use the funding?</span>
                 </label>
                 <div className="relative">
                   <Textarea
-                    placeholder="फंडिंग के उपयोग का विवरण..."
+                    placeholder="उदाहरण: नई मशीन खरीदना, कच्चा माल लाना, दुकान बड़ी करना..."
                     value={(answers.fundingUse as string) || ''}
                     onChange={(e) => updateAnswer('fundingUse', e.target.value)}
-                    className="min-h-[100px] bg-gray-50 border-gray-200 rounded-xl resize-none"
+                    className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
                   />
-                  <button className="absolute right-3 bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
-                    <Mic className="w-5 h-5 text-primary" />
+                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                    <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </button>
                 </div>
               </div>
