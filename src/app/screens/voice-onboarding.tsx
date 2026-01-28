@@ -33,6 +33,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   const playbackQueueRef = useRef<ArrayBuffer[]>([]);
   const isPlayingRef = useRef(false);
   const processedCallIdsRef = useRef<Set<string>>(new Set()); // Track processed function calls
+  const collectedFieldsRef = useRef<CollectedField[]>([]); // Ref to avoid stale closures
 
   // Field labels for display
   const fieldLabels: Record<string, string> = {
@@ -269,8 +270,8 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   const handleFieldUpdate = (field: string, value: string, callId: string) => {
     console.log("Updating field:", field, "=", value, "for call_id:", callId);
 
-    setCollectedFields(prev => {
-      // Update existing field or add new one
+    // Update both state and ref for immediate availability
+    const updateFields = (prev: CollectedField[]): CollectedField[] => {
       const existing = prev.findIndex(f => f.field === field);
       if (existing >= 0) {
         const updated = [...prev];
@@ -278,7 +279,14 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
         return updated;
       }
       return [...prev, { field, value, timestamp: new Date() }];
-    });
+    };
+
+    // Update ref immediately (for sync access in callbacks)
+    collectedFieldsRef.current = updateFields(collectedFieldsRef.current);
+    console.log("Current collected fields:", collectedFieldsRef.current);
+
+    // Update state (for UI re-render)
+    setCollectedFields(updateFields);
 
     // Send function call result back using the EXACT call_id from OpenAI
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -321,11 +329,23 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
     }
 
     try {
+      // Use ref to get current fields (avoids stale closure)
+      const currentFields = collectedFieldsRef.current;
+      console.log("Submitting fields:", currentFields);
+
       // Convert collected fields to voice_data format
       const voiceData: Record<string, string> = {};
-      collectedFields.forEach(f => {
+      currentFields.forEach(f => {
         voiceData[f.field] = f.value;
       });
+
+      console.log("Voice data payload:", voiceData);
+
+      if (Object.keys(voiceData).length === 0) {
+        setError("No data collected. Please complete the voice session first.");
+        setIsSubmitting(false);
+        return;
+      }
 
       // Submit to backend
       const result = await submitVoiceAgentData(phone, voiceData);
@@ -473,6 +493,11 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       disconnect();
     };
   }, []);
+
+  // Keep ref in sync with state to avoid stale closures
+  useEffect(() => {
+    collectedFieldsRef.current = collectedFields;
+  }, [collectedFields]);
 
   // Helper functions
   const float32ToPCM16 = (float32Array: Float32Array): Int16Array => {
