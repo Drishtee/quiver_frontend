@@ -45,67 +45,79 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
 
   return (
     <div className="bg-gradient-to-b from-green-50 to-white font-sans min-h-screen">
-      {/* Navigation */}
+      {/* Navigation - Mobile-first */}
       <nav
         id="header"
-        className="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-50"
+        className="bg-white shadow-sm py-3 px-4 flex justify-between items-center sticky top-0 z-50 md:py-4 md:px-6"
       >
         <div className="flex items-center">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-            <i className="fa-solid fa-seedling text-white text-xl"></i>
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3">
+            <i className="fa-solid fa-seedling text-white text-lg md:text-xl"></i>
           </div>
-          <span className="text-2xl font-display font-bold text-primary">Quiver</span>
+          <span className="text-xl md:text-2xl font-display font-bold text-primary">Quiver</span>
         </div>
-        <div className="flex items-center space-x-4">
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center space-x-4">
           <LanguageSelector variant="compact" />
           <button
             onClick={onLogin}
-            className="bg-white hover:bg-gray-50 text-primary font-medium py-2 px-6 rounded-full border-2 border-primary transition-colors"
+            className="bg-white hover:bg-gray-50 text-primary font-medium py-2 px-6 rounded-full border-2 border-primary transition-colors min-h-touch"
           >
             {t('landing.nav.login')}
           </button>
           <button
             onClick={() => setShowPhoneInput(true)}
-            className="bg-primary hover:bg-secondary text-white font-medium py-2 px-6 rounded-full transition-colors"
+            className="bg-primary hover:bg-secondary text-white font-medium py-2 px-6 rounded-full transition-colors min-h-touch"
           >
             {t('landing.nav.startGrowing')}
           </button>
         </div>
+        {/* Mobile nav - simplified */}
+        <div className="flex md:hidden items-center gap-2">
+          <LanguageSelector variant="compact" />
+          <button
+            onClick={onLogin}
+            className="text-primary font-medium text-sm min-h-touch min-w-touch flex items-center justify-center"
+          >
+            {t('landing.nav.login')}
+          </button>
+        </div>
       </nav>
 
-      {/* Hero Section */}
-      <section id="hero-section" className="relative px-6 py-16 overflow-hidden">
+      {/* Hero Section - Mobile-first */}
+      <section id="hero-section" className="relative px-4 py-8 overflow-hidden md:px-6 md:py-16">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
             {/* Left Column - Text Content */}
-            <div className="text-center lg:text-left">
-              <div className="inline-block bg-accent/20 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-6">
+            <div className="text-center lg:text-left order-2 lg:order-1">
+              <div className="inline-block bg-accent/20 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-semibold mb-4 md:mb-6">
                 <i className="fa-solid fa-handshake mr-2"></i>{t('landing.hero.badge')}
               </div>
-              <h1 className="text-5xl lg:text-6xl font-display font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
                 {t('landing.hero.title')}<br/>
                 <span className="text-primary">{t('landing.hero.titleHighlight')}</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-base md:text-xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
                 {t('landing.hero.subtitle')}
               </p>
-              <div className="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-gray-500">
-                <div className="flex items-center">
+              {/* Mobile: Stack features vertically */}
+              <div className="mt-6 md:mt-8 flex flex-col gap-2 md:flex-row md:items-center md:justify-center lg:justify-start md:space-x-6 text-sm text-gray-500">
+                <div className="flex items-center justify-center md:justify-start">
                   <i className="fa-solid fa-check-circle text-accent mr-2"></i>
                   <span>{t('landing.hero.features.simple')}</span>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center justify-center md:justify-start">
                   <i className="fa-solid fa-check-circle text-accent mr-2"></i>
                   <span>{t('landing.hero.features.noHidden')}</span>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center justify-center md:justify-start">
                   <i className="fa-solid fa-check-circle text-accent mr-2"></i>
                   <span>{t('landing.hero.features.yourControl')}</span>
                 </div>
               </div>
 
-              {/* Video Explainer */}
-              <div className="mt-8">
+              {/* Video Explainer - hidden on mobile for cleaner layout */}
+              <div className="hidden md:block mt-8">
                 <VideoExplainer
                   variant="modal"
                   videoId="dQw4w9WgXcQ"
@@ -114,14 +126,14 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               </div>
             </div>
 
-            {/* Right Column - Video Avatar Container */}
-            <div className="relative">
-              <div 
-                id="video-avatar-container" 
-                className="bg-white rounded-3xl shadow-2xl p-8 border-4 border-primary/20"
+            {/* Right Column - Video Avatar Container - Mobile-first */}
+            <div className="relative order-1 lg:order-2">
+              <div
+                id="video-avatar-container"
+                className="bg-white rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl p-4 md:p-8 border-2 md:border-4 border-primary/20"
               >
-                {/* Avatar Display Area */}
-                <div className="aspect-square bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl mb-6 flex items-center justify-center overflow-hidden relative">
+                {/* Avatar Display Area - Mobile optimized */}
+                <div className="aspect-square bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl md:rounded-2xl mb-4 md:mb-6 flex items-center justify-center overflow-hidden relative">
                   <div id="avatar-video" className="w-full h-full flex items-center justify-center">
                     {showPhoneInput ? (
                       <div className="text-center p-6 w-full">
@@ -214,22 +226,22 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                       <p className="text-gray-600">Voice or text — your choice, your language</p>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-4">
+                    {/* Action Buttons - Mobile-first touch targets */}
+                    <div className="flex flex-col gap-3 md:gap-4">
                       <button
                         id="start-voice-btn"
                         onClick={handleVoiceStart}
-                        className="bg-primary hover:bg-secondary text-white font-bold py-4 px-8 rounded-full text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center"
+                        className="bg-primary hover:bg-secondary active:bg-secondary/90 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 flex items-center justify-center min-h-[48px]"
                       >
-                        <i className="fa-solid fa-microphone mr-3 text-xl"></i>
+                        <i className="fa-solid fa-microphone mr-2 md:mr-3 text-lg md:text-xl"></i>
                         <span>Start Voice Conversation</span>
                       </button>
                       <button
                         id="start-text-btn"
                         onClick={handleTextStart}
-                        className="bg-white hover:bg-gray-50 text-primary font-semibold py-4 px-8 rounded-full text-lg border-2 border-primary transition-all flex items-center justify-center"
+                        className="bg-white hover:bg-gray-50 active:bg-gray-100 text-primary font-semibold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-lg border-2 border-primary transition-all flex items-center justify-center min-h-[48px]"
                       >
-                        <i className="fa-solid fa-comments mr-3 text-xl"></i>
+                        <i className="fa-solid fa-comments mr-2 md:mr-3 text-lg md:text-xl"></i>
                         <span>Chat with Text</span>
                       </button>
                     </div>
@@ -257,71 +269,71 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         </div>
       </section>
 
-      {/* What Quiver Does Section */}
-      <section id="what-quiver-does" className="py-20 px-6 bg-white">
+      {/* What Quiver Does Section - Mobile-first */}
+      <section id="what-quiver-does" className="py-12 px-4 md:py-20 md:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 md:mb-16">
+            <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900 mb-3 md:mb-4">
               What Quiver Does for You
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto">
               You don't get everything. You get what your business actually needs.
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Funding Card */}
-            <div 
-              id="funding-card" 
-              className="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border-2 border-green-100 hover:border-primary transition-all hover:shadow-xl"
+
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {/* Funding Card - Mobile-first */}
+            <div
+              id="funding-card"
+              className="bg-gradient-to-br from-green-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-green-100 hover:border-primary transition-all hover:shadow-xl"
             >
-              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-6">
-                <i className="fa-solid fa-coins text-white text-3xl"></i>
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-primary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
+                <i className="fa-solid fa-coins text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">Funding</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Funding</h3>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
                 Money to grow your business — only if you need it, only what you need.
               </p>
             </div>
 
-            {/* Mentorship Card */}
-            <div 
-              id="mentorship-card" 
-              className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border-2 border-blue-100 hover:border-primary transition-all hover:shadow-xl"
+            {/* Mentorship Card - Mobile-first */}
+            <div
+              id="mentorship-card"
+              className="bg-gradient-to-br from-blue-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-blue-100 hover:border-primary transition-all hover:shadow-xl"
             >
-              <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center mb-6">
-                <i className="fa-solid fa-user-tie text-white text-3xl"></i>
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-secondary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
+                <i className="fa-solid fa-user-tie text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">Mentorship</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Mentorship</h3>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
                 Guidance from experienced people who understand your challenges.
               </p>
             </div>
 
-            {/* Education Card */}
-            <div 
-              id="education-card" 
-              className="bg-gradient-to-br from-yellow-50 to-white p-8 rounded-2xl border-2 border-yellow-100 hover:border-primary transition-all hover:shadow-xl"
+            {/* Education Card - Mobile-first */}
+            <div
+              id="education-card"
+              className="bg-gradient-to-br from-yellow-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-yellow-100 hover:border-primary transition-all hover:shadow-xl"
             >
-              <div className="w-16 h-16 bg-warm rounded-2xl flex items-center justify-center mb-6">
-                <i className="fa-solid fa-graduation-cap text-white text-3xl"></i>
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-warm rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
+                <i className="fa-solid fa-graduation-cap text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">Education</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Education</h3>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
                 Learn new skills to run your business better and smarter.
               </p>
             </div>
 
-            {/* Tools Card */}
-            <div 
-              id="tools-card" 
-              className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border-2 border-orange-100 hover:border-primary transition-all hover:shadow-xl"
+            {/* Tools Card - Mobile-first */}
+            <div
+              id="tools-card"
+              className="bg-gradient-to-br from-orange-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-orange-100 hover:border-primary transition-all hover:shadow-xl"
             >
-              <div className="w-16 h-16 bg-earth rounded-2xl flex items-center justify-center mb-6">
-                <i className="fa-solid fa-toolbox text-white text-3xl"></i>
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-earth rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
+                <i className="fa-solid fa-toolbox text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">Tools & Support</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Tools & Support</h3>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
                 Practical help and tools to make your work easier every day.
               </p>
             </div>

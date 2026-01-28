@@ -116,34 +116,34 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
   const isValid = formData.fullName && formData.gender && formData.age && formData.education && formData.state && formData.district;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-20">
-      {/* Header */}
-      <header className="bg-white shadow-sm py-4 px-6 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+      {/* Header - Mobile-first */}
+      <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-            <User className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3">
+            <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
-          <span className="text-xl font-display font-bold text-primary">उद्यमी की जानकारी | Entrepreneur Profile</span>
+          <span className="text-base md:text-xl font-display font-bold text-primary truncate">उद्यमी की जानकारी | Entrepreneur Profile</span>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-6 py-8">
-        <div className="space-y-8">
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="space-y-6 md:space-y-8">
           {/* Progress */}
           <ProgressIndicator current={2} total={9} />
 
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-display font-bold text-gray-900">
+          <div className="text-center space-y-1 md:space-y-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">
               Section B: उद्यमी की जानकारी
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm md:text-base text-gray-600">
               Entrepreneur Profile | अपने बारे में बताएं
             </p>
           </div>
 
-          {/* Form Card */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-8 space-y-6">
+          {/* Form Card - Mobile-first */}
+          <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-lg p-4 md:p-8 space-y-5 md:space-y-6">
             {/* Full Name */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
@@ -288,20 +288,25 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
               />
             </div>
 
-            <Button
-              className="w-full h-14 bg-primary hover:bg-secondary text-lg font-semibold rounded-xl transition-all"
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              आगे बढ़ें | Continue
-            </Button>
+            {/* Submit Button - Mobile-first with sticky positioning on mobile */}
+            <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border">
+              <Button
+                className="w-full min-h-[52px] md:h-14 bg-primary hover:bg-secondary active:bg-secondary/90 text-base md:text-lg font-semibold rounded-xl transition-all"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                आगे बढ़ें | Continue
+              </Button>
+            </div>
           </div>
 
-          {/* AI Assistant */}
-          <AIAssistant
-            position="inline"
-            message="फॉर्म भरने में मदद चाहिए? बोलकर भी भर सकते हैं! | Need help? You can also speak to fill the form!"
-          />
+          {/* AI Assistant - Hidden on small mobile for cleaner UI */}
+          <div className="hidden sm:block">
+            <AIAssistant
+              position="inline"
+              message="फॉर्म भरने में मदद चाहिए? बोलकर भी भर सकते हैं! | Need help? You can also speak to fill the form!"
+            />
+          </div>
         </div>
       </main>
     </div>

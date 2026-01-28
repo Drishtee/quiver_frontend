@@ -53,31 +53,31 @@ export function ReviewSubmit({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-20">
-      {/* Header */}
-      <header className="bg-white shadow-sm py-4 px-6 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+      {/* Header - Mobile-first */}
+      <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-            <CheckCircle2 className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3">
+            <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
-          <span className="text-xl font-display font-bold text-primary">अंतिम पुष्टि | Final Confirmation</span>
+          <span className="text-base md:text-xl font-display font-bold text-primary">अंतिम पुष्टि | Final Confirmation</span>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-6 py-8">
-        <div className="space-y-8">
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-3xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="space-y-6 md:space-y-8">
           {/* Progress */}
           <ProgressIndicator current={9} total={9} />
 
-          <div className="text-center space-y-2">
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-10 h-10 text-white" />
+          <div className="text-center space-y-1 md:space-y-2">
+            <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-3 md:mb-4">
+              <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-display font-bold text-gray-900">
+            <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">
               Section I: अंतिम पुष्टि
             </h2>
-            <p className="text-gray-600">Final Confirmation | कृपया अपनी जानकारी की समीक्षा करें</p>
+            <p className="text-sm md:text-base text-gray-600">Final Confirmation | कृपया अपनी जानकारी की समीक्षा करें</p>
           </div>
 
           {/* Profile Summary */}
@@ -296,26 +296,28 @@ export function ReviewSubmit({
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="space-y-4">
+          {/* Submit Button - Sticky on mobile */}
+          <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border space-y-3 md:space-y-4">
             <Button
-              className="w-full h-16 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-lg font-display font-bold rounded-xl transition-all shadow-lg"
+              className="w-full min-h-[56px] md:h-16 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary active:opacity-90 text-base md:text-lg font-display font-bold rounded-xl transition-all shadow-lg"
               disabled={!declaration}
               onClick={onSubmit}
             >
               <Send className="w-5 h-5 mr-2" />
               जमा करें | Submit Application
             </Button>
-            <p className="text-xs text-center text-gray-500">
+            <p className="text-xs text-center text-gray-500 px-4">
               जमा करने के बाद Quiver की टीम आपसे संपर्क करेगी | After submission, the Quiver team will contact you
             </p>
           </div>
 
-          {/* AI Assistant */}
-          <AIAssistant
-            position="inline"
-            message="सब कुछ ठीक लग रहा है? जमा करने के लिए तैयार हैं! | Everything looks good? Ready to submit!"
-          />
+          {/* AI Assistant - Hidden on small mobile */}
+          <div className="hidden sm:block">
+            <AIAssistant
+              position="inline"
+              message="सब कुछ ठीक लग रहा है? जमा करने के लिए तैयार हैं! | Everything looks good? Ready to submit!"
+            />
+          </div>
         </div>
       </main>
     </div>

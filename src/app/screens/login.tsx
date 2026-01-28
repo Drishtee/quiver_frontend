@@ -63,31 +63,31 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-white">
-        <div className="max-w-md mx-auto px-6 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="p-2 -ml-2 hover:bg-gray-100 rounded-lg">
+    <div className="min-h-screen bg-background mobile-full-screen">
+      {/* Header - Mobile-first */}
+      <header className="border-b border-border bg-white sticky top-0 z-10">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3 md:px-6 md:py-4 md:gap-4">
+          <button onClick={onBack} className="p-2 -ml-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg min-h-touch min-w-touch flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-xl font-semibold text-foreground">Quiver</h1>
+            <h1 className="text-lg md:text-xl font-semibold text-foreground">Quiver</h1>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-md mx-auto px-6 py-12">
-        <div className="space-y-8">
-          {/* Welcome Section */}
-          <div className="text-center space-y-3">
-            <h2 className="text-3xl font-semibold text-foreground">
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-md mx-auto px-4 py-8 md:px-6 md:py-12">
+        <div className="space-y-6 md:space-y-8">
+          {/* Welcome Section - Mobile-first */}
+          <div className="text-center space-y-2 md:space-y-3">
+            <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
               Welcome Back
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground">
               {showOTP
                 ? `Enter the OTP sent to +91 ${phone}`
                 : "Log in to access your Quiver account"
@@ -95,8 +95,8 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
             </p>
           </div>
 
-          {/* Login Form */}
-          <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-6">
+          {/* Login Form - Mobile-first */}
+          <div className="bg-white rounded-xl md:rounded-2xl border border-border shadow-sm p-4 md:p-6 space-y-5 md:space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <p className="text-sm text-red-600">{error}</p>
@@ -105,45 +105,48 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
 
             {!showOTP ? (
               <>
-                {/* Phone Number Input */}
+                {/* Phone Number Input - Mobile-first touch targets */}
                 <div className="space-y-2">
                   <label className="text-sm text-foreground font-medium">
                     Mobile Number
                   </label>
                   <div className="flex gap-2">
-                    <div className="w-16 h-11 bg-input-background rounded-lg flex items-center justify-center border border-border">
+                    <div className="w-16 h-12 bg-input-background rounded-lg flex items-center justify-center border border-border">
                       <span className="text-sm text-muted-foreground">+91</span>
                     </div>
                     <Input
                       type="tel"
+                      inputMode="numeric"
                       placeholder="Enter your number"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="flex-1 h-11 bg-input-background border-border"
+                      className="flex-1 bg-input-background border-border"
                       maxLength={10}
                       disabled={isLoading}
+                      autoComplete="tel"
                     />
                   </div>
                 </div>
 
-                {/* Remember Me */}
-                <div className="flex items-center gap-3">
+                {/* Remember Me - Mobile-first touch targets */}
+                <div className="flex items-center gap-3 min-h-touch">
                   <Checkbox
                     id="remember"
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    className="w-5 h-5"
                   />
                   <label
                     htmlFor="remember"
-                    className="text-sm text-muted-foreground cursor-pointer"
+                    className="text-sm text-muted-foreground cursor-pointer flex-1"
                   >
                     Remember this device
                   </label>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit Button - Mobile-first */}
                 <Button
-                  className="w-full h-12 bg-primary hover:bg-primary/90"
+                  className="w-full min-h-[48px] bg-primary hover:bg-primary/90 active:bg-primary/80"
                   disabled={!phone || phone.length !== 10 || isLoading}
                   onClick={handlePhoneSubmit}
                 >

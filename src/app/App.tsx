@@ -23,7 +23,6 @@ import type { MeetingDetails } from "./screens/schedule-meeting";
 import { GoogleMeetMeeting } from "./screens/google-meet-meeting";
 import { ResumeJourneyModal } from "./components/resume-journey-modal";
 import { MeetingConfirmationModal } from "./components/meeting-confirmation-modal";
-import { AvatarContainer } from "./components/avatar/AvatarContainer";
 import { VoiceOnboarding } from "./screens/voice-onboarding";
 import { QuiverAIAssistant } from "./components/voice/QuiverAIAssistant";
 import type { ScreenType } from "../config/formFieldMappings";
@@ -90,9 +89,6 @@ export default function App() {
     type: string;
     meetLink: string;
   } | null>(null);
-
-  // Show AI avatar on certain screens
-  const showAvatar = ['consent', 'profile', 'industry', 'questionnaire', 'equity'].includes(currentScreen);
 
   // Show voice agent on onboarding screens
   const showVoiceAgent = ['consent', 'profile', 'industry', 'questionnaire', 'equity', 'schedule'].includes(currentScreen);
@@ -596,15 +592,6 @@ export default function App() {
             onboarding.setSessionId(newSessionId);
             setCurrentScreen("review");
           }}
-        />
-      )}
-
-      {/* AI Avatar - shown on onboarding screens */}
-      {showAvatar && (
-        <AvatarContainer
-          mode="floating"
-          currentScreen={currentScreen}
-          onMessage={(msg) => console.log('Avatar message:', msg)}
         />
       )}
 

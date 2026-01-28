@@ -161,36 +161,36 @@ export function EntrepreneurDashboard({
   const progressPercent = Math.round((completedMilestones / milestones.length) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50/50 to-white">
-      {/* Header */}
+    <div className="min-h-screen bg-gradient-to-b from-green-50/50 to-white pb-20 md:pb-0 mobile-full-screen">
+      {/* Header - Mobile-first */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-primary/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm">
-                <Handshake className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg md:rounded-xl flex items-center justify-center shadow-sm">
+                <Handshake className="w-4 h-4 md:w-5 md:h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-gray-900">Quiver</h1>
+                <h1 className="text-base md:text-lg font-bold text-gray-900">Quiver</h1>
                 <p className="text-xs text-muted-foreground -mt-0.5">{t('dashboard.title')}</p>
               </div>
             </div>
 
-            {/* Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            {/* Right Actions - Mobile optimized */}
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
               <LanguageSelector variant="compact" />
 
-              {/* Notifications */}
-              <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
+              {/* Notifications - Touch friendly */}
+              <button className="relative p-2 rounded-lg md:rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors min-h-touch min-w-touch flex items-center justify-center">
                 <Bell className="w-5 h-5 text-gray-600" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full"></span>
               </button>
 
-              {/* Schedule Button */}
+              {/* Schedule Button - Desktop only */}
               <Button
                 onClick={onScheduleMeeting}
-                className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm hidden sm:flex"
+                className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm hidden md:flex"
                 size="sm"
               >
                 <Plus className="w-4 h-4 mr-1.5" />
@@ -209,37 +209,37 @@ export function EntrepreneurDashboard({
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mb-6 md:mb-8">
+          <div className="flex flex-col gap-3 sm:gap-4">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                {t('dashboard.welcome')}, {userName.split(' ')[0]}! 👋
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                {t('dashboard.welcome')}, {userName.split(' ')[0]}!
               </h2>
-              <p className="text-muted-foreground mt-1">
-                {businessName} • Your growth journey is {progressPercent}% complete
+              <p className="text-sm md:text-base text-muted-foreground mt-1">
+                {businessName} • {progressPercent}% complete
               </p>
             </div>
 
-            {/* Mobile Schedule Button */}
+            {/* Mobile Schedule Button - Full width on mobile */}
             <Button
               onClick={onScheduleMeeting}
-              className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm sm:hidden w-full"
+              className="bg-primary hover:bg-primary/90 active:bg-primary/80 rounded-xl shadow-sm md:hidden w-full min-h-[48px]"
             >
               <Plus className="w-4 h-4 mr-2" />
               {t('dashboard.overview.scheduleMeeting')}
             </Button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="mt-4 bg-white rounded-2xl p-4 border border-primary/10 shadow-sm">
+          {/* Progress Bar - Compact on mobile */}
+          <div className="mt-4 bg-white rounded-xl md:rounded-2xl p-3 md:p-4 border border-primary/10 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Journey Progress</span>
-              <span className="text-sm font-bold text-primary">{progressPercent}%</span>
+              <span className="text-xs md:text-sm font-medium text-gray-700">Journey Progress</span>
+              <span className="text-xs md:text-sm font-bold text-primary">{progressPercent}%</span>
             </div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-1.5 md:h-2 bg-gray-100 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -248,49 +248,53 @@ export function EntrepreneurDashboard({
           </div>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white border border-primary/10 p-1 rounded-2xl shadow-sm w-full sm:w-auto">
-            <TabsTrigger
-              value="overview"
-              className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-6"
-            >
-              {t('dashboard.tabs.overview')}
-            </TabsTrigger>
-            <TabsTrigger
-              value="meetings"
-              className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-6"
-            >
-              {t('dashboard.tabs.meetings')}
-            </TabsTrigger>
-            <TabsTrigger
-              value="progress"
-              className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-6"
-            >
-              {t('dashboard.tabs.progress')}
-            </TabsTrigger>
-          </TabsList>
+        {/* Tabs - Mobile-first with horizontal scroll */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 md:space-y-6">
+          <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-hide scroll-momentum">
+            <TabsList className="bg-white border border-primary/10 p-1 rounded-xl md:rounded-2xl shadow-sm w-max sm:w-auto flex">
+              <TabsTrigger
+                value="overview"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+              >
+                {t('dashboard.tabs.overview')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="meetings"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+              >
+                {t('dashboard.tabs.meetings')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="progress"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+              >
+                {t('dashboard.tabs.progress')}
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {quickStats.map((stat, index) => (
-                <Card
-                  key={index}
-                  className="p-5 border-primary/10 hover:border-primary/20 transition-colors rounded-2xl shadow-sm"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-                      <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+          {/* Overview Tab - Mobile-first */}
+          <TabsContent value="overview" className="space-y-4 md:space-y-6">
+            {/* Quick Stats - Horizontal scroll on mobile */}
+            <div className="overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0 md:overflow-visible scrollbar-hide scroll-momentum">
+              <div className="flex gap-3 md:grid md:grid-cols-3 md:gap-4 min-w-max md:min-w-0">
+                {quickStats.map((stat, index) => (
+                  <Card
+                    key={index}
+                    className="p-4 md:p-5 border-primary/10 hover:border-primary/20 active:border-primary/30 transition-colors rounded-xl md:rounded-2xl shadow-sm min-w-[160px] md:min-w-0"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-xs md:text-sm text-muted-foreground mb-1">{stat.label}</p>
+                        <p className="text-2xl md:text-3xl font-bold text-gray-900">{stat.value}</p>
+                      </div>
+                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl ${stat.bgColor} flex items-center justify-center`}>
+                        <stat.icon className={`w-5 h-5 md:w-6 md:h-6 ${stat.iconColor}`} />
+                      </div>
                     </div>
-                    <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
-                      <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
-                    </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                ))}
+              </div>
             </div>
 
             {/* Next Meeting Card */}

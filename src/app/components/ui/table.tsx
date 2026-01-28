@@ -8,11 +8,20 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={cn(
+        // Mobile-first: Horizontal scroll with momentum scrolling
+        "relative w-full overflow-x-auto -mx-4 px-4",
+        "md:mx-0 md:px-0",
+        // Add scroll indicator shadow on mobile
+        "scroll-momentum"
+      )}
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn(
+          "w-full caption-bottom text-sm min-w-[600px] md:min-w-0",
+          className
+        )}
         {...props}
       />
     </div>
@@ -57,7 +66,8 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        // Mobile-first: Better touch feedback
+        "hover:bg-muted/50 active:bg-muted/70 data-[state=selected]:bg-muted border-b transition-colors",
         className,
       )}
       {...props}
@@ -70,7 +80,10 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        // Mobile-first: Smaller text and taller header for touch
+        "text-foreground h-12 px-3 text-left align-middle font-medium whitespace-nowrap text-xs",
+        "md:h-10 md:px-2 md:text-sm",
+        "[&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
       {...props}
@@ -83,7 +96,10 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        // Mobile-first: Larger cells with better touch targets
+        "p-3 align-middle whitespace-nowrap text-sm",
+        "md:p-2",
+        "[&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
       {...props}

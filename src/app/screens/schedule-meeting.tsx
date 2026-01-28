@@ -96,25 +96,25 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
   const isFormValid = selectedDate && selectedTime;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
+    <div className="min-h-screen bg-background pb-24 md:pb-20 mobile-full-screen">
+      {/* Header - Mobile-first */}
       <header className="border-b border-border bg-white sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="p-2 -ml-2 hover:bg-gray-100 rounded-lg">
+        <div className="max-w-4xl mx-auto px-4 py-3 md:px-6 md:py-4 flex items-center gap-3 md:gap-4">
+          <button onClick={onBack} className="p-2 -ml-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg min-h-touch min-w-touch flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
-          <h1 className="text-lg font-semibold text-foreground">Schedule Meeting with Quiver Team</h1>
+          <h1 className="text-base md:text-lg font-semibold text-foreground truncate">Schedule Meeting with Quiver Team</h1>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Calendar Section */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-primary" />
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-4xl mx-auto px-4 py-6 md:px-6 md:py-12">
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
+          {/* Calendar Section - Mobile-first */}
+          <div className="space-y-4 md:space-y-6">
+            <div className="bg-white rounded-xl md:rounded-2xl border border-border shadow-sm p-4 md:p-6">
+              <h3 className="font-semibold text-foreground mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
+                <CalendarIcon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                 Select Date
               </h3>
               <Calendar
@@ -122,43 +122,43 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
                 selected={selectedDate}
                 onSelect={setSelectedDate}
                 disabled={(date) => date < new Date()}
-                className="rounded-md border-0"
+                className="rounded-md border-0 w-full"
               />
             </div>
 
-            {/* Selected Date Display */}
+            {/* Selected Date Display - Compact on mobile */}
             {selectedDate && (
-              <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl border border-blue-100 p-6">
-                <h4 className="font-semibold text-foreground mb-2">Selected Date</h4>
-                <p className="text-2xl font-semibold text-primary">
-                  {selectedDate.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+              <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl md:rounded-2xl border border-blue-100 p-4 md:p-6">
+                <h4 className="font-semibold text-foreground mb-1 md:mb-2 text-sm md:text-base">Selected Date</h4>
+                <p className="text-lg md:text-2xl font-semibold text-primary">
+                  {selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   })}
                 </p>
               </div>
             )}
           </div>
 
-          {/* Meeting Details Section */}
-          <div className="space-y-6">
-            {/* Time Slot Selection */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
-              <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <Clock className="w-5 h-5 text-primary" />
+          {/* Meeting Details Section - Mobile-first */}
+          <div className="space-y-4 md:space-y-6">
+            {/* Time Slot Selection - Touch-friendly */}
+            <div className="bg-white rounded-xl md:rounded-2xl border border-border shadow-sm p-4 md:p-6 space-y-3 md:space-y-4">
+              <h3 className="font-semibold text-foreground flex items-center gap-2 text-sm md:text-base">
+                <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                 Select Time Slot
               </h3>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 {timeSlots.map((time) => (
                   <button
                     key={time}
                     onClick={() => setSelectedTime(time)}
-                    className={`h-12 rounded-lg border-2 transition-all ${
+                    className={`min-h-[48px] md:h-12 rounded-lg border-2 transition-all text-sm md:text-base font-medium ${
                       selectedTime === time
-                        ? "border-primary bg-blue-50 text-primary font-medium"
-                        : "border-border hover:border-gray-300 text-foreground"
+                        ? "border-primary bg-blue-50 text-primary"
+                        : "border-border hover:border-gray-300 active:border-primary/50 text-foreground"
                     }`}
                   >
                     {time}
@@ -243,24 +243,26 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
               />
             </div>
 
-            {/* Schedule Button */}
-            <Button
-              className="w-full h-12 bg-primary hover:bg-primary/90"
-              disabled={!isFormValid || isScheduling}
-              onClick={handleSchedule}
-            >
-              {isScheduling ? (
-                <>
-                  <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Scheduling...
-                </>
-              ) : (
-                <>
-                  <CalendarIcon className="w-4 h-4 mr-2" />
-                  Schedule Meeting
-                </>
-              )}
-            </Button>
+            {/* Schedule Button - Sticky on mobile */}
+            <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border">
+              <Button
+                className="w-full min-h-[52px] md:h-12 bg-primary hover:bg-primary/90 active:bg-primary/80"
+                disabled={!isFormValid || isScheduling}
+                onClick={handleSchedule}
+              >
+                {isScheduling ? (
+                  <>
+                    <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Scheduling...
+                  </>
+                ) : (
+                  <>
+                    <CalendarIcon className="w-4 h-4 mr-2" />
+                    Schedule Meeting
+                  </>
+                )}
+              </Button>
+            </div>
 
             {/* Info Box */}
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-100 space-y-2">

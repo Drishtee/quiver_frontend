@@ -118,42 +118,42 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-20">
-      {/* Header */}
-      <header className="bg-white shadow-sm py-4 px-6 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-              <Briefcase className="w-5 h-5 text-white" />
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+      {/* Header - Mobile-first */}
+      <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center min-w-0">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+              <Briefcase className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
-            <span className="text-xl font-display font-bold text-primary">व्यवसाय विवरण | Business Details</span>
+            <span className="text-base md:text-xl font-display font-bold text-primary truncate">व्यवसाय विवरण | Business Details</span>
           </div>
           {autoSaved && (
-            <div className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full">
+            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full flex-shrink-0">
               <Save className="w-3 h-3" />
-              <span>Auto-saved</span>
+              <span className="hidden xs:inline">Auto-saved</span>
             </div>
           )}
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-6 py-8">
-        <div className="space-y-6">
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="space-y-5 md:space-y-6">
           {/* Progress */}
           <ProgressIndicator current={progressBase + sectionIndex} total={9} />
 
-          {/* Section Tabs */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          {/* Section Tabs - Horizontally scrollable on mobile */}
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide scroll-momentum">
             {sections.map((section, idx) => (
               <button
                 key={section.id}
                 onClick={() => idx <= sectionIndex && setCurrentSection(section.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-2 md:px-4 rounded-lg text-sm font-medium whitespace-nowrap transition-all min-h-touch flex items-center ${
                   section.id === currentSection
                     ? 'bg-primary text-white'
                     : idx <= sectionIndex
-                      ? 'bg-green-100 text-primary hover:bg-green-200'
+                      ? 'bg-green-100 text-primary hover:bg-green-200 active:bg-green-300'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -164,10 +164,10 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
 
           {/* Section Title */}
           <div className="text-center space-y-1">
-            <h2 className="text-2xl font-display font-bold text-gray-900">
+            <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">
               Section {currentSection}: {sections[sectionIndex].title}
             </h2>
-            <p className="text-gray-600">{sections[sectionIndex].titleEn}</p>
+            <p className="text-sm md:text-base text-gray-600">{sections[sectionIndex].titleEn}</p>
           </div>
 
           {/* Section D: Product, Market & Dependency */}
@@ -871,33 +871,37 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
             </div>
           )}
 
-          {/* Navigation */}
-          <div className="flex gap-3">
-            {sectionIndex > 0 && (
+          {/* Navigation - Mobile-first sticky at bottom */}
+          <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border">
+            <div className="flex gap-3">
+              {sectionIndex > 0 && (
+                <Button
+                  variant="outline"
+                  className="flex-1 min-h-[52px] md:h-14 border-gray-300 text-gray-700 rounded-xl"
+                  onClick={handleBack}
+                >
+                  <ChevronLeft className="w-5 h-5 mr-1 md:mr-2" />
+                  <span className="hidden xs:inline">पीछे |</span> Back
+                </Button>
+              )}
               <Button
-                variant="outline"
-                className="flex-1 h-14 border-gray-300 text-gray-700 rounded-xl"
-                onClick={handleBack}
+                className="flex-1 min-h-[52px] md:h-14 bg-primary hover:bg-secondary active:bg-secondary/90 text-base md:text-lg font-semibold rounded-xl transition-all"
+                onClick={handleNext}
+                disabled={!canProceed()}
               >
-                <ChevronLeft className="w-5 h-5 mr-2" />
-                पीछे | Back
+                {currentSection === 'G' ? 'आगे बढ़ें | Continue' : 'अगला | Next'}
+                <ChevronRight className="w-5 h-5 ml-1 md:ml-2" />
               </Button>
-            )}
-            <Button
-              className="flex-1 h-14 bg-primary hover:bg-secondary text-lg font-semibold rounded-xl transition-all"
-              onClick={handleNext}
-              disabled={!canProceed()}
-            >
-              {currentSection === 'G' ? 'आगे बढ़ें | Continue' : 'अगला | Next'}
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </Button>
+            </div>
           </div>
 
-          {/* AI Assistant */}
-          <AIAssistant
-            position="inline"
-            message="सवालों में मदद चाहिए? बोलकर भी जवाब दे सकते हैं! | Need help? You can also speak to answer!"
-          />
+          {/* AI Assistant - Hidden on small mobile */}
+          <div className="hidden sm:block">
+            <AIAssistant
+              position="inline"
+              message="सवालों में मदद चाहिए? बोलकर भी जवाब दे सकते हैं! | Need help? You can also speak to answer!"
+            />
+          </div>
         </div>
       </main>
     </div>
