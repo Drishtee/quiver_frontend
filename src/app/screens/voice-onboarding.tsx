@@ -15,7 +15,16 @@ interface CollectedField {
   timestamp: Date;
 }
 
+interface SavedSession {
+  fields: CollectedField[];
+  transcript: string[];
+  savedAt: string;
+}
+
 type ConnectionStatus = "disconnected" | "connecting" | "connected" | "error";
+
+// Storage key for persisting session data
+const getStorageKey = (phone: string) => `voice_onboarding_${phone}`;
 
 export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingProps) {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
@@ -25,6 +34,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   const [collectedFields, setCollectedFields] = useState<CollectedField[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasRestoredSession, setHasRestoredSession] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -350,6 +360,14 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       // Submit to backend
       const result = await submitVoiceAgentData(phone, voiceData);
 
+      // Clear saved session from localStorage on success
+      try {
+        localStorage.removeItem(getStorageKey(phone));
+        console.log("Cleared saved voice session after successful submit");
+      } catch (e) {
+        console.error("Failed to clear saved session:", e);
+      }
+
       // Close connection
       disconnect();
 
@@ -478,6 +496,19 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
     setConnectionStatus("disconnected");
   };
 
+  const clearSavedSession = () => {
+    try {
+      localStorage.removeItem(getStorageKey(phone));
+      setCollectedFields([]);
+      collectedFieldsRef.current = [];
+      setTranscript([]);
+      setHasRestoredSession(false);
+      console.log("Cleared saved voice session");
+    } catch (e) {
+      console.error("Failed to clear saved session:", e);
+    }
+  };
+
   const toggleMute = () => {
     setIsMuted(!isMuted);
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -493,6 +524,49 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       disconnect();
     };
   }, []);
+
+  // Load saved session on mount
+  useEffect(() => {
+    const storageKey = getStorageKey(phone);
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        const session: SavedSession = JSON.parse(saved);
+        // Convert timestamp strings back to Date objects
+        const restoredFields = session.fields.map(f => ({
+          ...f,
+          timestamp: new Date(f.timestamp)
+        }));
+
+        setCollectedFields(restoredFields);
+        collectedFieldsRef.current = restoredFields;
+        setTranscript(session.transcript || []);
+        setHasRestoredSession(true);
+
+        console.log("Restored voice session:", restoredFields.length, "fields");
+      }
+    } catch (e) {
+      console.error("Failed to restore voice session:", e);
+    }
+  }, [phone]);
+
+  // Save session to localStorage when fields or transcript change
+  useEffect(() => {
+    if (collectedFields.length > 0 || transcript.length > 0) {
+      const storageKey = getStorageKey(phone);
+      const session: SavedSession = {
+        fields: collectedFields,
+        transcript: transcript,
+        savedAt: new Date().toISOString()
+      };
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(session));
+        console.log("Saved voice session:", collectedFields.length, "fields");
+      } catch (e) {
+        console.error("Failed to save voice session:", e);
+      }
+    }
+  }, [collectedFields, transcript, phone]);
 
   // Keep ref in sync with state to avoid stale closures
   useEffect(() => {
@@ -578,6 +652,27 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
                 </div>
               )}
 
+              {/* Restored Session Notice */}
+              {hasRestoredSession && collectedFields.length > 0 && connectionStatus === "disconnected" && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm text-blue-700 font-medium">Previous session restored</p>
+                      <p className="text-xs text-blue-600 mt-1">
+                        {collectedFields.length} field(s) recovered. Continue where you left off or start fresh.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={clearSavedSession}
+                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Clear & Start Fresh
+                  </button>
+                </div>
+              )}
+
               {/* Controls */}
               <div className="flex items-center justify-center gap-4">
                 {connectionStatus === "disconnected" || connectionStatus === "error" ? (
@@ -586,7 +681,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
                     className="h-14 px-8 bg-primary hover:bg-primary/90"
                   >
                     <Mic className="w-5 h-5 mr-2" />
-                    Start Voice Onboarding
+                    {hasRestoredSession && collectedFields.length > 0 ? "Continue Session" : "Start Voice Onboarding"}
                   </Button>
                 ) : connectionStatus === "connecting" ? (
                   <Button disabled className="h-14 px-8">

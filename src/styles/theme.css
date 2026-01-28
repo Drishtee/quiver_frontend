@@ -122,43 +122,101 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Prevent text size adjustment on orientation change */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html {
+    font-size: var(--font-size);
+    /* Smooth scrolling for better mobile experience */
+    scroll-behavior: smooth;
+    /* Prevent pull-to-refresh on mobile */
+    overscroll-behavior: none;
   }
 
   body {
     @apply bg-background text-foreground;
+    /* Safe area padding for notched devices */
+    padding-top: env(safe-area-inset-top);
+    /* Prevent body scroll when modal is open */
+    touch-action: manipulation;
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Mobile-first: Prevent zoom on input focus (iOS) */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 768px) {
+    input,
+    textarea,
+    select {
+      font-size: inherit !important;
+    }
   }
 
   /**
   * Default typography styles for HTML elements (h1-h4, p, label, button, input).
   * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  * Mobile-first approach: Start with mobile sizes, scale up for larger screens.
   */
 
-  html {
-    font-size: var(--font-size);
+  h1 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.3;
   }
 
-  h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+  @media (min-width: 768px) {
+    h1 {
+      font-size: var(--text-2xl);
+      line-height: 1.5;
+    }
   }
 
   h2 {
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 768px) {
+    h2 {
+      font-size: var(--text-xl);
+      line-height: 1.5;
+    }
   }
 
   h3 {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 768px) {
+    h3 {
+      font-size: var(--text-lg);
+      line-height: 1.5;
+    }
   }
 
   h4 {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 768px) {
+    h4 {
+      font-size: var(--text-base);
+      line-height: 1.5;
+    }
   }
 
   label {
@@ -171,11 +229,104 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    /* Prevent double-tap zoom on buttons */
+    touch-action: manipulation;
   }
 
   input {
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+
+  /* Touch target utilities */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .touch-target-lg {
+    min-height: 56px;
+    min-width: 56px;
+  }
+
+  /* Safe area utilities */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .p-safe {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Improved tap highlight for mobile */
+  a,
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"] {
+    -webkit-tap-highlight-color: rgba(45, 106, 79, 0.1);
+  }
+
+  /* Prevent text selection on interactive elements */
+  button,
+  [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Mobile-first scrollbar styling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth momentum scrolling for iOS */
+  .scroll-momentum {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile navigation bottom padding helper */
+  .has-bottom-nav {
+    padding-bottom: 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .has-bottom-nav {
+      padding-bottom: 0;
+    }
+  }
+
+  /* Full-screen mobile utility */
+  .mobile-full-screen {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+  }
+
+  /* Keyboard-aware layout helper */
+  @supports (height: 100dvh) {
+    .keyboard-aware {
+      min-height: 100dvh;
+    }
   }
 }
