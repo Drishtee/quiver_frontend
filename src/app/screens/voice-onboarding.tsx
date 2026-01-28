@@ -54,19 +54,36 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
     setError(null);
 
     try {
-      // Get ephemeral token from backend
-      const tokenData = await getVoiceAgentToken();
-      const config = await getVoiceAgentConfig();
+      // Check for direct API key (like QuiverAIAssistant does)
+      const directApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      const model = import.meta.env.VITE_OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17';
 
-      // Connect to OpenAI Realtime API with ephemeral token
-      // Try passing token via URL parameter as alternative
-      const wsUrl = `${tokenData.websocket_url}?model=${tokenData.model}`;
-      console.log("Connecting to:", wsUrl, "with token:", tokenData.token.substring(0, 20) + "...");
+      let token: string;
+      let config: any;
+      let wsUrl: string;
 
-      // Subprotocol auth with ephemeral token
+      if (directApiKey) {
+        // Use direct API key (same as QuiverAIAssistant)
+        console.log("Using direct API key from VITE_OPENAI_API_KEY");
+        token = directApiKey;
+        wsUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
+        config = await getVoiceAgentConfig();
+      } else {
+        // Use backend ephemeral token
+        console.log("Fetching ephemeral token from backend");
+        const tokenData = await getVoiceAgentToken();
+        config = await getVoiceAgentConfig();
+        token = tokenData.token;
+        wsUrl = `${tokenData.websocket_url}?model=${tokenData.model}`;
+      }
+
+      console.log("Connecting to:", wsUrl, "with token type:", token.startsWith('sk-') ? 'API_KEY' : 'EPHEMERAL', "prefix:", token.substring(0, 15) + "...");
+
+      // Subprotocol auth - include 'realtime' protocol
       const ws = new WebSocket(wsUrl, [
-        "openai-beta.realtime-v1",
-        `openai-insecure-api-key.${tokenData.token}`
+        "realtime",
+        `openai-insecure-api-key.${token}`,
+        "openai-beta.realtime-v1"
       ]);
       wsRef.current = ws;
 
