@@ -201,16 +201,30 @@ export default function App() {
       // Route based on onboarding status
       if (onboarding_completed) {
         console.log('User has completed onboarding, going to dashboard');
+        // Clear any stale local data
+        onboardingStorage.clear();
         setCurrentScreen("dashboard");
       } else {
-        // Check for saved progress first
+        // Check for saved progress - but only for the SAME phone number
         const savedData = onboardingStorage.getData();
+        const isSamePhone = savedData.phone === phone;
+
+        // If different phone number, clear old data
+        if (!isSamePhone && savedData.phone) {
+          console.log('Different phone number detected, clearing old data');
+          onboardingStorage.clear();
+        }
+
         const startResponse = await startOnboarding();
         setSessionId(startResponse.session_id);
         onboarding.setSessionId(startResponse.session_id);
 
-        // If user has saved progress beyond consent, resume from there
-        if (savedData.currentStep > 0 && savedData.completedSteps.length > 0) {
+        // Save phone number for future checks
+        onboardingStorage.setPhone(phone);
+        onboardingStorage.setSessionId(startResponse.session_id);
+
+        // If same phone and has saved progress beyond consent, resume from there
+        if (isSamePhone && savedData.currentStep > 0 && savedData.completedSteps.length > 0) {
           console.log('Resuming onboarding from step:', savedData.currentStep);
           const stepScreenMap: Record<number, Screen> = {
             0: 'consent',
@@ -419,19 +433,32 @@ export default function App() {
     if (onboarding_completed) {
       // User has completed onboarding → Dashboard
       console.log('User has completed onboarding, going to dashboard');
+      // Clear any stale local data
+      onboardingStorage.clear();
       setCurrentScreen("dashboard");
     } else {
-      // Check for saved progress first
+      // Check for saved progress - but only for the SAME phone number
       const savedData = onboardingStorage.getData();
-      console.log('Saved progress:', savedData);
+      const isSamePhone = savedData.phone === data.phone;
+      console.log('Saved progress:', savedData, 'Same phone:', isSamePhone);
+
+      // If different phone number, clear old data
+      if (!isSamePhone && savedData.phone) {
+        console.log('Different phone number detected, clearing old data');
+        onboardingStorage.clear();
+      }
 
       try {
         const startResponse = await startOnboarding();
         setSessionId(startResponse.session_id);
         onboarding.setSessionId(startResponse.session_id);
 
-        // If user has saved progress beyond consent, resume from there
-        if (savedData.currentStep > 0 && savedData.completedSteps.length > 0) {
+        // Save phone number for future checks
+        onboardingStorage.setPhone(data.phone);
+        onboardingStorage.setSessionId(startResponse.session_id);
+
+        // If same phone and has saved progress beyond consent, resume from there
+        if (isSamePhone && savedData.currentStep > 0 && savedData.completedSteps.length > 0) {
           console.log('Resuming onboarding from step:', savedData.currentStep);
           const stepScreenMap: Record<number, Screen> = {
             0: 'consent',

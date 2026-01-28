@@ -3,6 +3,7 @@
 const STORAGE_PREFIX = 'quiver_';
 
 export interface StoredOnboardingData {
+  phone: string | null;  // Track which phone number this data belongs to
   sessionId: string | null;
   currentStep: number;
   completedSteps: number[];
@@ -70,6 +71,7 @@ export const onboardingStorage = {
   // Default onboarding state
   getDefaultData(): StoredOnboardingData {
     return {
+      phone: null,
       sessionId: null,
       currentStep: 0,
       completedSteps: [],
@@ -78,6 +80,17 @@ export const onboardingStorage = {
       consentGiven: false,
       consentTimestamp: null
     };
+  },
+
+  // Set phone number for this onboarding session
+  setPhone(phone: string): boolean {
+    return this.saveData({ phone });
+  },
+
+  // Check if data belongs to a specific phone number
+  isForPhone(phone: string): boolean {
+    const data = this.getData();
+    return data.phone === phone;
   },
 
   // Get full onboarding data

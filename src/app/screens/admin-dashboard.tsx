@@ -72,14 +72,18 @@ interface Entrepreneur {
   status: string;
   phone: string;
   name: string;
+  email?: string;
+  gender?: string;
+  age?: string;
+  education?: string;
   business_name: string;
   business_type: string;
   state: string;
   district: string;
+  year_started?: string;
+  ownership_type?: string;
+  role?: string;
   created_at: string;
-  email?: string;
-  gender?: string;
-  age?: string;
 }
 
 interface AudioRecord {
@@ -147,6 +151,8 @@ const INDUSTRIES = [
 
 export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
+  const [isAuthorized, setIsAuthorized] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   // Metrics state
   const [metrics, setMetrics] = useState<Metrics | null>(null);
@@ -160,6 +166,7 @@ export function AdminDashboard() {
   const [entrepreneursPage, setEntrepreneursPage] = useState(1);
   const [totalEntrepreneurs, setTotalEntrepreneurs] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -202,23 +209,47 @@ export function AdminDashboard() {
   const fetchMetrics = useCallback(async () => {
     setLoadingMetrics(true);
     try {
+      console.log('Fetching admin metrics...');
+      console.log('API URL:', API_URL);
+      console.log('Access token present:', !!localStorage.getItem('access_token'));
+
       const [metricsRes, funnelRes, breakdownRes] = await Promise.all([
         fetch(`${API_URL}/onboarding/admin/metrics/`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/onboarding/admin/funnel/`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/onboarding/admin/breakdown/`, { headers: getAuthHeaders() })
       ]);
 
+      console.log('Metrics response:', metricsRes.status);
+      console.log('Funnel response:', funnelRes.status);
+      console.log('Breakdown response:', breakdownRes.status);
+
+      // Check for authorization errors
+      if (metricsRes.status === 403 || funnelRes.status === 403 || breakdownRes.status === 403) {
+        setIsAuthorized(false);
+        setAuthError('You need admin access to view this dashboard. Please contact an administrator to get admin privileges.');
+        return;
+      }
+
       if (metricsRes.ok) {
         const data = await metricsRes.json();
+        console.log('Metrics data:', data);
         setMetrics(data);
+      } else {
+        console.error('Metrics error:', await metricsRes.json().catch(() => ({})));
       }
       if (funnelRes.ok) {
         const data = await funnelRes.json();
+        console.log('Funnel data:', data);
         setFunnel(data.funnel);
+      } else {
+        console.error('Funnel error:', await funnelRes.json().catch(() => ({})));
       }
       if (breakdownRes.ok) {
         const data = await breakdownRes.json();
+        console.log('Breakdown data:', data);
         setBreakdown(data);
+      } else {
+        console.error('Breakdown error:', await breakdownRes.json().catch(() => ({})));
       }
     } catch (error) {
       console.error('Failed to fetch metrics:', error);
@@ -230,6 +261,7 @@ export function AdminDashboard() {
   // Fetch entrepreneurs
   const fetchEntrepreneurs = useCallback(async () => {
     setLoadingEntrepreneurs(true);
+    setFetchError(null);
     try {
       const params = new URLSearchParams({
         page: entrepreneursPage.toString(),
@@ -239,19 +271,30 @@ export function AdminDashboard() {
       if (industryFilter !== 'all') params.append('industry', industryFilter);
       if (stateFilter !== 'all') params.append('state', stateFilter);
 
+      console.log('Fetching entrepreneurs with params:', params.toString());
+      console.log('Auth headers:', getAuthHeaders());
+
       const response = await fetch(
         `${API_URL}/onboarding/admin/entrepreneurs/?${params}`,
         { headers: getAuthHeaders() }
       );
 
+      console.log('Response status:', response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log('Entrepreneurs data:', data);
         setEntrepreneurs(data.entrepreneurs || []);
         setTotalEntrepreneurs(data.total || 0);
         setTotalPages(data.total_pages || 1);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Failed to fetch entrepreneurs:', response.status, errorData);
+        setFetchError(`Error ${response.status}: ${errorData.error || 'Failed to load entrepreneurs'}`);
       }
     } catch (error) {
       console.error('Failed to fetch entrepreneurs:', error);
+      setFetchError(error instanceof Error ? error.message : 'Network error');
     } finally {
       setLoadingEntrepreneurs(false);
     }
@@ -480,6 +523,31 @@ export function AdminDashboard() {
       )}
     </div>
   );
+
+  // Show authorization error
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
+            <X className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600 mb-6">{authError}</p>
+          <p className="text-sm text-gray-500 mb-4">
+            To grant admin access, run this command in Django shell:
+          </p>
+          <code className="block bg-gray-100 p-3 rounded-lg text-sm text-left mb-6 overflow-x-auto">
+            User.objects.filter(phone='YOUR_PHONE').update(is_staff=True)
+          </code>
+          <Button onClick={() => window.location.reload()} className="w-full">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -760,11 +828,27 @@ export function AdminDashboard() {
                   <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
                   <p className="text-gray-500">Loading entrepreneurs...</p>
                 </div>
+              ) : fetchError ? (
+                <div className="p-12 text-center">
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+                    <X className="w-6 h-6 text-red-500" />
+                  </div>
+                  <p className="text-lg font-medium text-gray-900 mb-2">Failed to load entrepreneurs</p>
+                  <p className="text-red-500 mb-4">{fetchError}</p>
+                  <Button onClick={fetchEntrepreneurs} variant="outline">
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Try Again
+                  </Button>
+                </div>
               ) : filteredEntrepreneurs.length === 0 ? (
                 <div className="p-12 text-center">
                   <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                   <p className="text-lg font-medium text-gray-900 mb-2">No entrepreneurs found</p>
-                  <p className="text-gray-500">Try adjusting your filters</p>
+                  <p className="text-gray-500">
+                    {totalEntrepreneurs === 0
+                      ? "No entrepreneurs have registered yet"
+                      : "Try adjusting your filters"}
+                  </p>
                 </div>
               ) : (
                 <>
