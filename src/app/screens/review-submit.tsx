@@ -24,6 +24,7 @@ interface ReviewSubmitProps {
   equityAnswer: string;
   onEdit: (section: string) => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
 }
 
 export function ReviewSubmit({
@@ -32,7 +33,8 @@ export function ReviewSubmit({
   businessAnswers,
   equityAnswer,
   onEdit,
-  onSubmit
+  onSubmit,
+  isSubmitting = false
 }: ReviewSubmitProps) {
   const [declaration, setDeclaration] = useState(false);
 
@@ -299,12 +301,21 @@ export function ReviewSubmit({
           {/* Submit Button - Sticky on mobile */}
           <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border space-y-3 md:space-y-4">
             <Button
-              className="w-full min-h-[56px] md:h-16 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary active:opacity-90 text-base md:text-lg font-display font-bold rounded-xl transition-all shadow-lg"
-              disabled={!declaration}
+              className="w-full min-h-[56px] md:h-16 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary active:opacity-90 text-base md:text-lg font-display font-bold rounded-xl transition-all shadow-lg disabled:opacity-50"
+              disabled={!declaration || isSubmitting}
               onClick={onSubmit}
             >
-              <Send className="w-5 h-5 mr-2" />
-              जमा करें | Submit Application
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  जमा हो रहा है... | Submitting...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5 mr-2" />
+                  जमा करें | Submit Application
+                </>
+              )}
             </Button>
             <p className="text-xs text-center text-gray-500 px-4">
               जमा करने के बाद Quiver की टीम आपसे संपर्क करेगी | After submission, the Quiver team will contact you

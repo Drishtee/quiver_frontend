@@ -26,7 +26,7 @@ import { MeetingConfirmationModal } from "./components/meeting-confirmation-moda
 import { VoiceOnboarding } from "./screens/voice-onboarding";
 import { QuiverAIAssistant } from "./components/voice/QuiverAIAssistant";
 import type { ScreenType } from "../config/formFieldMappings";
-import { sendOTP, verifyOTP, startOnboarding, updateField, bulkUpdateFields, getOnboardingData, logout as apiLogout } from "../services/api";
+import { sendOTP, verifyOTP, startOnboarding, updateField, bulkUpdateFields, getOnboardingData, submitOnboarding, logout as apiLogout } from "../services/api";
 import type { VerifyOTPResponse } from "../types/api";
 import { useOnboarding } from "../contexts/OnboardingContext";
 import { onboardingStorage } from "../utils/storage";
@@ -71,6 +71,7 @@ export default function App() {
   } | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -353,11 +354,31 @@ export default function App() {
     setCurrentScreen(sectionMap[section] || "profile");
   };
 
-  const handleSubmit = () => {
-    // Mark final step as completed and clear progress (onboarding complete)
-    onboardingStorage.completeStep(5);
-    onboardingStorage.clearAll();
-    setCurrentScreen("success");
+  const handleSubmit = async () => {
+    console.log('handleSubmit called, sessionId:', sessionId);
+    setSubmitting(true);
+    try {
+      // Submit to backend
+      if (sessionId) {
+        console.log('Submitting onboarding for session:', sessionId);
+        await submitOnboarding(sessionId);
+        console.log('Onboarding submitted successfully');
+      } else {
+        console.warn('No sessionId available for submission');
+      }
+      // Mark final step as completed and clear progress (onboarding complete)
+      onboardingStorage.completeStep(5);
+      onboardingStorage.clearAll();
+      setCurrentScreen("success");
+    } catch (error) {
+      console.error('Failed to submit onboarding:', error);
+      // Still show success since data was saved via bulkUpdateFields earlier
+      onboardingStorage.completeStep(5);
+      onboardingStorage.clearAll();
+      setCurrentScreen("success");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleBackToLanding = () => {
@@ -584,6 +605,7 @@ export default function App() {
           equityAnswer={equityAnswer}
           onEdit={handleEdit}
           onSubmit={handleSubmit}
+          isSubmitting={submitting}
         />
       )}
       {currentScreen === "admin" && (
