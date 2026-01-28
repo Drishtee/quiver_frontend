@@ -267,26 +267,21 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
 
       console.log('Quiver Voice: Token valid, length:', token.length, 'prefix:', token.substring(0, 30));
 
-      // Connect to Realtime API via WebSocket
-      // Note: Do NOT use subprotocols for ephemeral tokens - use session.auth message instead
+      // Connect to Realtime API via WebSocket with subprotocol authentication
+      // Ephemeral tokens (ek_...) work like short-lived API keys
       const wsUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
       console.log('Quiver Voice: Connecting to:', wsUrl);
 
-      const ws = new WebSocket(wsUrl);
+      const ws = new WebSocket(wsUrl, [
+        `openai-insecure-api-key.${token}`,
+        'openai-beta.realtime-v1'
+      ]);
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('Quiver Voice: WebSocket connected, sending auth...');
+        console.log('Quiver Voice: WebSocket connected with subprotocol auth');
 
-        // IMPORTANT: For ephemeral tokens, send authentication via session.auth message
-        // This is different from direct API keys which use subprotocols
-        ws.send(JSON.stringify({
-          type: 'session.auth',
-          client_secret: token
-        }));
-        console.log('Quiver Voice: Auth message sent');
-
-        // Send session configuration
+        // Send session configuration (auth handled by subprotocol)
         ws.send(JSON.stringify({
           type: 'session.update',
           session: {
