@@ -107,13 +107,83 @@ export default function App() {
     return screenMap[currentScreen];
   };
 
-  // Debug: Monitor screen changes
+  // Debug: Monitor screen changes and update URL
   useEffect(() => {
     console.log('>>> Screen changed to:', currentScreen);
+    // Update URL to reflect current screen (without page reload)
+    const screenToPath: Record<string, string> = {
+      'landing': '/',
+      'admin': '/admin',
+      'dashboard': '/dashboard',
+      'login': '/login',
+      'schedule': '/schedule'
+    };
+    const path = screenToPath[currentScreen];
+    if (path && window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
   }, [currentScreen]);
+
+  // Handle URL-based routing on mount and browser back/forward
+  useEffect(() => {
+    const handleRoute = () => {
+      const path = window.location.pathname;
+      console.log('Routing based on path:', path);
+
+      // Direct routes that don't require auth check
+      if (path === '/admin') {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+          setIsAuthenticated(true);
+          setCurrentScreen('admin');
+        } else {
+          // Redirect to login, then to admin
+          localStorage.setItem('redirect_after_login', '/admin');
+          setCurrentScreen('login');
+        }
+        return true;
+      }
+
+      if (path === '/dashboard') {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+          setIsAuthenticated(true);
+          setCurrentScreen('dashboard');
+        } else {
+          localStorage.setItem('redirect_after_login', '/dashboard');
+          setCurrentScreen('login');
+        }
+        return true;
+      }
+
+      if (path === '/login') {
+        setCurrentScreen('login');
+        return true;
+      }
+
+      return false;
+    };
+
+    // Handle initial route
+    const handled = handleRoute();
+
+    // Listen for browser back/forward
+    const handlePopState = () => {
+      handleRoute();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Check authentication status and saved progress on mount
   useEffect(() => {
+    // Skip if URL routing already handled the navigation
+    const path = window.location.pathname;
+    if (path === '/admin' || path === '/dashboard' || path === '/login') {
+      return; // URL routing useEffect handles these
+    }
+
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
       setIsAuthenticated(true);
@@ -195,6 +265,20 @@ export default function App() {
     try {
       const response = await verifyOTP(phone, otp);
       setIsAuthenticated(true);
+
+      // Check for redirect after login (e.g., /admin)
+      const redirectPath = localStorage.getItem('redirect_after_login');
+      if (redirectPath) {
+        localStorage.removeItem('redirect_after_login');
+        if (redirectPath === '/admin') {
+          setCurrentScreen('admin');
+          return;
+        }
+        if (redirectPath === '/dashboard') {
+          setCurrentScreen('dashboard');
+          return;
+        }
+      }
 
       const { onboarding_completed } = response;
 
@@ -426,6 +510,20 @@ export default function App() {
     // After successful login, user data is already in localStorage from verifyOTP
     setIsAuthenticated(true);
     setPhone(data.phone);
+
+    // Check for redirect after login (e.g., /admin)
+    const redirectPath = localStorage.getItem('redirect_after_login');
+    if (redirectPath) {
+      localStorage.removeItem('redirect_after_login');
+      if (redirectPath === '/admin') {
+        setCurrentScreen('admin');
+        return;
+      }
+      if (redirectPath === '/dashboard') {
+        setCurrentScreen('dashboard');
+        return;
+      }
+    }
 
     const { onboarding_completed } = data.response;
 
