@@ -197,12 +197,28 @@ export default function App() {
         console.log('User has completed onboarding, going to dashboard');
         setCurrentScreen("dashboard");
       } else {
-        // Always show consent screen for users who haven't completed onboarding
-        console.log('Starting/resuming onboarding with consent screen');
+        // Check for saved progress first
+        const savedData = onboardingStorage.getData();
         const startResponse = await startOnboarding();
         setSessionId(startResponse.session_id);
         onboarding.setSessionId(startResponse.session_id);
-        setCurrentScreen("consent");
+
+        // If user has saved progress beyond consent, resume from there
+        if (savedData.currentStep > 0 && savedData.completedSteps.length > 0) {
+          console.log('Resuming onboarding from step:', savedData.currentStep);
+          const stepScreenMap: Record<number, Screen> = {
+            0: 'consent',
+            1: 'profile',
+            2: 'industry',
+            3: 'questionnaire',
+            4: 'equity',
+            5: 'review'
+          };
+          setCurrentScreen(stepScreenMap[savedData.currentStep] || 'consent');
+        } else {
+          console.log('Starting fresh onboarding with consent screen');
+          setCurrentScreen("consent");
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify OTP');
@@ -226,6 +242,9 @@ export default function App() {
   };
 
   const handleConsentContinue = () => {
+    // Mark consent step as completed and move to profile
+    onboardingStorage.completeStep(0);
+    onboardingStorage.setCurrentStep(1);
     setCurrentScreen("profile");
   };
 
@@ -244,6 +263,9 @@ export default function App() {
         { key: 'district', value: data.district, source: 'ui' }
       ]);
       setProfileData(data);
+      // Mark profile step as completed and move to industry
+      onboardingStorage.completeStep(1);
+      onboardingStorage.setCurrentStep(2);
       setCurrentScreen("industry");
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save profile');
@@ -266,6 +288,9 @@ export default function App() {
       ]);
       setEnterpriseData(data);
       setIndustry(data.sector);
+      // Mark industry step as completed and move to questionnaire
+      onboardingStorage.completeStep(2);
+      onboardingStorage.setCurrentStep(3);
       setCurrentScreen("questionnaire");
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save enterprise details');
@@ -286,6 +311,9 @@ export default function App() {
       }));
       await bulkUpdateFields(sessionId, fields);
       setQuestionnaireAnswers(answers);
+      // Mark questionnaire step as completed and move to equity
+      onboardingStorage.completeStep(3);
+      onboardingStorage.setCurrentStep(4);
       setCurrentScreen("equity");
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save answers');
@@ -301,6 +329,9 @@ export default function App() {
     try {
       await updateField(sessionId, 'open_to_equity', answer, 'ui');
       setEquityAnswer(answer);
+      // Mark equity step as completed and move to review
+      onboardingStorage.completeStep(4);
+      onboardingStorage.setCurrentStep(5);
       setCurrentScreen("review");
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save equity preference');
@@ -323,6 +354,9 @@ export default function App() {
   };
 
   const handleSubmit = () => {
+    // Mark final step as completed and clear progress (onboarding complete)
+    onboardingStorage.completeStep(5);
+    onboardingStorage.clearAll();
     setCurrentScreen("success");
   };
 
@@ -351,13 +385,31 @@ export default function App() {
       console.log('User has completed onboarding, going to dashboard');
       setCurrentScreen("dashboard");
     } else {
-      // Always show consent screen for users who haven't completed onboarding
-      console.log('Starting/resuming onboarding with consent screen');
+      // Check for saved progress first
+      const savedData = onboardingStorage.getData();
+      console.log('Saved progress:', savedData);
+
       try {
         const startResponse = await startOnboarding();
         setSessionId(startResponse.session_id);
         onboarding.setSessionId(startResponse.session_id);
-        setCurrentScreen("consent");
+
+        // If user has saved progress beyond consent, resume from there
+        if (savedData.currentStep > 0 && savedData.completedSteps.length > 0) {
+          console.log('Resuming onboarding from step:', savedData.currentStep);
+          const stepScreenMap: Record<number, Screen> = {
+            0: 'consent',
+            1: 'profile',
+            2: 'industry',
+            3: 'questionnaire',
+            4: 'equity',
+            5: 'review'
+          };
+          setCurrentScreen(stepScreenMap[savedData.currentStep] || 'consent');
+        } else {
+          console.log('Starting fresh onboarding with consent screen');
+          setCurrentScreen("consent");
+        }
       } catch (err) {
         console.error('Failed to start onboarding:', err);
         setError('Failed to start onboarding. Please try again.');
