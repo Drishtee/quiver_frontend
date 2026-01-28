@@ -202,8 +202,8 @@ Keep responses concise and conversational.`;
       // Ephemeral tokens (ek_...) work like short-lived API keys
       console.log('Realtime Voice: Connecting with token:', token.substring(0, 20) + '...');
       const ws = new WebSocket(`${wsUrl}?model=${model}`, [
-        `openai-insecure-api-key.${token}`,
-        'openai-beta.realtime-v1'
+        'openai-beta.realtime-v1',
+        `openai-insecure-api-key.${token}`
       ]);
       wsRef.current = ws;
 

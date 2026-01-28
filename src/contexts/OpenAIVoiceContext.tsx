@@ -273,8 +273,8 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
       console.log('Quiver Voice: Connecting to:', wsUrl);
 
       const ws = new WebSocket(wsUrl, [
-        `openai-insecure-api-key.${token}`,
-        'openai-beta.realtime-v1'
+        'openai-beta.realtime-v1',
+        `openai-insecure-api-key.${token}`
       ]);
       wsRef.current = ws;
 

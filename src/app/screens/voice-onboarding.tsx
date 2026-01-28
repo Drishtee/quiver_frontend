@@ -58,19 +58,20 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       const tokenData = await getVoiceAgentToken();
       const config = await getVoiceAgentConfig();
 
-      // Connect to OpenAI Realtime API with ephemeral token via subprotocol
-      // The ephemeral token (ek_...) works like an API key for authentication
+      // Connect to OpenAI Realtime API with ephemeral token
+      // Try passing token via URL parameter as alternative
       const wsUrl = `${tokenData.websocket_url}?model=${tokenData.model}`;
       console.log("Connecting to:", wsUrl, "with token:", tokenData.token.substring(0, 20) + "...");
 
+      // Subprotocol auth with ephemeral token
       const ws = new WebSocket(wsUrl, [
-        "openai-insecure-api-key." + tokenData.token,
-        "openai-beta.realtime-v1"
+        "openai-beta.realtime-v1",
+        `openai-insecure-api-key.${tokenData.token}`
       ]);
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log("WebSocket connected with subprotocol auth");
+        console.log("WebSocket connected, accepted protocol:", ws.protocol);
 
         // Send session configuration (no separate auth needed - handled by subprotocol)
         ws.send(JSON.stringify({
