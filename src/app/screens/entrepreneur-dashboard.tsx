@@ -25,7 +25,6 @@ import {
   ChevronRight,
   Briefcase,
   BarChart3,
-  Handshake,
   Loader2
 } from "lucide-react";
 
@@ -161,16 +160,14 @@ export function EntrepreneurDashboard({
   const progressPercent = Math.round((completedMilestones / milestones.length) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50/50 to-white pb-20 md:pb-0 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 to-white pb-20 md:pb-0 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-primary/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo */}
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg md:rounded-xl flex items-center justify-center shadow-sm">
-                <Handshake className="w-4 h-4 md:w-5 md:h-5 text-white" />
-              </div>
+              <img src="/logo.jpg" alt="Quiver Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
               <div className="hidden sm:block">
                 <h1 className="text-base md:text-lg font-bold text-gray-900">Quiver</h1>
                 <p className="text-xs text-muted-foreground -mt-0.5">{t('dashboard.title')}</p>

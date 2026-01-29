@@ -1,12 +1,13 @@
 /* Quiver Landing Page - Custom Styles */
 
-/* CSS Variables for Custom Colors */
+/* CSS Variables for Custom Colors — Quiver Brand Colors (exact from logo) */
 :root {
-  --primary: #2D6A4F;
-  --secondary: #40916C;
-  --accent: #52B788;
-  --warm: #F4A261;
-  --earth: #E76F51;
+  --primary: #2E3192;           /* Deep navy blue from logo V shape */
+  --secondary: #1A1F6E;         /* Darker navy */
+  --accent: #ED1C24;            /* Bright red from logo circle/head */
+  --quiver-green: #00A651;      /* Vivid green from logo swoosh */
+  --warm: #FF6B6B;
+  --earth: #C41A1A;
 }
 
 /* Background Colors */
@@ -85,10 +86,10 @@
   border-color: var(--primary);
 }
 
-/* Gradient Support */
+/* Gradient Support - Quiver Brand Colors */
 .from-primary {
   --tw-gradient-from: var(--primary);
-  --tw-gradient-to: rgb(45 106 79 / 0);
+  --tw-gradient-to: rgb(46 49 146 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -98,7 +99,7 @@
 
 .from-accent {
   --tw-gradient-from: var(--accent);
-  --tw-gradient-to: rgb(82 183 136 / 0);
+  --tw-gradient-to: rgb(237 28 36 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -108,7 +109,7 @@
 
 .from-warm {
   --tw-gradient-from: var(--warm);
-  --tw-gradient-to: rgb(244 162 97 / 0);
+  --tw-gradient-to: rgb(255 107 107 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 

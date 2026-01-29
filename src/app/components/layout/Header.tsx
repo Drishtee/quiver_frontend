@@ -31,6 +31,11 @@ export function Header({
       <div className="container flex h-14 max-w-screen-xl items-center justify-between px-4 mx-auto">
         {/* Logo */}
         <div className="flex items-center gap-2">
+          <img
+            src="/logo.jpg"
+            alt="Quiver Logo"
+            className="w-8 h-8 object-contain"
+          />
           <span className="text-xl font-display font-semibold text-primary">
             Quiver
           </span>

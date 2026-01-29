@@ -102,8 +102,8 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
       labelHi: "कृषि एवं संबद्ध गतिविधियाँ",
       labelEn: "Agriculture & Allied",
       icon: Tractor,
-      color: "from-green-50 to-emerald-50",
-      borderColor: "border-green-200"
+      color: "from-blue-50 to-indigo-50",
+      borderColor: "border-blue-200"
     },
     {
       id: "livestock",
@@ -158,7 +158,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center">
@@ -197,7 +197,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
                 onChange={(e) => updateField('businessName', e.target.value)}
                 className="h-12 bg-gray-50 border-gray-200 pr-12 rounded-xl focus:border-primary focus:ring-primary"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-green-50 rounded-lg transition-colors">
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                 <Mic className="w-5 h-5 text-primary" />
               </button>
             </div>
@@ -272,7 +272,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
                     onClick={() => updateField('ownershipType', type.value)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
                       isSelected
-                        ? 'border-primary bg-green-50'
+                        ? 'border-primary bg-blue-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -302,7 +302,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
                   key={role.value}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
                     formData.role === role.value
-                      ? 'border-primary bg-green-50'
+                      ? 'border-primary bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >

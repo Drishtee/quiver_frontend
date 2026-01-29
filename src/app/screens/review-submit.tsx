@@ -55,7 +55,7 @@ export function ReviewSubmit({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center">
@@ -84,7 +84,7 @@ export function ReviewSubmit({
 
           {/* Profile Summary */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-green-50 to-blue-50">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="flex items-center gap-3">
                 <User className="w-6 h-6 text-primary" />
                 <h3 className="font-display font-bold text-gray-900">उद्यमी की जानकारी | Entrepreneur Profile</h3>
@@ -129,7 +129,7 @@ export function ReviewSubmit({
 
           {/* Enterprise Summary */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-green-50 to-blue-50">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="flex items-center gap-3">
                 <Building2 className="w-6 h-6 text-primary" />
                 <h3 className="font-display font-bold text-gray-900">व्यवसाय की जानकारी | Enterprise Details</h3>
@@ -170,7 +170,7 @@ export function ReviewSubmit({
 
           {/* Financial Summary */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-green-50 to-blue-50">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="flex items-center gap-3">
                 <IndianRupee className="w-6 h-6 text-primary" />
                 <h3 className="font-display font-bold text-gray-900">वित्तीय स्थिति | Financial Snapshot</h3>
@@ -203,7 +203,7 @@ export function ReviewSubmit({
 
           {/* Growth Intent Summary */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-green-50 to-blue-50">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="flex items-center gap-3">
                 <Target className="w-6 h-6 text-primary" />
                 <h3 className="font-display font-bold text-gray-900">विकास की सोच | Growth Intent</h3>
@@ -236,7 +236,7 @@ export function ReviewSubmit({
 
           {/* Partnership Orientation Summary */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-green-50 to-blue-50">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="flex items-center gap-3">
                 <Handshake className="w-6 h-6 text-primary" />
                 <h3 className="font-display font-bold text-gray-900">साझेदारी की सोच | Partnership Orientation</h3>

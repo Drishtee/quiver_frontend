@@ -8,13 +8,14 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #2D6A4F;
+  /* Quiver Brand Colors — exact from official logo */
+  --primary: #2E3192;           /* Deep navy blue from logo V shape */
   --primary-foreground: #ffffff;
-  --secondary: #40916C;
+  --secondary: #1A1F6E;         /* Darker navy */
   --secondary-foreground: #ffffff;
   --muted: #ececf0;
   --muted-foreground: #717182;
-  --accent: #52B788;
+  --accent: #ED1C24;            /* Bright red from logo circle/head */
   --accent-foreground: #ffffff;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
@@ -24,7 +25,14 @@
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #2D6A4F;
+  --ring: #2E3192;
+  /* Additional Quiver brand colors — exact from logo */
+  --quiver-green: #00A651;      /* Vivid green from logo swoosh */
+  --quiver-red: #ED1C24;
+  --quiver-blue: #2E3192;
+  --quiver-dark: #141660;       /* Deep navy for dark backgrounds */
+  --warm: #FF6B6B;
+  --earth: #C41A1A;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -281,7 +289,7 @@
   input[type="submit"],
   input[type="button"],
   input[type="reset"] {
-    -webkit-tap-highlight-color: rgba(45, 106, 79, 0.1);
+    -webkit-tap-highlight-color: rgba(46, 49, 146, 0.1);
   }
 
   /* Prevent text selection on interactive elements */

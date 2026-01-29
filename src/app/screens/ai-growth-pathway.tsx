@@ -137,7 +137,7 @@ export const AIGrowthPathway: React.FC<AIGrowthPathwayProps> = ({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
         <div className="text-center space-y-6 p-8">
           <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
             <Sparkles className="w-10 h-10 text-primary" />
@@ -160,7 +160,7 @@ export const AIGrowthPathway: React.FC<AIGrowthPathwayProps> = ({
 
   if (!pathway) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
         <div className="text-center p-8">
           <p className="text-gray-600">Unable to generate pathway. Please try again.</p>
           <button onClick={loadPathway} className="mt-4 px-6 py-2 bg-primary text-white rounded-lg">
@@ -172,7 +172,7 @@ export const AIGrowthPathway: React.FC<AIGrowthPathwayProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">

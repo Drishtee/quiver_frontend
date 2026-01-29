@@ -116,7 +116,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
   const isValid = formData.fullName && formData.gender && formData.age && formData.education && formData.state && formData.district;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center">
@@ -157,7 +157,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
                   onChange={(e) => updateField('fullName', e.target.value)}
                   className="h-12 bg-gray-50 border-gray-200 pr-12 rounded-xl focus:border-primary focus:ring-primary"
                 />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                   <Mic className="w-5 h-5 text-primary" />
                 </button>
               </div>
@@ -179,7 +179,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
                     key={option.value}
                     className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
                       formData.gender === option.value
-                        ? 'border-primary bg-green-50'
+                        ? 'border-primary bg-blue-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -222,7 +222,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
                     key={level.value}
                     className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
                       formData.education === level.value
-                        ? 'border-primary bg-green-50'
+                        ? 'border-primary bg-blue-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -268,7 +268,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
                   onChange={(e) => updateField('district', e.target.value)}
                   className="h-12 bg-gray-50 border-gray-200 pr-12 rounded-xl focus:border-primary focus:ring-primary"
                 />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                   <Mic className="w-5 h-5 text-primary" />
                 </button>
               </div>

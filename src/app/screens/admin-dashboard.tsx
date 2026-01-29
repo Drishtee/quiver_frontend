@@ -10,7 +10,6 @@ import {
   Users,
   CheckCircle2,
   Clock,
-  Sparkles,
   AudioLines,
   Play,
   Pause,
@@ -555,9 +554,7 @@ export function AdminDashboard() {
       <header className="border-b border-gray-200 bg-white sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-200">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
+            <img src="/logo.jpg" alt="Quiver Logo" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="text-lg md:text-xl font-bold text-gray-900">Quiver Admin</h1>
               <p className="text-xs md:text-sm text-gray-500">Management Dashboard</p>

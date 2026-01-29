@@ -164,7 +164,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
@@ -199,7 +199,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   section.id === currentSection
                     ? 'bg-primary text-white'
                     : idx <= sectionIndex
-                      ? 'bg-green-100 text-primary hover:bg-green-200 active:bg-green-300'
+                      ? 'bg-blue-100 text-primary hover:bg-blue-200 active:bg-blue-300'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -235,7 +235,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     onChange={(e) => updateAnswer('productDescription', e.target.value)}
                     className="min-h-[100px] md:min-h-[120px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
                   />
-                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                     <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </button>
                 </div>
@@ -263,7 +263,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -302,7 +302,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -353,7 +353,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -386,7 +386,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-4 py-2.5 md:px-5 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          answers.salesConcentration === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          answers.salesConcentration === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                         onClick={() => updateAnswer('salesConcentration', option.value)}
                       >
@@ -418,7 +418,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          answers.businessIndependence === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          answers.businessIndependence === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                         onClick={() => updateAnswer('businessIndependence', option.value)}
                       >
@@ -531,7 +531,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.salesTrend === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.salesTrend === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('salesTrend', option.value)}
                     >
@@ -597,7 +597,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.paymentFrequency === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.paymentFrequency === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('paymentFrequency', option.value)}
                     >
@@ -630,7 +630,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.digitalTransactions === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.digitalTransactions === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('digitalTransactions', option.value)}
                     >
@@ -669,7 +669,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -708,7 +708,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     onChange={(e) => updateAnswer('keyAssets', e.target.value)}
                     className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
                   />
-                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                     <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </button>
                 </div>
@@ -729,7 +729,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.workspaceType === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.workspaceType === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('workspaceType', option.value)}
                     >
@@ -765,7 +765,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -798,7 +798,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.incomeControl === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.incomeControl === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('incomeControl', option.value)}
                     >
@@ -839,7 +839,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.hoursPerDay === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.hoursPerDay === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('hoursPerDay', option.value)}
                     >
@@ -875,7 +875,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.openToChange === option.value ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                        answers.openToChange === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('openToChange', option.value)}
                     >
@@ -915,7 +915,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -951,7 +951,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-primary bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -1000,7 +1000,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     onChange={(e) => updateAnswer('fundingUse', e.target.value)}
                     className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
                   />
-                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                     <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </button>
                 </div>

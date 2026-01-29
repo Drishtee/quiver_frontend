@@ -67,7 +67,7 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-20">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -119,7 +119,7 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
               {showHindi ? 'इक्विटी का मतलब क्या है?' : 'What does equity mean?'}
             </h4>
 
-            <div className="bg-green-50 rounded-xl p-6 space-y-4">
+            <div className="bg-blue-50 rounded-xl p-6 space-y-4">
               <p className="text-gray-700 leading-relaxed">
                 {showHindi
                   ? 'जब कोई साझेदार आपके व्यवसाय को बढ़ाने के लिए पैसा लगाता है और बदले में व्यवसाय के मुनाफ़े और फैसलों में एक सीमित हिस्सेदारी लेता है।'
@@ -166,8 +166,8 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
               </div>
 
               {/* Equity */}
-              <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
-                <h5 className="font-bold text-green-700 mb-4 flex items-center gap-2">
+              <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-200">
+                <h5 className="font-bold text-blue-700 mb-4 flex items-center gap-2">
                   <Check className="w-5 h-5" />
                   {showHindi ? 'इक्विटी में:' : 'With Equity:'}
                 </h5>
@@ -192,7 +192,7 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-4 flex items-center gap-3">
+            <div className="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl p-4 flex items-center gap-3">
               <Shield className="w-6 h-6 text-primary flex-shrink-0" />
               <p className="text-gray-700 font-medium">
                 {showHindi

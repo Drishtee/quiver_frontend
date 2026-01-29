@@ -818,7 +818,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
               <Button
                 onClick={handleOnboardingComplete}
                 disabled={isSubmitting}
-                className="w-full h-12 bg-green-600 hover:bg-green-700"
+                className="w-full h-12 bg-primary hover:bg-secondary"
               >
                 {isSubmitting ? (
                   <>

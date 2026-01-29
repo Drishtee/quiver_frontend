@@ -5,11 +5,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#2D6A4F',
-        secondary: '#40916C',
-        accent: '#52B788',
-        warm: '#F4A261',
-        earth: '#E76F51'
+        // Quiver brand colors — exact from official logo
+        primary: '#2E3192',      // Deep navy blue from logo V shape
+        secondary: '#1A1F6E',    // Darker navy
+        accent: '#ED1C24',       // Bright red from logo circle/head
+        'quiver-green': '#00A651', // Vivid green from logo swoosh
+        'quiver-red': '#ED1C24',
+        'quiver-blue': '#2E3192',
+        'quiver-dark': '#141660', // Deep navy for dark backgrounds
+        warm: '#FF6B6B',
+        earth: '#C41A1A'
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

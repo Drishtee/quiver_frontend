@@ -44,16 +44,18 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
   }, [showPhoneInput]);
 
   return (
-    <div className="bg-gradient-to-b from-green-50 to-white font-sans min-h-screen">
+    <div className="bg-gradient-to-b from-indigo-50 to-white font-sans min-h-screen">
       {/* Navigation - Mobile-first */}
       <nav
         id="header"
         className="bg-white shadow-sm py-3 px-4 flex justify-between items-center sticky top-0 z-50 md:py-4 md:px-6"
       >
         <div className="flex items-center">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3">
-            <i className="fa-solid fa-seedling text-white text-lg md:text-xl"></i>
-          </div>
+          <img
+            src="/logo.jpg"
+            alt="Quiver Logo"
+            className="w-8 h-8 md:w-10 md:h-10 object-contain mr-2 md:mr-3"
+          />
           <span className="text-xl md:text-2xl font-display font-bold text-primary">Quiver</span>
         </div>
         {/* Desktop nav */}
@@ -285,7 +287,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             {/* Funding Card - Mobile-first */}
             <div
               id="funding-card"
-              className="bg-gradient-to-br from-green-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-green-100 hover:border-primary transition-all hover:shadow-xl"
+              className="bg-gradient-to-br from-indigo-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-indigo-100 hover:border-primary transition-all hover:shadow-xl"
             >
               <div className="w-10 h-10 md:w-16 md:h-16 bg-primary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
                 <i className="fa-solid fa-coins text-white text-xl md:text-3xl"></i>
@@ -342,7 +344,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
       </section>
 
       {/* Equity Explained Section */}
-      <section id="equity-explained" className="py-20 px-6 bg-gradient-to-br from-green-50 via-blue-50 to-white">
+      <section id="equity-explained" className="py-20 px-6 bg-gradient-to-br from-indigo-50 via-blue-50 to-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-block bg-primary/10 text-primary px-6 py-3 rounded-full text-sm font-bold mb-6">
@@ -396,7 +398,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               </h3>
               <div className="flex justify-center mb-6 relative z-10">
                 <div className="relative w-72 h-72">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl"></div>
                   <div className="relative w-full h-full flex items-center justify-center">
                     <div className="relative">
                       <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg relative">
@@ -440,7 +442,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           </div>
 
           {/* Partnership Benefits */}
-          <div className="bg-gradient-to-br from-white to-green-50 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto border-2 border-primary/20">
+          <div className="bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto border-2 border-primary/20">
             <div className="text-center mb-8">
               <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
                 <i className="fa-solid fa-handshake text-5xl text-primary"></i>
@@ -451,7 +453,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <p className="text-xl text-gray-600">And grows with you</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-green-100 hover:border-primary transition-all">
+              <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-indigo-100 hover:border-primary transition-all">
                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
                   <i className="fa-solid fa-crown text-white text-2xl"></i>
                 </div>
@@ -540,7 +542,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
 
           {/* What We DO */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div id="we-guide" className="bg-green-50 p-8 rounded-2xl border-2 border-green-200 text-center">
+            <div id="we-guide" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fa-solid fa-check text-white text-3xl"></i>
               </div>
@@ -548,7 +550,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <p className="text-gray-700">With experience and care</p>
             </div>
 
-            <div id="we-support" className="bg-green-50 p-8 rounded-2xl border-2 border-green-200 text-center">
+            <div id="we-support" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fa-solid fa-check text-white text-3xl"></i>
               </div>
@@ -556,7 +558,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <p className="text-gray-700">With money and resources</p>
             </div>
 
-            <div id="we-align" className="bg-green-50 p-8 rounded-2xl border-2 border-green-200 text-center">
+            <div id="we-align" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fa-solid fa-check text-white text-3xl"></i>
               </div>
@@ -568,7 +570,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-6 bg-gradient-to-b from-white to-green-50">
+      <section id="how-it-works" className="py-20 px-6 bg-gradient-to-b from-white to-blue-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold text-gray-900 mb-4">
@@ -676,7 +678,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <div className="mb-8">
-            <i className="fa-solid fa-seedling text-7xl mb-6 inline-block"></i>
+            <img src="/logo.jpg" alt="Quiver" className="w-20 h-20 object-contain mb-6 inline-block bg-white rounded-2xl p-2 shadow-lg" />
           </div>
           <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6 leading-tight">
             You Build the Business.<br/>
@@ -771,9 +773,11 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             {/* Brand */}
             <div>
               <div className="flex items-center mb-4">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-                  <i className="fa-solid fa-seedling text-white text-xl"></i>
-                </div>
+                <img
+                  src="/logo.jpg"
+                  alt="Quiver Logo"
+                  className="w-10 h-10 object-contain mr-3 bg-white rounded-lg p-1"
+                />
                 <span className="text-2xl font-display font-bold text-white">Quiver</span>
               </div>
               <p className="text-sm">Your growth partner for building a better business.</p>

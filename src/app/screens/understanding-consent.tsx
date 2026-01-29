@@ -70,7 +70,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile optimized */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -117,7 +117,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg md:rounded-xl p-4 md:p-6">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg md:rounded-xl p-4 md:p-6">
               <p className="text-gray-700 leading-relaxed text-sm md:text-base">
                 {t('consent.challenge')}
               </p>
@@ -149,7 +149,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
             </h3>
             <div className="grid gap-3 md:gap-4">
               {(t('consent.services', { returnObjects: true }) as string[]).map((service, index) => (
-                <div key={index} className="flex items-start gap-2.5 md:gap-3 bg-green-50 rounded-lg md:rounded-xl p-3 md:p-4">
+                <div key={index} className="flex items-start gap-2.5 md:gap-3 bg-blue-50 rounded-lg md:rounded-xl p-3 md:p-4">
                   <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                     <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                   </div>
@@ -306,10 +306,10 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                         recordConsent('all_consents_confirmed', new Date().toISOString());
                         onVoiceOnboarding();
                       }}
-                      className="p-4 md:p-6 rounded-lg md:rounded-xl border-2 border-green-200 hover:border-green-500 bg-gradient-to-br from-green-50 to-teal-50 hover:from-green-100 hover:to-teal-100 transition-all group relative"
+                      className="p-4 md:p-6 rounded-lg md:rounded-xl border-2 border-blue-200 hover:border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all group relative"
                     >
                       <div className="flex flex-col items-center gap-2 md:gap-3 text-center">
-                        <div className="w-10 h-10 md:w-14 md:h-14 bg-green-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-10 h-10 md:w-14 md:h-14 bg-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                           <Mic className="w-5 h-5 md:w-7 md:h-7 text-white" />
                         </div>
                         <div>
@@ -321,7 +321,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                           </p>
                         </div>
                       </div>
-                      <span className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 text-[8px] md:text-xs bg-green-500 text-white px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
+                      <span className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 text-[8px] md:text-xs bg-primary text-white px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                         {t('consent.recommended', 'Best')}
                       </span>
                     </button>
@@ -352,8 +352,8 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
 
             {/* Consent Summary */}
             {allConsentsGiven && (
-              <div className="bg-green-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-green-200">
-                <p className="text-xs md:text-sm text-green-700 text-center">
+              <div className="bg-blue-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-blue-200">
+                <p className="text-xs md:text-sm text-blue-700 text-center">
                   {t('consent.allConsentsRecorded')}
                 </p>
               </div>
