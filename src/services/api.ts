@@ -645,6 +645,33 @@ export const getAudioRecords = async (sessionId: string): Promise<AudioRecordsRe
 };
 
 // ============================================
+// USER PROFILE ENDPOINT
+// ============================================
+
+export interface MyProfileResponse {
+  has_profile: boolean;
+  session_id?: string;
+  status?: string;
+  current_step?: string;
+  created_at?: string;
+  submitted_at?: string;
+  phone?: string;
+  is_phone_verified?: boolean;
+  date_joined?: string;
+  profile?: Record<string, string>;
+  audio_count?: number;
+  message?: string;
+}
+
+/**
+ * GET /onboarding/my-profile/
+ * Get the authenticated user's own profile data
+ */
+export const getMyProfile = async (): Promise<MyProfileResponse> => {
+  return makeAuthenticatedRequest('/onboarding/my-profile/');
+};
+
+// ============================================
 // VOICE AGENT ENDPOINTS
 // ============================================
 

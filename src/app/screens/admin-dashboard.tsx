@@ -196,6 +196,7 @@ export function AdminDashboard() {
 
   // Selected entrepreneur for detail view
   const [selectedEntrepreneur, setSelectedEntrepreneur] = useState<Entrepreneur | null>(null);
+  const [selectedProfileData, setSelectedProfileData] = useState<Record<string, { value: string; status: string; source: string; updated_at: string }>>({});
   const [entrepreneurAudio, setEntrepreneurAudio] = useState<AudioRecord[]>([]);
 
   // Auth header helper
@@ -348,23 +349,45 @@ export function AdminDashboard() {
     try {
       const [profileRes, audioRes] = await Promise.all([
         fetch(`${API_URL}/onboarding/admin/profile/${sessionId}/`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/onboarding/${sessionId}/audio-records/`, { headers: getAuthHeaders() })
+        fetch(`${API_URL}/onboarding/admin/audio-records/`, { headers: getAuthHeaders() })
       ]);
 
       if (profileRes.ok) {
         const data = await profileRes.json();
-        // Find the entrepreneur in the list and enhance with profile data
         const ent = entrepreneurs.find(e => e.session_id === sessionId);
         if (ent) {
+          // Extract plain values from profile_data for display
+          const profileFields = data.profile_data || {};
+          const extractedValues: Record<string, string> = {};
+          for (const [key, fieldData] of Object.entries(profileFields)) {
+            const fd = fieldData as { value: string; status: string; source: string; updated_at: string };
+            extractedValues[key] = fd.value || '';
+          }
           setSelectedEntrepreneur({
             ...ent,
-            ...data.profile_data
+            name: extractedValues.full_name || extractedValues.owner_name || extractedValues.fullName || ent.name,
+            email: extractedValues.email || ent.email,
+            business_name: extractedValues.business_name || ent.business_name,
+            business_type: extractedValues.business_type || extractedValues.sector || ent.business_type,
+            state: extractedValues.state || ent.state,
+            district: extractedValues.district || ent.district,
+            gender: extractedValues.gender || ent.gender,
+            age: extractedValues.age || ent.age,
+            education: extractedValues.education || ent.education,
+            year_started: extractedValues.year_started || ent.year_started,
+            ownership_type: extractedValues.ownership_type || ent.ownership_type,
+            role: extractedValues.role || ent.role,
           });
+          setSelectedProfileData(profileFields);
         }
       }
       if (audioRes.ok) {
         const data = await audioRes.json();
-        setEntrepreneurAudio(data.audio_records || []);
+        // Filter audio records by session
+        const sessionAudio = (data.audio_records || []).filter(
+          (rec: AudioRecord) => rec.session_id === sessionId
+        );
+        setEntrepreneurAudio(sessionAudio.length > 0 ? sessionAudio : data.audio_records || []);
       }
     } catch (error) {
       console.error('Failed to fetch entrepreneur profile:', error);
@@ -1317,70 +1340,158 @@ export function AdminDashboard() {
       {/* Entrepreneur Detail Modal */}
       {selectedEntrepreneur && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+          <div className="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
               <h3 className="text-lg font-semibold text-gray-900">Entrepreneur Profile</h3>
               <button
-                onClick={() => { setSelectedEntrepreneur(null); setEntrepreneurAudio([]); }}
+                onClick={() => { setSelectedEntrepreneur(null); setSelectedProfileData({}); setEntrepreneurAudio([]); }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-6">
-              {/* Basic Info */}
+              {/* Basic Info Header */}
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                   <User className="w-8 h-8 text-primary" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h4 className="text-xl font-bold text-gray-900">{selectedEntrepreneur.name || 'Unknown'}</h4>
-                  <p className="text-gray-500">{selectedEntrepreneur.phone}</p>
-                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(selectedEntrepreneur.status)}`}>
+                  <div className="flex items-center gap-3 mt-1 flex-wrap">
+                    <span className="flex items-center gap-1 text-sm text-gray-500">
+                      <Phone className="w-3.5 h-3.5" />
+                      {selectedEntrepreneur.phone}
+                    </span>
+                    {selectedEntrepreneur.email && (
+                      <span className="flex items-center gap-1 text-sm text-gray-500">
+                        <Mail className="w-3.5 h-3.5" />
+                        {selectedEntrepreneur.email}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium mt-2 ${getStatusColor(selectedEntrepreneur.status)}`}>
                     {selectedEntrepreneur.status?.replace('_', ' ')}
                   </span>
                 </div>
               </div>
 
-              {/* Details Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500">Business Name</p>
-                  <p className="font-medium text-gray-900">{selectedEntrepreneur.business_name || '-'}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500">Industry</p>
-                  <p className="font-medium text-gray-900">{selectedEntrepreneur.business_type || '-'}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500">State</p>
-                  <p className="font-medium text-gray-900">{selectedEntrepreneur.state || '-'}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500">District</p>
-                  <p className="font-medium text-gray-900">{selectedEntrepreneur.district || '-'}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500">Email</p>
-                  <p className="font-medium text-gray-900">{selectedEntrepreneur.email || '-'}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500">Registered</p>
-                  <p className="font-medium text-gray-900">{formatDate(selectedEntrepreneur.created_at)}</p>
+              {/* Personal Details */}
+              <div>
+                <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <User className="w-4 h-4 text-primary" />
+                  Personal Information
+                </h5>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Full Name</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.name || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Gender</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.gender || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Age</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.age || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Education</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.education || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">State</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.state || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">District</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.district || '-'}</p>
+                  </div>
                 </div>
               </div>
+
+              {/* Business Details */}
+              <div>
+                <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-primary" />
+                  Business Information
+                </h5>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Business Name</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.business_name || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Industry / Sector</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.business_type || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Year Started</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.year_started || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Ownership Type</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.ownership_type || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Role</p>
+                    <p className="font-medium text-gray-900">{selectedEntrepreneur.role || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500">Registered</p>
+                    <p className="font-medium text-gray-900">{formatDate(selectedEntrepreneur.created_at)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* All Other Profile Fields from API */}
+              {Object.keys(selectedProfileData).length > 0 && (
+                <div>
+                  <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <FileAudio className="w-4 h-4 text-primary" />
+                    All Onboarding Data
+                  </h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.entries(selectedProfileData).map(([key, fieldData]) => (
+                      <div key={key} className="p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs text-gray-500">{key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
+                          <div className="flex items-center gap-1">
+                            {fieldData.source && (
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                                fieldData.source === 'voice' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
+                              }`}>
+                                {fieldData.source}
+                              </span>
+                            )}
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                              fieldData.status === 'confirmed' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'
+                            }`}>
+                              {fieldData.status}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="font-medium text-gray-900 text-sm break-words">{fieldData.value || '-'}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Audio Recordings */}
               {entrepreneurAudio.length > 0 && (
                 <div>
-                  <h5 className="font-semibold text-gray-900 mb-3">Voice Recordings ({entrepreneurAudio.length})</h5>
+                  <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <AudioLines className="w-4 h-4 text-primary" />
+                    Voice Recordings ({entrepreneurAudio.length})
+                  </h5>
                   <div className="space-y-2">
                     {entrepreneurAudio.map((audio) => (
                       <div key={audio.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                         <button
                           onClick={() => handlePlayPause(audio)}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                            playingId === audio.id ? 'bg-primary text-white' : 'bg-white text-gray-600'
+                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            playingId === audio.id ? 'bg-primary text-white' : 'bg-white text-gray-600 border border-gray-200'
                           }`}
                         >
                           {playingId === audio.id ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 ml-0.5" />}
@@ -1389,7 +1500,10 @@ export function AdminDashboard() {
                           <p className="text-sm font-medium text-gray-900">{getScreenLabel(audio.screen)}</p>
                           <p className="text-xs text-gray-500 truncate">{audio.transcript || 'No transcript'}</p>
                         </div>
-                        <span className="text-xs text-gray-400">{formatDuration(audio.duration_seconds)}</span>
+                        <div className="text-right flex-shrink-0">
+                          <span className="text-xs text-gray-400 block">{formatDuration(audio.duration_seconds)}</span>
+                          <span className="text-xs text-gray-400 block">{formatFileSize(audio.file_size_bytes)}</span>
+                        </div>
                       </div>
                     ))}
                   </div>

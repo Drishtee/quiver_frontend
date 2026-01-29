@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { AIAssistant } from "../components/ai-assistant";
 import { UserMenu } from "../components/user-menu";
 import { LanguageSelector } from "../components/language-selector";
-import { listMeetings } from "../../services/api";
+import { listMeetings, getMyProfile } from "../../services/api";
+import type { MyProfileResponse } from "../../services/api";
 import {
   Calendar as CalendarIcon,
   Video,
@@ -25,7 +26,13 @@ import {
   ChevronRight,
   Briefcase,
   BarChart3,
-  Loader2
+  Loader2,
+  Phone,
+  Mail,
+  MapPin,
+  Building2,
+  GraduationCap,
+  Edit3
 } from "lucide-react";
 
 interface EntrepreneurDashboardProps {
@@ -62,9 +69,27 @@ export function EntrepreneurDashboard({
   const [upcomingMeetings, setUpcomingMeetings] = useState<Meeting[]>([]);
   const [pastMeetings, setPastMeetings] = useState<Meeting[]>([]);
   const [loadingMeetings, setLoadingMeetings] = useState(true);
+  const [myProfile, setMyProfile] = useState<MyProfileResponse | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
-  const userName = profileData?.fullName || localStorage.getItem('user_name') || 'Entrepreneur';
-  const businessName = profileData?.businessName || localStorage.getItem('business_name') || 'Your Business';
+  const userName = myProfile?.profile?.full_name || myProfile?.profile?.owner_name || myProfile?.profile?.fullName || profileData?.fullName || localStorage.getItem('user_name') || 'Entrepreneur';
+  const businessName = myProfile?.profile?.business_name || profileData?.businessName || localStorage.getItem('business_name') || 'Your Business';
+
+  // Fetch user profile from API
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoadingProfile(true);
+        const data = await getMyProfile();
+        setMyProfile(data);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   // Fetch meetings from API
   useEffect(() => {
@@ -266,6 +291,12 @@ export function EntrepreneurDashboard({
                 className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
               >
                 {t('dashboard.tabs.progress')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="profile"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+              >
+                My Profile
               </TabsTrigger>
             </TabsList>
           </div>
@@ -642,6 +673,235 @@ export function EntrepreneurDashboard({
                 </Button>
               </div>
             </Card>
+          </TabsContent>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile" className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">My Profile</h2>
+              <p className="text-sm text-muted-foreground mt-1">Your personal and business information</p>
+            </div>
+
+            {loadingProfile ? (
+              <Card className="p-12 border-primary/10 rounded-2xl text-center">
+                <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground">Loading your profile...</p>
+              </Card>
+            ) : !myProfile?.has_profile ? (
+              <Card className="p-12 border-primary/10 rounded-2xl text-center">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <User className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No profile data yet</h3>
+                <p className="text-muted-foreground">Complete your onboarding to see your profile here.</p>
+              </Card>
+            ) : (
+              <>
+                {/* Profile Header Card */}
+                <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+                  <div className="bg-gradient-to-r from-primary to-secondary p-6 text-white">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-2xl">
+                        {userName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold">{userName}</h3>
+                        <p className="text-white/80">{businessName}</p>
+                        <div className="flex items-center gap-3 mt-2 flex-wrap">
+                          <span className="flex items-center gap-1 text-sm text-white/80">
+                            <Phone className="w-3.5 h-3.5" />
+                            {myProfile.phone || localStorage.getItem('user_phone') || '-'}
+                          </span>
+                          {(myProfile.profile?.email || myProfile.profile?.email_address) && (
+                            <span className="flex items-center gap-1 text-sm text-white/80">
+                              <Mail className="w-3.5 h-3.5" />
+                              {myProfile.profile.email || myProfile.profile.email_address}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right hidden md:block">
+                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                          myProfile.status === 'submitted' || myProfile.status === 'reviewed'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-amber-100 text-amber-700'
+                        }`}>
+                          {myProfile.status?.replace('_', ' ')}
+                        </span>
+                        <p className="text-xs text-white/60 mt-1">
+                          Joined {myProfile.date_joined ? new Date(myProfile.date_joined).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Personal Information */}
+                <Card className="p-6 border-primary/10 rounded-2xl shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <User className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-gray-900">Personal Information</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Full Name</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.full_name || myProfile.profile?.owner_name || myProfile.profile?.fullName || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Phone</p>
+                      <p className="font-medium text-gray-900 flex items-center gap-1.5">
+                        <Phone className="w-3.5 h-3.5 text-gray-400" />
+                        {myProfile.phone || '-'}
+                        {myProfile.is_phone_verified && (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                        )}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Email</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.email || myProfile.profile?.email_address || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Gender</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.gender || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Age</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.age || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Education</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.education || '-'}</p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Location */}
+                <Card className="p-6 border-primary/10 rounded-2xl shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-gray-900">Location</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">State</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.state || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">District</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.district || '-'}</p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Business Information */}
+                <Card className="p-6 border-primary/10 rounded-2xl shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Building2 className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-gray-900">Business Information</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Business Name</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.business_name || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Sector / Industry</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.sector || myProfile.profile?.business_type || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Year Started</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.year_started || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Ownership Type</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.ownership_type || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Your Role</p>
+                      <p className="font-medium text-gray-900">{myProfile.profile?.role || '-'}</p>
+                    </div>
+                    {myProfile.profile?.products_services && (
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <p className="text-xs text-muted-foreground mb-1">Products / Services</p>
+                        <p className="font-medium text-gray-900">{myProfile.profile.products_services}</p>
+                      </div>
+                    )}
+                    {myProfile.profile?.total_employees && (
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <p className="text-xs text-muted-foreground mb-1">Total Employees</p>
+                        <p className="font-medium text-gray-900">{myProfile.profile.total_employees}</p>
+                      </div>
+                    )}
+                    {myProfile.profile?.annual_revenue && (
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <p className="text-xs text-muted-foreground mb-1">Annual Revenue</p>
+                        <p className="font-medium text-gray-900">{myProfile.profile.annual_revenue}</p>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+
+                {/* Questionnaire Responses - show any extra fields */}
+                {myProfile.profile && (() => {
+                  const knownKeys = new Set([
+                    'full_name', 'owner_name', 'fullName', 'email', 'email_address',
+                    'gender', 'age', 'education', 'state', 'district',
+                    'business_name', 'sector', 'business_type', 'year_started',
+                    'ownership_type', 'role', 'products_services', 'total_employees',
+                    'annual_revenue', 'phone', 'owner_contact'
+                  ]);
+                  const extraFields = Object.entries(myProfile.profile).filter(
+                    ([key, value]) => !knownKeys.has(key) && value
+                  );
+                  if (extraFields.length === 0) return null;
+                  return (
+                    <Card className="p-6 border-primary/10 rounded-2xl shadow-sm">
+                      <div className="flex items-center gap-2 mb-4">
+                        <FileText className="w-5 h-5 text-primary" />
+                        <h3 className="font-semibold text-gray-900">Additional Information</h3>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {extraFields.map(([key, value]) => (
+                          <div key={key} className="p-3 bg-gray-50 rounded-xl">
+                            <p className="text-xs text-muted-foreground mb-1">
+                              {key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                            </p>
+                            <p className="font-medium text-gray-900 text-sm break-words">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  );
+                })()}
+
+                {/* Account Info */}
+                <Card className="p-6 border-primary/10 rounded-2xl shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-gray-900">Account Status</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Onboarding Status</p>
+                      <p className="font-medium text-gray-900 capitalize">{myProfile.status?.replace('_', ' ') || '-'}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Date Joined</p>
+                      <p className="font-medium text-gray-900">
+                        {myProfile.date_joined
+                          ? new Date(myProfile.date_joined).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                          : '-'}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-muted-foreground mb-1">Voice Recordings</p>
+                      <p className="font-medium text-gray-900">{myProfile.audio_count || 0}</p>
+                    </div>
+                  </div>
+                </Card>
+              </>
+            )}
           </TabsContent>
         </Tabs>
       </main>
