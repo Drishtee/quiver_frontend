@@ -6,7 +6,6 @@ import { ProgressIndicator } from "../components/progress-indicator";
 import { AIAssistant } from "../components/ai-assistant";
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import {
-  Mic,
   Beef,
   Shirt,
   UtensilsCrossed,
@@ -189,18 +188,13 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
             <label className="text-sm font-medium text-gray-900">
               व्यवसाय का नाम | Business Name <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="व्यवसाय का नाम दर्ज करें"
-                value={formData.businessName}
-                onChange={(e) => updateField('businessName', e.target.value)}
-                className="h-12 bg-gray-50 border-gray-200 pr-12 rounded-xl focus:border-primary focus:ring-primary"
-              />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                <Mic className="w-5 h-5 text-primary" />
-              </button>
-            </div>
+            <Input
+              type="text"
+              placeholder="व्यवसाय का नाम दर्ज करें"
+              value={formData.businessName}
+              onChange={(e) => updateField('businessName', e.target.value)}
+              className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+            />
           </div>
 
           {/* Sector Selection */}

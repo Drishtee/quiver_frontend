@@ -29,6 +29,7 @@
     "en": "English",
     "hi": "हिंदी",
     "as": "অসমীয়া",
+    "mr": "মাৰাঠী",
     "selectLanguage": "ভাষা বাছনি কৰক"
   },
   "landing": {
@@ -57,8 +58,11 @@
       "startVoice": "কণ্ঠেৰে কথোপকথন আৰম্ভ কৰক",
       "chatText": "টেক্সটেৰে চেট কৰক",
       "enterPhone": "আপোনাৰ ফোন নম্বৰ দিয়ক",
+      "consent": "মই সেৱাৰ চৰ্ত আৰু গোপনীয়তা নীতিৰ সৈতে সন্মত। মই SMS আৰু WhatsApp-ৰ জৰিয়তে যোগাযোগ লাভ কৰিবলৈ সন্মতি দিছোঁ।",
+      "continue": "আগবাঢ়ক",
+      "cancel": "বাতিল কৰক",
       "features": {
-        "languages": "৩ টা ভাষা",
+        "languages": "৪ টা ভাষা",
         "secure": "সুৰক্ষিত আৰু ব্যক্তিগত",
         "available": "২৪/৭ উপলব্ধ"
       }
@@ -382,10 +386,16 @@
   "dashboard": {
     "title": "ডেছব'ৰ্ড",
     "welcome": "পুনৰ স্বাগতম",
+    "greeting": {
+      "morning": "সুপ্ৰভাত",
+      "afternoon": "শুভ দুপৰীয়া",
+      "evening": "শুভ সন্ধিয়া"
+    },
     "tabs": {
       "overview": "সাৰাংশ",
       "meetings": "সভা",
-      "progress": "অগ্ৰগতি"
+      "progress": "অগ্ৰগতি",
+      "profile": "মোৰ প্ৰ'ফাইল"
     },
     "overview": {
       "upcomingMeetings": "আগন্তুক সভা",
@@ -394,23 +404,82 @@
       "nextMeeting": "পৰৱৰ্তী সভা",
       "joinMeeting": "সভাত যোগদান কৰক",
       "scheduleMeeting": "সভা নিৰ্ধাৰণ কৰক",
-      "viewGrowthPlan": "বিকাশ পৰিকল্পনা চাওক"
+      "viewGrowthPlan": "বিকাশ পৰিকল্পনা চাওক",
+      "scheduleNew": "নতুন সভা নিৰ্ধাৰণ কৰক",
+      "scheduleNewDesc": "Quiver পৰামৰ্শদাতাৰ সৈতে সত্ৰ বুক কৰক",
+      "trackProgress": "আপোনাৰ ব্যৱসায়ৰ অগ্ৰগতি চাওক",
+      "recentActivity": "শেহতীয়া কাৰ্যকলাপ",
+      "onboardingCompleted": "অনবৰ্ডিং সম্পূৰ্ণ",
+      "profileVerified": "আপোনাৰ প্ৰ'ফাইল প্ৰমাণিত হৈছে",
+      "meetingScheduled": "সভা নিৰ্ধাৰিত",
+      "growthSession": "বিকাশ কৌশল সত্ৰ",
+      "journeyProgress": "যাত্ৰাৰ অগ্ৰগতি",
+      "complete": "সম্পূৰ্ণ",
+      "scheduleFirst": "আপোনাৰ প্ৰথম সভা নিৰ্ধাৰণ কৰক",
+      "noMeetings": "কোনো আগন্তুক সভা নাই",
+      "startsIn": "{{hours}}ঘণ্টা {{minutes}}মিনিটত আৰম্ভ হ'ব"
     },
     "meetings": {
       "upcoming": "আগন্তুক সভা",
       "past": "পূৰ্বৰ সভা",
       "noUpcoming": "কোনো আগন্তুক সভা নাই",
-      "scheduleFirst": "এজন পৰামৰ্শদাতাৰ সৈতে আপোনাৰ প্ৰথম সভা নিৰ্ধাৰণ কৰক"
+      "scheduleFirst": "এজন পৰামৰ্শদাতাৰ সৈতে আপোনাৰ প্ৰথম সভা নিৰ্ধাৰণ কৰক",
+      "manageSessions": "আপোনাৰ নিৰ্ধাৰিত সত্ৰসমূহ পৰিচালনা কৰক",
+      "join": "যোগদান কৰক",
+      "scheduleYourFirst": "আপোনাৰ প্ৰথম সভা নিৰ্ধাৰণ কৰক",
+      "scheduled": "নিৰ্ধাৰিত",
+      "completed": "সম্পূৰ্ণ",
+      "cancelled": "বাতিল"
     },
     "progress": {
       "title": "আপোনাৰ যাত্ৰাৰ অগ্ৰগতি",
+      "subtitle": "Quiver-ৰ সৈতে আপোনাৰ উদ্যমশীলতা যাত্ৰা অনুসৰণ কৰক",
+      "overallProgress": "সামগ্ৰিক অগ্ৰগতি",
+      "milestonesCompleted": "{{total}} ৰ ভিতৰত {{completed}} মাইলফলক সম্পূৰ্ণ",
+      "journeyMilestones": "যাত্ৰাৰ মাইলফলক",
+      "aiGrowthPlan": "AI-চালিত বিকাশ পৰিকল্পনা",
+      "personalizedRec": "আপোনাৰ ব্যৱসায়ৰ বাবে ব্যক্তিগত পৰামৰ্শ লাভ কৰক",
+      "viewPlan": "পৰিকল্পনা চাওক",
       "milestones": {
         "profile": "প্ৰ'ফাইল সম্পূৰ্ণ",
         "consultation": "প্ৰাৰম্ভিক পৰামৰ্শ",
         "businessReview": "ব্যৱসায় পৰ্যালোচনা",
         "growthPlan": "বিকাশ পৰিকল্পনা সৃষ্টি",
         "capitalReady": "মূলধন সাজু"
-      }
+      },
+      "inProgress": "চলি আছে",
+      "completed": "সম্পূৰ্ণ"
+    },
+    "profile": {
+      "title": "মোৰ প্ৰ'ফাইল",
+      "subtitle": "আপোনাৰ ব্যক্তিগত আৰু ব্যৱসায়িক তথ্য",
+      "personalInfo": "ব্যক্তিগত তথ্য",
+      "location": "স্থান",
+      "businessInfo": "ব্যৱসায়িক তথ্য",
+      "additionalInfo": "অতিৰিক্ত তথ্য",
+      "accountStatus": "একাউণ্ট স্থিতি",
+      "fullName": "সম্পূৰ্ণ নাম",
+      "phone": "ফোন",
+      "email": "ইমেইল",
+      "gender": "লিংগ",
+      "age": "বয়স",
+      "education": "শিক্ষা",
+      "state": "ৰাজ্য",
+      "district": "জিলা",
+      "businessName": "ব্যৱসায়ৰ নাম",
+      "sector": "ক্ষেত্ৰ / উদ্যোগ",
+      "yearStarted": "আৰম্ভ কৰা বছৰ",
+      "ownershipType": "মালিকানাৰ প্ৰকাৰ",
+      "role": "আপোনাৰ ভূমিকা",
+      "products": "সামগ্ৰী / সেৱা",
+      "employees": "মুঠ কৰ্মচাৰী",
+      "revenue": "বাৰ্ষিক ৰাজহ",
+      "onboardingStatus": "অনবৰ্ডিং স্থিতি",
+      "dateJoined": "যোগদানৰ তাৰিখ",
+      "voiceRecordings": "কণ্ঠ ৰেকৰ্ডিং",
+      "noProfile": "এতিয়াও কোনো প্ৰ'ফাইল ডাটা নাই",
+      "completeOnboarding": "আপোনাৰ প্ৰ'ফাইল চাবলৈ অনবৰ্ডিং সম্পূৰ্ণ কৰক।",
+      "loadingProfile": "আপোনাৰ প্ৰ'ফাইল লোড হৈ আছে..."
     }
   },
   "meeting": {

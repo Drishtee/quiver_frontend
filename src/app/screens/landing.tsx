@@ -139,7 +139,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   <div id="avatar-video" className="w-full h-full flex items-center justify-center">
                     {showPhoneInput ? (
                       <div className="text-center p-6 w-full">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">Enter Your Phone Number</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">{t('landing.avatar.enterPhone')}</h3>
                         <form onSubmit={handlePhoneSubmit} className="space-y-4">
                           <div className="flex items-center gap-2">
                             <span className="text-gray-700 font-medium">+91</span>
@@ -166,11 +166,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                               htmlFor="landing-consent"
                               className="text-sm text-gray-700 cursor-pointer leading-relaxed"
                             >
-                              I agree to the{' '}
-                              <a href="#terms" className="text-primary hover:underline">Terms of Service</a>
-                              {' '}and{' '}
-                              <a href="#privacy" className="text-primary hover:underline">Privacy Policy</a>.
-                              I consent to receive communications via SMS and WhatsApp.
+                              {t('landing.avatar.consent')}
                             </label>
                           </div>
                           <button
@@ -178,7 +174,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                             disabled={!consentGiven || phoneNumber.length !== 10}
                             className="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary"
                           >
-                            Continue
+                            {t('landing.avatar.continue')}
                           </button>
                           <button
                             type="button"
@@ -188,7 +184,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                             }}
                             className="w-full text-gray-600 hover:text-gray-800 font-medium"
                           >
-                            Cancel
+                            {t('landing.avatar.cancel')}
                           </button>
                         </form>
                       </div>
@@ -197,8 +193,8 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                         <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl">
                           <i className="fa-solid fa-microphone-lines text-white text-5xl animate-pulse"></i>
                         </div>
-                        <p className="text-primary font-bold text-lg mb-2">Listening...</p>
-                        <p className="text-gray-600 text-sm">Speak in your language</p>
+                        <p className="text-primary font-bold text-lg mb-2">{t('landing.avatar.listening')}</p>
+                        <p className="text-gray-600 text-sm">{t('landing.avatar.speakLanguage')}</p>
                       </div>
                     ) : (
                       <div className="text-center">
@@ -211,7 +207,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                             <div className="w-3 h-3 bg-primary rounded-full animation-delay-200"></div>
                             <div className="w-3 h-3 bg-primary rounded-full animation-delay-400"></div>
                           </div>
-                          <p className="text-gray-600 text-sm">AI Assistant Ready</p>
+                          <p className="text-gray-600 text-sm">{t('landing.avatar.aiReady')}</p>
                         </div>
                       </div>
                     )}
@@ -223,9 +219,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   <>
                     <div className="text-center mb-6">
                       <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">
-                        Talk to Our Growth Expert
+                        {t('landing.avatar.title')}
                       </h3>
-                      <p className="text-gray-600">Voice or text — your choice, your language</p>
+                      <p className="text-gray-600">{t('landing.avatar.subtitle')}</p>
                     </div>
 
                     {/* Action Buttons - Mobile-first touch targets */}
@@ -236,7 +232,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                         className="bg-primary hover:bg-secondary active:bg-secondary/90 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 flex items-center justify-center min-h-[48px]"
                       >
                         <i className="fa-solid fa-microphone mr-2 md:mr-3 text-lg md:text-xl"></i>
-                        <span>Start Voice Conversation</span>
+                        <span>{t('landing.avatar.startVoice')}</span>
                       </button>
                       <button
                         id="start-text-btn"
@@ -244,7 +240,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                         className="bg-white hover:bg-gray-50 active:bg-gray-100 text-primary font-semibold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-lg border-2 border-primary transition-all flex items-center justify-center min-h-[48px]"
                       >
                         <i className="fa-solid fa-comments mr-2 md:mr-3 text-lg md:text-xl"></i>
-                        <span>Chat with Text</span>
+                        <span>{t('landing.avatar.chatText')}</span>
                       </button>
                     </div>
                   </>
@@ -254,15 +250,15 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 <div className="mt-6 flex items-center justify-center space-x-4 text-xs text-gray-500">
                   <div className="flex items-center">
                     <i className="fa-solid fa-language mr-1"></i>
-                    <span>10+ Languages</span>
+                    <span>{t('landing.avatar.features.languages')}</span>
                   </div>
                   <div className="flex items-center">
                     <i className="fa-solid fa-shield-halved mr-1"></i>
-                    <span>Secure & Private</span>
+                    <span>{t('landing.avatar.features.secure')}</span>
                   </div>
                   <div className="flex items-center">
                     <i className="fa-solid fa-clock mr-1"></i>
-                    <span>Available 24/7</span>
+                    <span>{t('landing.avatar.features.available')}</span>
                   </div>
                 </div>
               </div>
@@ -276,10 +272,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 md:mb-16">
             <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900 mb-3 md:mb-4">
-              What Quiver Does for You
+              {t('landing.whatQuiverDoes.title')}
             </h2>
             <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto">
-              You don't get everything. You get what your business actually needs.
+              {t('landing.whatQuiverDoes.subtitle')}
             </p>
           </div>
 
@@ -292,9 +288,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <div className="w-10 h-10 md:w-16 md:h-16 bg-primary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
                 <i className="fa-solid fa-coins text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Funding</h3>
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.funding.title')}</h3>
               <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                Money to grow your business — only if you need it, only what you need.
+                {t('landing.whatQuiverDoes.funding.description')}
               </p>
             </div>
 
@@ -306,9 +302,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <div className="w-10 h-10 md:w-16 md:h-16 bg-secondary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
                 <i className="fa-solid fa-user-tie text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Mentorship</h3>
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.mentorship.title')}</h3>
               <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                Guidance from experienced people who understand your challenges.
+                {t('landing.whatQuiverDoes.mentorship.description')}
               </p>
             </div>
 
@@ -320,9 +316,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <div className="w-10 h-10 md:w-16 md:h-16 bg-warm rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
                 <i className="fa-solid fa-graduation-cap text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Education</h3>
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.education.title')}</h3>
               <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                Learn new skills to run your business better and smarter.
+                {t('landing.whatQuiverDoes.education.description')}
               </p>
             </div>
 
@@ -334,9 +330,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <div className="w-10 h-10 md:w-16 md:h-16 bg-earth rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
                 <i className="fa-solid fa-toolbox text-white text-xl md:text-3xl"></i>
               </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">Tools & Support</h3>
+              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.tools.title')}</h3>
               <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                Practical help and tools to make your work easier every day.
+                {t('landing.whatQuiverDoes.tools.description')}
               </p>
             </div>
           </div>
@@ -348,13 +344,13 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-block bg-primary/10 text-primary px-6 py-3 rounded-full text-sm font-bold mb-6">
-              <i className="fa-solid fa-lightbulb mr-2"></i>Understanding Partnership
+              <i className="fa-solid fa-lightbulb mr-2"></i>{t('landing.equity.badge')}
             </div>
             <h2 className="text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-6">
-              What Does "Equity" Mean?
+              {t('landing.equity.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              It's simple: Partnership, not control. You remain the owner.
+              {t('landing.equity.subtitle')}
             </p>
           </div>
 
@@ -363,7 +359,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             {/* Before Quiver */}
             <div className="bg-white p-10 rounded-3xl shadow-xl">
               <h3 className="text-2xl font-display font-bold text-gray-900 mb-8 text-center">
-                Before Quiver
+                {t('landing.equity.before.title')}
               </h3>
               <div className="flex justify-center mb-6">
                 <div className="relative w-72 h-72">
@@ -373,20 +369,20 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                       <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 shadow-lg">
                         <div className="text-white text-center">
                           <i className="fa-solid fa-store text-5xl mb-3"></i>
-                          <div className="text-3xl font-bold">100%</div>
-                          <div className="text-sm mt-1">Your Business</div>
+                          <div className="text-3xl font-bold">{t('landing.equity.before.percent')}</div>
+                          <div className="text-sm mt-1">{t('landing.equity.before.ownership')}</div>
                         </div>
                       </div>
                       <div className="flex items-center justify-center space-x-2 text-gray-600">
                         <i className="fa-solid fa-coins text-yellow-500"></i>
-                        <span className="text-sm font-medium">Limited Resources</span>
+                        <span className="text-sm font-medium">{t('landing.equity.before.limited')}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <p className="text-center text-gray-600 text-lg">
-                You work alone with limited resources
+                {t('landing.equity.before.description')}
               </p>
             </div>
 
@@ -394,7 +390,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             <div className="bg-white p-10 rounded-3xl shadow-xl border-4 border-primary relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full"></div>
               <h3 className="text-2xl font-display font-bold text-primary mb-8 text-center relative z-10">
-                With Quiver Partnership
+                {t('landing.equity.after.title')}
               </h3>
               <div className="flex justify-center mb-6 relative z-10">
                 <div className="relative w-72 h-72">
@@ -404,31 +400,31 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                       <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg relative">
                         <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-warm to-earth rounded-full flex items-center justify-center shadow-xl border-4 border-white">
                           <div className="text-white text-center">
-                            <div className="text-xs font-bold">10-15%</div>
+                            <div className="text-xs font-bold">{t('landing.equity.after.quiverPercent')}</div>
                           </div>
                         </div>
                         <div className="text-white text-center">
                           <i className="fa-solid fa-store text-5xl mb-3"></i>
-                          <div className="text-3xl font-bold">85-90%</div>
-                          <div className="text-sm mt-1">You Own</div>
+                          <div className="text-3xl font-bold">{t('landing.equity.after.percent')}</div>
+                          <div className="text-sm mt-1">{t('landing.equity.after.youOwn')}</div>
                         </div>
                       </div>
                       <div className="mt-6 grid grid-cols-2 gap-3 text-xs">
                         <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
                           <i className="fa-solid fa-coins text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">Funding</div>
+                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.funding.title')}</div>
                         </div>
                         <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
                           <i className="fa-solid fa-user-tie text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">Mentorship</div>
+                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.mentorship.title')}</div>
                         </div>
                         <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
                           <i className="fa-solid fa-graduation-cap text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">Education</div>
+                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.education.title')}</div>
                         </div>
                         <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
                           <i className="fa-solid fa-toolbox text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">Tools</div>
+                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.tools.title')}</div>
                         </div>
                       </div>
                     </div>
@@ -436,7 +432,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 </div>
               </div>
               <p className="text-center text-gray-600 text-lg relative z-10">
-                You grow faster with support, money & guidance
+                {t('landing.equity.after.description')}
               </p>
             </div>
           </div>
@@ -448,31 +444,31 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 <i className="fa-solid fa-handshake text-5xl text-primary"></i>
               </div>
               <h3 className="text-3xl font-display font-bold text-gray-900 mb-4">
-                Like a Partner Who Helps You Grow
+                {t('landing.equity.benefits.title')}
               </h3>
-              <p className="text-xl text-gray-600">And grows with you</p>
+              <p className="text-xl text-gray-600">{t('landing.equity.benefits.subtitle')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-indigo-100 hover:border-primary transition-all">
                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
                   <i className="fa-solid fa-crown text-white text-2xl"></i>
                 </div>
-                <p className="font-bold text-gray-900 mb-2 text-lg">You Stay the Owner</p>
-                <p className="text-sm text-gray-600">Your business, your decisions</p>
+                <p className="font-bold text-gray-900 mb-2 text-lg">{t('landing.equity.benefits.stayOwner.title')}</p>
+                <p className="text-sm text-gray-600">{t('landing.equity.benefits.stayOwner.description')}</p>
               </div>
               <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-blue-100 hover:border-primary transition-all">
                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-accent to-secondary rounded-full flex items-center justify-center">
                   <i className="fa-solid fa-rocket text-white text-2xl"></i>
                 </div>
-                <p className="font-bold text-gray-900 mb-2 text-lg">We Support Growth</p>
-                <p className="text-sm text-gray-600">Money, guidance, tools</p>
+                <p className="font-bold text-gray-900 mb-2 text-lg">{t('landing.equity.benefits.supportGrowth.title')}</p>
+                <p className="text-sm text-gray-600">{t('landing.equity.benefits.supportGrowth.description')}</p>
               </div>
               <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-yellow-100 hover:border-primary transition-all">
                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-warm to-earth rounded-full flex items-center justify-center">
                   <i className="fa-solid fa-chart-line text-white text-2xl"></i>
                 </div>
-                <p className="font-bold text-gray-900 mb-2 text-lg">We Earn Together</p>
-                <p className="text-sm text-gray-600">Only when you succeed</p>
+                <p className="font-bold text-gray-900 mb-2 text-lg">{t('landing.equity.benefits.earnTogether.title')}</p>
+                <p className="text-sm text-gray-600">{t('landing.equity.benefits.earnTogether.description')}</p>
               </div>
             </div>
           </div>
@@ -484,9 +480,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold text-gray-900 mb-4">
-              What Equity is NOT
+              {t('landing.notEquity.title')}
             </h2>
-            <p className="text-xl text-gray-600">Clear answers to build your trust</p>
+            <p className="text-xl text-gray-600">{t('landing.notEquity.subtitle')}</p>
           </div>
 
           {/* What We DON'T Do */}
@@ -497,8 +493,8 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   <i className="fa-solid fa-times text-white text-2xl"></i>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">We DON'T Take Over</h3>
-                  <p className="text-gray-700">Your business remains yours. We don't become the boss.</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noTakeover.title')}</h3>
+                  <p className="text-gray-700">{t('landing.notEquity.noTakeover.description')}</p>
                 </div>
               </div>
             </div>
@@ -509,8 +505,8 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   <i className="fa-solid fa-times text-white text-2xl"></i>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">We DON'T Interfere Daily</h3>
-                  <p className="text-gray-700">You run your business. We guide when you need us.</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noInterfere.title')}</h3>
+                  <p className="text-gray-700">{t('landing.notEquity.noInterfere.description')}</p>
                 </div>
               </div>
             </div>
@@ -521,8 +517,8 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   <i className="fa-solid fa-times text-white text-2xl"></i>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">We DON'T Earn if You Don't</h3>
-                  <p className="text-gray-700">Our success is tied to your success. We grow together.</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noEarnAlone.title')}</h3>
+                  <p className="text-gray-700">{t('landing.notEquity.noEarnAlone.description')}</p>
                 </div>
               </div>
             </div>
@@ -533,8 +529,8 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   <i className="fa-solid fa-times text-white text-2xl"></i>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">NO Hidden Terms</h3>
-                  <p className="text-gray-700">Everything is explained clearly in your language.</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noHidden.title')}</h3>
+                  <p className="text-gray-700">{t('landing.notEquity.noHidden.description')}</p>
                 </div>
               </div>
             </div>
@@ -546,24 +542,24 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fa-solid fa-check text-white text-3xl"></i>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">We Guide</h3>
-              <p className="text-gray-700">With experience and care</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.weGuide.title')}</h3>
+              <p className="text-gray-700">{t('landing.notEquity.weGuide.description')}</p>
             </div>
 
             <div id="we-support" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fa-solid fa-check text-white text-3xl"></i>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">We Support</h3>
-              <p className="text-gray-700">With money and resources</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.weSupport.title')}</h3>
+              <p className="text-gray-700">{t('landing.notEquity.weSupport.description')}</p>
             </div>
 
             <div id="we-align" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fa-solid fa-check text-white text-3xl"></i>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">We Stay Aligned</h3>
-              <p className="text-gray-700">Your goals are our goals</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.weAlign.title')}</h3>
+              <p className="text-gray-700">{t('landing.notEquity.weAlign.description')}</p>
             </div>
           </div>
         </div>
@@ -574,9 +570,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold text-gray-900 mb-4">
-              How Quiver Decides What You Need
+              {t('landing.howItWorks.title')}
             </h2>
-            <p className="text-xl text-gray-600">Simple steps. You're always in control.</p>
+            <p className="text-xl text-gray-600">{t('landing.howItWorks.subtitle')}</p>
           </div>
 
           <div className="relative">
@@ -589,10 +585,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 <div className="lg:w-1/2 lg:text-right lg:pr-12">
                   <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
                     <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      1. You Tell Us About Your Business
+                      {t('landing.howItWorks.step1.title')}
                     </h3>
                     <p className="text-gray-600 text-lg">
-                      Use voice or answer simple questions in your language. No complicated forms.
+                      {t('landing.howItWorks.step1.description')}
                     </p>
                   </div>
                 </div>
@@ -607,10 +603,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 <div className="lg:w-1/2 lg:text-left lg:pl-12">
                   <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
                     <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      2. We Understand Your Challenges
+                      {t('landing.howItWorks.step2.title')}
                     </h3>
                     <p className="text-gray-600 text-lg">
-                      Our team listens carefully and identifies what will help you grow most.
+                      {t('landing.howItWorks.step2.description')}
                     </p>
                   </div>
                 </div>
@@ -625,10 +621,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 <div className="lg:w-1/2 lg:text-right lg:pr-12">
                   <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
                     <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      3. We Suggest Support
+                      {t('landing.howItWorks.step3.title')}
                     </h3>
                     <p className="text-gray-600 text-lg">
-                      Money, mentorship, education, or tools — only what makes sense for you.
+                      {t('landing.howItWorks.step3.description')}
                     </p>
                   </div>
                 </div>
@@ -643,10 +639,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 <div className="lg:w-1/2 lg:text-left lg:pl-12">
                   <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
                     <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      4. You Decide — Always
+                      {t('landing.howItWorks.step4.title')}
                     </h3>
                     <p className="text-gray-600 text-lg">
-                      Nothing is forced. Everything is explained. You choose what's right for you.
+                      {t('landing.howItWorks.step4.description')}
                     </p>
                   </div>
                 </div>
@@ -662,7 +658,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             <div className="bg-primary/10 inline-block px-8 py-4 rounded-full">
               <p className="text-lg font-semibold text-primary">
                 <i className="fa-solid fa-shield-heart mr-2"></i>
-                Nothing is forced. Everything is explained.
+                {t('landing.howItWorks.bottomNote')}
               </p>
             </div>
           </div>
@@ -681,26 +677,26 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             <img src="/logo.jpg" alt="Quiver" className="w-20 h-20 object-contain mb-6 inline-block bg-white rounded-2xl p-2 shadow-lg" />
           </div>
           <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6 leading-tight">
-            You Build the Business.<br/>
-            We Help It Grow.
+            {t('landing.cta.title')}<br/>
+            {t('landing.cta.titleLine2')}
           </h2>
           <p className="text-2xl mb-8 opacity-90">
-            Quiver is not a lender. Not a boss. A growth partner.
+            {t('landing.cta.subtitle')}
           </p>
-          
+
           <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-12 max-w-3xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div>
                 <div className="text-5xl font-bold mb-2">1000+</div>
-                <p className="text-lg opacity-90">Businesses Growing</p>
+                <p className="text-lg opacity-90">{t('landing.cta.stats.businesses')}</p>
               </div>
               <div>
                 <div className="text-5xl font-bold mb-2">₹50Cr+</div>
-                <p className="text-lg opacity-90">Support Provided</p>
+                <p className="text-lg opacity-90">{t('landing.cta.stats.support')}</p>
               </div>
               <div>
                 <div className="text-5xl font-bold mb-2">15+</div>
-                <p className="text-lg opacity-90">States Covered</p>
+                <p className="text-lg opacity-90">{t('landing.cta.stats.states')}</p>
               </div>
             </div>
           </div>
@@ -710,28 +706,28 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               onClick={() => setShowPhoneInput(true)}
               className="bg-white hover:bg-gray-100 text-primary font-bold py-5 px-10 rounded-full text-xl transition-all shadow-2xl hover:shadow-3xl transform hover:scale-105"
             >
-              <i className="fa-solid fa-comments mr-2"></i>Continue in Your Language
+              <i className="fa-solid fa-comments mr-2"></i>{t('landing.cta.continueLanguage')}
             </button>
             <button
               onClick={handleVoiceStart}
               className="bg-warm hover:bg-earth text-white font-bold py-5 px-10 rounded-full text-xl transition-all shadow-2xl hover:shadow-3xl transform hover:scale-105"
             >
-              <i className="fa-solid fa-microphone mr-2"></i>Start with Voice
+              <i className="fa-solid fa-microphone mr-2"></i>{t('landing.cta.startVoice')}
             </button>
           </div>
 
           <div className="mt-12 flex items-center justify-center space-x-8 text-sm opacity-90">
             <div className="flex items-center">
               <i className="fa-solid fa-lock mr-2"></i>
-              <span>100% Safe</span>
+              <span>{t('landing.cta.features.safe')}</span>
             </div>
             <div className="flex items-center">
               <i className="fa-solid fa-language mr-2"></i>
-              <span>Your Language</span>
+              <span>{t('landing.cta.features.yourLanguage')}</span>
             </div>
             <div className="flex items-center">
               <i className="fa-solid fa-heart mr-2"></i>
-              <span>Made for You</span>
+              <span>{t('landing.cta.features.madeForYou')}</span>
             </div>
           </div>
         </div>
@@ -742,25 +738,25 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-sm uppercase tracking-wider text-gray-500 font-semibold mb-6">
-              Trusted by Small Businesses Across India
+              {t('landing.trust.title')}
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60">
             <div className="text-center">
               <i className="fa-solid fa-store text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">Retail Shops</p>
+              <p className="text-sm font-medium text-gray-700">{t('landing.trust.retail')}</p>
             </div>
             <div className="text-center">
               <i className="fa-solid fa-utensils text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">Restaurants</p>
+              <p className="text-sm font-medium text-gray-700">{t('landing.trust.restaurants')}</p>
             </div>
             <div className="text-center">
               <i className="fa-solid fa-truck text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">Logistics</p>
+              <p className="text-sm font-medium text-gray-700">{t('landing.trust.logistics')}</p>
             </div>
             <div className="text-center">
               <i className="fa-solid fa-scissors text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">Services</p>
+              <p className="text-sm font-medium text-gray-700">{t('landing.trust.services')}</p>
             </div>
           </div>
         </div>
@@ -780,42 +776,43 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                 />
                 <span className="text-2xl font-display font-bold text-white">Quiver</span>
               </div>
-              <p className="text-sm">Your growth partner for building a better business.</p>
+              <p className="text-sm">{t('landing.footer.tagline')}</p>
             </div>
 
             {/* Company Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footer.company')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">How It Works</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Success Stories</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.aboutUs')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.howItWorks')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.successStories')}</a></li>
               </ul>
             </div>
 
             {/* Support Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Support</h4>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footer.support')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQs</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.helpCenter')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.contactUs')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.faqs')}</a></li>
               </ul>
             </div>
 
             {/* Language Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Language</h4>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footer.language')}</h4>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">हिंदी</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">English</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">தமிழ்</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">অসমীয়া</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">मराठी</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>&copy; 2024 Quiver. Made with <i className="fa-solid fa-heart text-red-500"></i> for Indian Entrepreneurs.</p>
+            <p>&copy; 2024 Quiver. {t('landing.footer.copyright')}</p>
           </div>
         </div>
       </footer>

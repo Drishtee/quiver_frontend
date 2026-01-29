@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { AIAssistant } from "../components/ai-assistant";
 import { ProgressIndicator } from "../components/progress-indicator";
-import { Mic, User, Users } from "lucide-react";
+import { User, Users } from "lucide-react";
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import '../screens/landing.css';
 
@@ -149,19 +149,13 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
               <label className="text-sm font-medium text-gray-900">
                 पूरा नाम | Full Name <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="अपना पूरा नाम दर्ज करें"
-                  value={formData.fullName}
-                  onChange={(e) => updateField('fullName', e.target.value)}
-                  className="h-12 bg-gray-50 border-gray-200 pr-12 rounded-xl focus:border-primary focus:ring-primary"
-                />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                  <Mic className="w-5 h-5 text-primary" />
-                </button>
-              </div>
-              <p className="text-xs text-gray-500">बोलकर भी भर सकते हैं | You can speak instead of typing</p>
+              <Input
+                type="text"
+                placeholder="अपना पूरा नाम दर्ज करें"
+                value={formData.fullName}
+                onChange={(e) => updateField('fullName', e.target.value)}
+                className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+              />
             </div>
 
             {/* Gender */}
@@ -260,18 +254,13 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
               <label className="text-sm font-medium text-gray-900">
                 जिला | District <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="जिले का नाम लिखें | Enter district name"
-                  value={formData.district}
-                  onChange={(e) => updateField('district', e.target.value)}
-                  className="h-12 bg-gray-50 border-gray-200 pr-12 rounded-xl focus:border-primary focus:ring-primary"
-                />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                  <Mic className="w-5 h-5 text-primary" />
-                </button>
-              </div>
+              <Input
+                type="text"
+                placeholder="जिले का नाम लिखें | Enter district name"
+                value={formData.district}
+                onChange={(e) => updateField('district', e.target.value)}
+                className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+              />
             </div>
 
             {/* Email (Optional) */}

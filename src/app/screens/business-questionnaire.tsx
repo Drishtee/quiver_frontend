@@ -9,7 +9,6 @@ import { AIAssistant } from "../components/ai-assistant";
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import { onboardingStorage } from "../../utils/storage";
 import {
-  Mic,
   Save,
   ShoppingCart,
   Users,
@@ -233,11 +232,8 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     placeholder="उदाहरण: मैं घर पर अचार बनाती हूँ और स्थानीय बाज़ार में बेचती हूँ..."
                     value={(answers.productDescription as string) || ''}
                     onChange={(e) => updateAnswer('productDescription', e.target.value)}
-                    className="min-h-[100px] md:min-h-[120px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
+                    className="min-h-[100px] md:min-h-[120px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base"
                   />
-                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                    <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                  </button>
                 </div>
               </div>
 
@@ -706,11 +702,8 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     placeholder="उदाहरण: सिलाई मशीन, ओवरलॉक मशीन, कटिंग टेबल..."
                     value={(answers.keyAssets as string) || ''}
                     onChange={(e) => updateAnswer('keyAssets', e.target.value)}
-                    className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
+                    className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base"
                   />
-                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                    <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                  </button>
                 </div>
               </div>
 
@@ -998,11 +991,8 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     placeholder="उदाहरण: नई मशीन खरीदना, कच्चा माल लाना, दुकान बड़ी करना..."
                     value={(answers.fundingUse as string) || ''}
                     onChange={(e) => updateAnswer('fundingUse', e.target.value)}
-                    className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base pr-12"
+                    className="min-h-[80px] md:min-h-[100px] bg-gray-50 border-gray-200 rounded-lg md:rounded-xl resize-none text-sm md:text-base"
                   />
-                  <button className="absolute right-2 bottom-2 md:right-3 md:bottom-3 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                    <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                  </button>
                 </div>
               </div>
             </div>

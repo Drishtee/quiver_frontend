@@ -781,15 +781,15 @@ export default function App() {
         <ScheduleMeeting
           onBack={handleGoToDashboard}
           onSchedule={(details) => {
-            // Show confirmation modal
+            // Show confirmation modal with real data from API
             setConfirmedMeeting({
-              id: Date.now().toString(),
+              id: details.meetingId || Date.now().toString(),
               title: "Meeting with Quiver Team",
               date: details.date,
               time: details.time,
               mentor: "Quiver Team",
               type: details.type,
-              meetLink: `https://meet.google.com/${Date.now()}`
+              meetLink: details.meetLink || 'Link will be available shortly'
             });
             setShowMeetingConfirmation(true);
           }}

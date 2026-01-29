@@ -204,6 +204,12 @@ export interface CreateMeetingResponse {
   status: MeetingStatus;
   is_recurring: boolean;
   created_at: string; // ISO datetime
+  google_meet_room?: {
+    meet_link: string;
+    calendar_link: string | null;
+    status: string;
+    recording_enabled: boolean;
+  } | null;
 }
 
 export interface ListMeetingsParams {

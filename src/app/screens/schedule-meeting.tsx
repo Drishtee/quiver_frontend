@@ -14,6 +14,9 @@ export interface MeetingDetails {
   enableWhatsAppReminder: boolean;
   reminderTimes: string[];
   videoPlatform: string;
+  meetingId?: string;
+  meetLink?: string;
+  calendarLink?: string;
 }
 
 interface ScheduleMeetingProps {
@@ -57,24 +60,31 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         const end_time = endDate.toISOString();
 
         // Schedule meeting via API - always with Quiver Team
-        await createMeeting({
+        const response = await createMeeting({
           title: "Meeting with Quiver Team",
           description: notes || undefined,
-          meeting_type: "consultation" as any,
+          meeting_type: "one_on_one",
           start_time,
           end_time,
           timezone: "Asia/Kolkata",
         });
 
-        // Call parent callback
+        // Extract meet link from API response
+        const meetLink = response.google_meet_room?.meet_link || '';
+        const calendarLink = response.google_meet_room?.calendar_link || '';
+
+        // Call parent callback with real data from API
         onSchedule({
           date: selectedDate,
           time: selectedTime,
-          type: "consultation",
+          type: "one_on_one",
           notes,
           enableWhatsAppReminder,
           reminderTimes,
-          videoPlatform: "google_meet"
+          videoPlatform: "google_meet",
+          meetingId: response.meeting_id,
+          meetLink,
+          calendarLink
         });
       } catch (error) {
         console.error('Failed to schedule meeting:', error);

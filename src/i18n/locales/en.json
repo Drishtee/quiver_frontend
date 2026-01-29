@@ -29,6 +29,7 @@
     "en": "English",
     "hi": "Hindi",
     "as": "Assamese",
+    "mr": "Marathi",
     "selectLanguage": "Select Language"
   },
   "landing": {
@@ -57,8 +58,11 @@
       "startVoice": "Start Voice Conversation",
       "chatText": "Chat with Text",
       "enterPhone": "Enter Your Phone Number",
+      "consent": "I agree to the Terms of Service and Privacy Policy. I consent to receive communications via SMS and WhatsApp.",
+      "continue": "Continue",
+      "cancel": "Cancel",
       "features": {
-        "languages": "3 Languages",
+        "languages": "4 Languages",
         "secure": "Secure & Private",
         "available": "Available 24/7"
       }
@@ -382,10 +386,16 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
     "tabs": {
       "overview": "Overview",
       "meetings": "Meetings",
-      "progress": "Progress"
+      "progress": "Progress",
+      "profile": "My Profile"
     },
     "overview": {
       "upcomingMeetings": "Upcoming Meetings",
@@ -394,23 +404,82 @@
       "nextMeeting": "Next Meeting",
       "joinMeeting": "Join Meeting",
       "scheduleMeeting": "Schedule Meeting",
-      "viewGrowthPlan": "View Growth Plan"
+      "viewGrowthPlan": "View Growth Plan",
+      "scheduleNew": "Schedule New Meeting",
+      "scheduleNewDesc": "Book a session with Quiver mentors",
+      "trackProgress": "Track your business progress",
+      "recentActivity": "Recent Activity",
+      "onboardingCompleted": "Onboarding completed",
+      "profileVerified": "Your profile has been verified",
+      "meetingScheduled": "Meeting scheduled",
+      "growthSession": "Growth Strategy Session",
+      "journeyProgress": "Journey Progress",
+      "complete": "complete",
+      "scheduleFirst": "Schedule your first meeting",
+      "noMeetings": "No upcoming meetings",
+      "startsIn": "Starts in {{hours}}h {{minutes}}m"
     },
     "meetings": {
       "upcoming": "Upcoming Meetings",
       "past": "Past Meetings",
       "noUpcoming": "No upcoming meetings",
-      "scheduleFirst": "Schedule your first meeting with a mentor"
+      "scheduleFirst": "Schedule your first meeting with a mentor",
+      "manageSessions": "Manage your scheduled sessions",
+      "join": "Join",
+      "scheduleYourFirst": "Schedule Your First Meeting",
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     },
     "progress": {
       "title": "Your Journey Progress",
+      "subtitle": "Track your entrepreneurship journey with Quiver",
+      "overallProgress": "Overall Progress",
+      "milestonesCompleted": "{{completed}} of {{total}} milestones completed",
+      "journeyMilestones": "Journey Milestones",
+      "aiGrowthPlan": "AI-Powered Growth Plan",
+      "personalizedRec": "Get personalized recommendations for your business",
+      "viewPlan": "View Plan",
       "milestones": {
         "profile": "Profile Completed",
         "consultation": "Initial Consultation",
         "businessReview": "Business Review",
         "growthPlan": "Growth Plan Created",
         "capitalReady": "Capital Ready"
-      }
+      },
+      "inProgress": "In Progress",
+      "completed": "Completed"
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Your personal and business information",
+      "personalInfo": "Personal Information",
+      "location": "Location",
+      "businessInfo": "Business Information",
+      "additionalInfo": "Additional Information",
+      "accountStatus": "Account Status",
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
+      "gender": "Gender",
+      "age": "Age",
+      "education": "Education",
+      "state": "State",
+      "district": "District",
+      "businessName": "Business Name",
+      "sector": "Sector / Industry",
+      "yearStarted": "Year Started",
+      "ownershipType": "Ownership Type",
+      "role": "Your Role",
+      "products": "Products / Services",
+      "employees": "Total Employees",
+      "revenue": "Annual Revenue",
+      "onboardingStatus": "Onboarding Status",
+      "dateJoined": "Date Joined",
+      "voiceRecordings": "Voice Recordings",
+      "noProfile": "No profile data yet",
+      "completeOnboarding": "Complete your onboarding to see your profile here.",
+      "loadingProfile": "Loading your profile..."
     }
   },
   "meeting": {

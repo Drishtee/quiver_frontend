@@ -5,11 +5,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './locales/en.json';
 import hi from './locales/hi.json';
 import as from './locales/as.json';
+import mr from './locales/mr.json';
 
 const resources = {
   en: { translation: en },
   hi: { translation: hi },
-  as: { translation: as }
+  as: { translation: as },
+  mr: { translation: mr }
 };
 
 i18n
@@ -38,10 +40,11 @@ export const changeLanguage = (lang: string) => {
 
 export const getCurrentLanguage = () => i18n.language;
 
-export type SupportedLanguage = 'en' | 'hi' | 'as';
+export type SupportedLanguage = 'en' | 'hi' | 'as' | 'mr';
 
 export const languages: { code: SupportedLanguage; name: string; nativeName: string }[] = [
   { code: 'en', name: 'English', nativeName: 'English' },
   { code: 'hi', name: 'Hindi', nativeName: 'हिंदी' },
-  { code: 'as', name: 'Assamese', nativeName: 'অসমীয়া' }
+  { code: 'as', name: 'Assamese', nativeName: 'অসমীয়া' },
+  { code: 'mr', name: 'Marathi', nativeName: 'मराठी' }
 ];

@@ -29,6 +29,7 @@
     "en": "English",
     "hi": "हिंदी",
     "as": "অসমীয়া",
+    "mr": "मराठी",
     "selectLanguage": "भाषा चुनें"
   },
   "landing": {
@@ -57,8 +58,11 @@
       "startVoice": "आवाज़ से बातचीत शुरू करें",
       "chatText": "टेक्स्ट से चैट करें",
       "enterPhone": "अपना फ़ोन नंबर दर्ज करें",
+      "consent": "मैं सेवा की शर्तों और गोपनीयता नीति से सहमत हूँ। मैं SMS और WhatsApp के माध्यम से संचार प्राप्त करने की सहमति देता/देती हूँ।",
+      "continue": "आगे बढ़ें",
+      "cancel": "रद्द करें",
       "features": {
-        "languages": "3 भाषाएं",
+        "languages": "4 भाषाएं",
         "secure": "सुरक्षित और निजी",
         "available": "24/7 उपलब्ध"
       }
@@ -382,10 +386,16 @@
   "dashboard": {
     "title": "डैशबोर्ड",
     "welcome": "वापस स्वागत है",
+    "greeting": {
+      "morning": "सुप्रभात",
+      "afternoon": "शुभ दोपहर",
+      "evening": "शुभ संध्या"
+    },
     "tabs": {
       "overview": "अवलोकन",
       "meetings": "मीटिंग्स",
-      "progress": "प्रगति"
+      "progress": "प्रगति",
+      "profile": "मेरी प्रोफाइल"
     },
     "overview": {
       "upcomingMeetings": "आगामी मीटिंग्स",
@@ -394,23 +404,82 @@
       "nextMeeting": "अगली मीटिंग",
       "joinMeeting": "मीटिंग में शामिल हों",
       "scheduleMeeting": "मीटिंग शेड्यूल करें",
-      "viewGrowthPlan": "विकास योजना देखें"
+      "viewGrowthPlan": "विकास योजना देखें",
+      "scheduleNew": "नई मीटिंग शेड्यूल करें",
+      "scheduleNewDesc": "Quiver मेंटर्स के साथ सत्र बुक करें",
+      "trackProgress": "अपनी व्यवसाय प्रगति देखें",
+      "recentActivity": "हालिया गतिविधि",
+      "onboardingCompleted": "ऑनबोर्डिंग पूर्ण",
+      "profileVerified": "आपकी प्रोफाइल सत्यापित हो गई",
+      "meetingScheduled": "मीटिंग शेड्यूल की गई",
+      "growthSession": "विकास रणनीति सत्र",
+      "journeyProgress": "यात्रा प्रगति",
+      "complete": "पूर्ण",
+      "scheduleFirst": "अपनी पहली मीटिंग शेड्यूल करें",
+      "noMeetings": "कोई आगामी मीटिंग नहीं",
+      "startsIn": "{{hours}}घं {{minutes}}मि में शुरू होगी"
     },
     "meetings": {
       "upcoming": "आगामी मीटिंग्स",
       "past": "पिछली मीटिंग्स",
       "noUpcoming": "कोई आगामी मीटिंग नहीं",
-      "scheduleFirst": "एक मेंटर के साथ अपनी पहली मीटिंग शेड्यूल करें"
+      "scheduleFirst": "एक मेंटर के साथ अपनी पहली मीटिंग शेड्यूल करें",
+      "manageSessions": "अपने शेड्यूल किए गए सत्र प्रबंधित करें",
+      "join": "शामिल हों",
+      "scheduleYourFirst": "अपनी पहली मीटिंग शेड्यूल करें",
+      "scheduled": "शेड्यूल किया गया",
+      "completed": "पूर्ण",
+      "cancelled": "रद्द किया गया"
     },
     "progress": {
       "title": "आपकी यात्रा प्रगति",
+      "subtitle": "Quiver के साथ अपनी उद्यमिता यात्रा को ट्रैक करें",
+      "overallProgress": "समग्र प्रगति",
+      "milestonesCompleted": "{{total}} में से {{completed}} मील के पत्थर पूर्ण",
+      "journeyMilestones": "यात्रा के मील के पत्थर",
+      "aiGrowthPlan": "AI-संचालित विकास योजना",
+      "personalizedRec": "अपने व्यवसाय के लिए व्यक्तिगत सिफारिशें प्राप्त करें",
+      "viewPlan": "योजना देखें",
       "milestones": {
         "profile": "प्रोफाइल पूर्ण",
         "consultation": "प्रारंभिक परामर्श",
         "businessReview": "व्यवसाय समीक्षा",
         "growthPlan": "विकास योजना बनाई गई",
         "capitalReady": "पूंजी तैयार"
-      }
+      },
+      "inProgress": "प्रगति में",
+      "completed": "पूर्ण"
+    },
+    "profile": {
+      "title": "मेरी प्रोफाइल",
+      "subtitle": "आपकी व्यक्तिगत और व्यावसायिक जानकारी",
+      "personalInfo": "व्यक्तिगत जानकारी",
+      "location": "स्थान",
+      "businessInfo": "व्यावसायिक जानकारी",
+      "additionalInfo": "अतिरिक्त जानकारी",
+      "accountStatus": "खाता स्थिति",
+      "fullName": "पूरा नाम",
+      "phone": "फोन",
+      "email": "ईमेल",
+      "gender": "लिंग",
+      "age": "आयु",
+      "education": "शिक्षा",
+      "state": "राज्य",
+      "district": "जिला",
+      "businessName": "व्यवसाय का नाम",
+      "sector": "क्षेत्र / उद्योग",
+      "yearStarted": "शुरू करने का वर्ष",
+      "ownershipType": "स्वामित्व प्रकार",
+      "role": "आपकी भूमिका",
+      "products": "उत्पाद / सेवाएं",
+      "employees": "कुल कर्मचारी",
+      "revenue": "वार्षिक राजस्व",
+      "onboardingStatus": "ऑनबोर्डिंग स्थिति",
+      "dateJoined": "शामिल होने की तारीख",
+      "voiceRecordings": "वॉइस रिकॉर्डिंग",
+      "noProfile": "अभी तक कोई प्रोफाइल डेटा नहीं",
+      "completeOnboarding": "अपनी प्रोफाइल देखने के लिए ऑनबोर्डिंग पूर्ण करें।",
+      "loadingProfile": "आपकी प्रोफाइल लोड हो रही है..."
     }
   },
   "meeting": {
