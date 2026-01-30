@@ -8,7 +8,10 @@ export async function fetchNotes(): Promise<FeedbackNote[]> {
     const res = await fetch(`${BASE}/feedback/notes/`);
     if (!res.ok) return [];
     const data = await res.json();
-    return (data.notes ?? []) as FeedbackNote[];
+    return ((data.notes ?? []) as FeedbackNote[]).map((n) => ({
+      ...n,
+      webhookSent: n.webhookSent ?? true,
+    }));
   } catch {
     return [];
   }

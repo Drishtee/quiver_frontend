@@ -43,16 +43,17 @@ function FeedbackInner() {
     return () => clearInterval(pollRef.current);
   }, [loadNotes]);
 
-  // Re-detect route on navigation (popstate + SPA pushState polling)
+  // Re-detect route on navigation and after DOM settles on refresh.
+  // Always poll detectRoute() so heading-based detection picks up
+  // headings that render after mount.
   useEffect(() => {
     const onPop = () => setCurrentRoute(detectRoute());
     window.addEventListener('popstate', onPop);
 
     const id = setInterval(() => {
-      if (window.location.pathname !== lastPathRef.current) {
-        lastPathRef.current = window.location.pathname;
-        setCurrentRoute(detectRoute());
-      }
+      const detected = detectRoute();
+      lastPathRef.current = window.location.pathname;
+      setCurrentRoute((prev) => (prev !== detected ? detected : prev));
     }, 500);
 
     return () => {
