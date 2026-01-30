@@ -9,9 +9,9 @@ export async function sendWebhook(note: FeedbackNote): Promise<boolean> {
       body: JSON.stringify({
         source: 'quiver-feedback',
         comment: note.text,
-        page: note.page,
+        route: note.route,
         section: note.section,
-        coordinates: { xPercent: note.xPercent, yPercent: note.yPercent },
+        coordinates: { xPx: note.xPx, yPx: note.yPx },
         timestamp: note.timestamp,
         feedbackId: note.id,
       }),

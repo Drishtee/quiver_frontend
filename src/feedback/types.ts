@@ -1,10 +1,10 @@
 export interface FeedbackNote {
   id: string;
   text: string;
-  page: string;
+  route: string;
   section: string;
-  xPercent: number;
-  yPercent: number;
+  xPx: number;
+  yPx: number;
   timestamp: string;
   webhookSent: boolean;
 }

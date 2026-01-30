@@ -1,107 +1,111 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { FeedbackNote } from './types';
-import { loadNotes, saveNotes } from './storage';
+import { fetchNotes, createNote, deleteNote } from './api';
 import { sendWebhook } from './webhook';
-import { detectPage, detectSection } from './detectSection';
+import { detectRoute, detectSection } from './detectSection';
 import { DraggableNotePen } from './DraggableNotePen';
 import { PasskeyPrompt } from './PasskeyPrompt';
 import { CommentForm } from './CommentForm';
 import { StickyNote } from './StickyNote';
 
 const ENABLED = import.meta.env.VITE_FEEDBACK_ENABLED === 'true';
-
-/*
-  Flow:
-  1. User drags the pen icon and drops it somewhere on the page.
-  2. Passkey prompt appears.  Correct passkey → proceed.  Wrong → stays locked.
-  3. Comment form appears at the drop location.
-  4. User writes a comment and submits.
-  5. A sticky note is placed there (visible to this browser), and the webhook fires.
-*/
+const SESSION_KEY = 'quiver_feedback_unlocked';
+const POLL_INTERVAL = 15_000; // refresh notes every 15 seconds
 
 type Stage =
   | { step: 'idle' }
-  | { step: 'passkey'; xPercent: number; yPercent: number; section: string; page: string }
-  | { step: 'comment'; xPercent: number; yPercent: number; section: string; page: string };
+  | { step: 'passkey'; xPx: number; yPx: number; section: string; route: string }
+  | { step: 'comment'; xPx: number; yPx: number; section: string; route: string };
 
 export function FeedbackRoot() {
   if (!ENABLED) return null;
-
   return <FeedbackInner />;
 }
 
 function FeedbackInner() {
-  const [notes, setNotes] = useState<FeedbackNote[]>(() => loadNotes());
+  const [notes, setNotes] = useState<FeedbackNote[]>([]);
   const [stage, setStage] = useState<Stage>({ step: 'idle' });
+  const [unlocked, setUnlocked] = useState(
+    () => sessionStorage.getItem(SESSION_KEY) === 'true'
+  );
+  const pollRef = useRef<ReturnType<typeof setInterval>>();
 
-  // Persist on change
-  useEffect(() => { saveNotes(notes); }, [notes]);
-
-  // Pen dropped — start passkey flow
-  const handleDrop = useCallback((xPercent: number, yPercent: number) => {
-    const page = detectPage();
-    const clientX = (xPercent / 100) * window.innerWidth;
-    const clientY = (yPercent / 100) * window.innerHeight;
-    const section = detectSection(clientX, clientY);
-    setStage({ step: 'passkey', xPercent, yPercent, section, page });
+  // Load notes from backend on mount + poll
+  const loadNotes = useCallback(() => {
+    fetchNotes().then(setNotes);
   }, []);
+
+  useEffect(() => {
+    loadNotes();
+    pollRef.current = setInterval(loadNotes, POLL_INTERVAL);
+    return () => clearInterval(pollRef.current);
+  }, [loadNotes]);
+
+  // Pen dropped
+  const handleDrop = useCallback((xPx: number, yPx: number, clientX: number, clientY: number) => {
+    const route = detectRoute();
+    const section = detectSection(clientX, clientY);
+
+    if (unlocked) {
+      // Already authenticated this session — go straight to comment
+      setStage({ step: 'comment', xPx, yPx, section, route });
+    } else {
+      setStage({ step: 'passkey', xPx, yPx, section, route });
+    }
+  }, [unlocked]);
 
   const handlePasskeySuccess = () => {
     if (stage.step !== 'passkey') return;
+    setUnlocked(true);
+    sessionStorage.setItem(SESSION_KEY, 'true');
     setStage({ ...stage, step: 'comment' });
   };
 
   const handleCancel = () => setStage({ step: 'idle' });
 
-  const handleComment = (text: string) => {
+  const handleComment = async (text: string) => {
     if (stage.step !== 'comment') return;
 
-    const note: FeedbackNote = {
-      id: crypto.randomUUID(),
+    const saved = await createNote({
       text,
-      page: stage.page,
+      route: stage.route,
       section: stage.section,
-      xPercent: stage.xPercent,
-      yPercent: stage.yPercent,
-      timestamp: new Date().toISOString(),
-      webhookSent: false,
-    };
+      xPx: stage.xPx,
+      yPx: stage.yPx,
+    });
 
-    setNotes((prev) => [note, ...prev]);
     setStage({ step: 'idle' });
 
-    // Fire-and-forget webhook
-    sendWebhook(note).then((ok) => {
-      setNotes((prev) => prev.map((n) => (n.id === note.id ? { ...n, webhookSent: ok } : n)));
-    });
+    if (saved) {
+      setNotes((prev) => [saved, ...prev]);
+      // Also fire the webhook notification
+      sendWebhook({ ...saved, webhookSent: false }).catch(() => {});
+    }
   };
 
-  const handleDelete = useCallback((id: string) => {
-    setNotes((prev) => prev.filter((n) => n.id !== id));
+  const handleDelete = useCallback(async (id: string) => {
+    const ok = await deleteNote(id);
+    if (ok) setNotes((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
   return (
     <>
-      {/* Draggable pen — always visible when idle */}
       {stage.step === 'idle' && <DraggableNotePen onDrop={handleDrop} />}
 
-      {/* Passkey prompt */}
       {stage.step === 'passkey' && (
         <PasskeyPrompt onSuccess={handlePasskeySuccess} onCancel={handleCancel} />
       )}
 
-      {/* Comment form at drop location */}
       {stage.step === 'comment' && (
         <CommentForm
-          xPercent={stage.xPercent}
-          yPercent={stage.yPercent}
+          xPx={stage.xPx}
+          yPx={stage.yPx}
           section={stage.section}
           onSubmit={handleComment}
           onCancel={handleCancel}
         />
       )}
 
-      {/* All placed sticky notes */}
       {notes.map((note) => (
         <StickyNote key={note.id} note={note} onDelete={handleDelete} />
       ))}

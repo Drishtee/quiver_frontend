@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Z } from './constants';
 import type { FeedbackNote } from './types';
 
@@ -10,16 +11,19 @@ interface Props {
 export function StickyNote({ note, onDelete }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  return (
+  // Portal into document.body with position:absolute so notes
+  // are placed in document-space and scroll with the content.
+  return createPortal(
     <div
       style={{
-        position: 'fixed',
-        left: `${note.xPercent}%`,
-        top: `${note.yPercent}%`,
+        position: 'absolute',
+        left: note.xPx,
+        top: note.yPx,
         zIndex: Z.note,
         transform: 'translate(-50%, -50%)',
         maxWidth: expanded ? 240 : 32,
         transition: 'max-width 0.15s ease',
+        pointerEvents: 'auto',
       }}
     >
       {/* Collapsed: small yellow square */}
@@ -59,19 +63,13 @@ export function StickyNote({ note, onDelete }: Props) {
             position: 'relative',
           }}
         >
-          {/* Close / Delete row */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, marginBottom: 4 }}>
             <button
               onClick={() => setExpanded(false)}
               title="Collapse"
               style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: 14,
-                color: '#92400e',
-                padding: 0,
-                lineHeight: 1,
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: 14, color: '#92400e', padding: 0, lineHeight: 1,
               }}
             >
               &minus;
@@ -80,13 +78,8 @@ export function StickyNote({ note, onDelete }: Props) {
               onClick={() => onDelete(note.id)}
               title="Delete note"
               style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: 14,
-                color: '#dc2626',
-                padding: 0,
-                lineHeight: 1,
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: 14, color: '#dc2626', padding: 0, lineHeight: 1,
               }}
             >
               &times;
@@ -95,6 +88,7 @@ export function StickyNote({ note, onDelete }: Props) {
 
           <div style={{ marginBottom: 6, wordBreak: 'break-word' }}>{note.text}</div>
           <div style={{ fontSize: 10, color: '#a16207' }}>
+            <div style={{ fontWeight: 600 }}>{note.route}</div>
             {note.section && <div>{note.section}</div>}
             <div>{new Date(note.timestamp).toLocaleString()}</div>
             {!note.webhookSent && (
@@ -103,6 +97,7 @@ export function StickyNote({ note, onDelete }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 }

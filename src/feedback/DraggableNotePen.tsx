@@ -2,7 +2,8 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { Z } from './constants';
 
 interface Props {
-  onDrop: (xPercent: number, yPercent: number) => void;
+  /** Called with document-space pixel coordinates */
+  onDrop: (xPx: number, yPx: number, clientX: number, clientY: number) => void;
 }
 
 const PEN_SIZE = 44;
@@ -39,35 +40,32 @@ export function DraggableNotePen({ onDrop }: Props) {
       if (!dragging) return;
       setDragging(false);
 
-      // Calculate where the center of the pen was dropped
+      // Center of the pen at drop
       const cx = e.clientX - offsetRef.current.x + PEN_SIZE / 2;
       const cy = e.clientY - offsetRef.current.y + PEN_SIZE / 2;
 
-      // Ignore if dropped back near the rest position
+      // Ignore if dropped near the rest position
       const restX = REST_LEFT + PEN_SIZE / 2;
       const restY = window.innerHeight - REST_BOTTOM - PEN_SIZE / 2;
-      const dist = Math.sqrt((cx - restX) ** 2 + (cy - restY) ** 2);
-      if (dist < 60) {
+      if (Math.sqrt((cx - restX) ** 2 + (cy - restY) ** 2) < 60) {
         setPos(null);
         return;
       }
 
-      const xPercent = (cx / window.innerWidth) * 100;
-      const yPercent = (cy / window.innerHeight) * 100;
+      // Convert to document-space pixels (scroll-inclusive)
+      const xPx = cx + window.scrollX;
+      const yPx = cy + window.scrollY;
+
       setPos(null);
-      onDrop(xPercent, yPercent);
+      onDrop(xPx, yPx, cx, cy);
     },
     [dragging, onDrop]
   );
 
-  // When not dragging, Escape cancels
   useEffect(() => {
     if (!dragging) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setDragging(false);
-        setPos(null);
-      }
+      if (e.key === 'Escape') { setDragging(false); setPos(null); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -109,9 +107,7 @@ export function DraggableNotePen({ onDrop }: Props) {
           borderRadius: '50%',
           background: '#fef08a',
           border: '2px solid #eab308',
-          boxShadow: dragging
-            ? '0 6px 20px rgba(0,0,0,0.25)'
-            : '0 2px 8px rgba(0,0,0,0.15)',
+          boxShadow: dragging ? '0 6px 20px rgba(0,0,0,0.25)' : '0 2px 8px rgba(0,0,0,0.15)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -119,7 +115,6 @@ export function DraggableNotePen({ onDrop }: Props) {
           userSelect: 'none',
         }}
       >
-        {/* Pen/note icon */}
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 20h9" />
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />

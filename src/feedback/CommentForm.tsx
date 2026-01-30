@@ -2,14 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Z } from './constants';
 
 interface Props {
-  xPercent: number;
-  yPercent: number;
+  xPx: number;
+  yPx: number;
   section: string;
   onSubmit: (text: string) => void;
   onCancel: () => void;
 }
 
-export function CommentForm({ xPercent, yPercent, section, onSubmit, onCancel }: Props) {
+export function CommentForm({ xPx, yPx, section, onSubmit, onCancel }: Props) {
   const [text, setText] = useState('');
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -21,16 +21,20 @@ export function CommentForm({ xPercent, yPercent, section, onSubmit, onCancel }:
     if (trimmed) onSubmit(trimmed);
   };
 
-  const left = Math.min(xPercent, 65);
-  const top = Math.min(yPercent, 55);
+  // Show the form near the drop point but in viewport coordinates,
+  // clamped so it doesn't overflow offscreen.
+  const viewX = xPx - window.scrollX;
+  const viewY = yPx - window.scrollY;
+  const left = Math.min(Math.max(viewX, 10), window.innerWidth - 300);
+  const top = Math.min(Math.max(viewY, 10), window.innerHeight - 250);
 
   return (
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
         position: 'fixed',
-        left: `${left}%`,
-        top: `${top}%`,
+        left,
+        top,
         zIndex: Z.form,
         width: 280,
       }}
