@@ -29,6 +29,8 @@ function FeedbackInner() {
     () => sessionStorage.getItem(SESSION_KEY) === 'true'
   );
   const pollRef = useRef<ReturnType<typeof setInterval>>();
+  const [currentRoute, setCurrentRoute] = useState(() => detectRoute());
+  const lastPathRef = useRef(window.location.pathname);
 
   // Load notes from backend on mount + poll
   const loadNotes = useCallback(() => {
@@ -40,6 +42,24 @@ function FeedbackInner() {
     pollRef.current = setInterval(loadNotes, POLL_INTERVAL);
     return () => clearInterval(pollRef.current);
   }, [loadNotes]);
+
+  // Re-detect route on navigation (popstate + SPA pushState polling)
+  useEffect(() => {
+    const onPop = () => setCurrentRoute(detectRoute());
+    window.addEventListener('popstate', onPop);
+
+    const id = setInterval(() => {
+      if (window.location.pathname !== lastPathRef.current) {
+        lastPathRef.current = window.location.pathname;
+        setCurrentRoute(detectRoute());
+      }
+    }, 500);
+
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      clearInterval(id);
+    };
+  }, []);
 
   // Pen dropped
   const handleDrop = useCallback((xPx: number, yPx: number, clientX: number, clientY: number) => {
@@ -106,7 +126,7 @@ function FeedbackInner() {
         />
       )}
 
-      {notes.map((note) => (
+      {notes.filter((n) => n.route === currentRoute).map((note) => (
         <StickyNote key={note.id} note={note} onDelete={handleDelete} />
       ))}
     </>

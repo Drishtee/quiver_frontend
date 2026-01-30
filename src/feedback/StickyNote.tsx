@@ -26,25 +26,42 @@ export function StickyNote({ note, onDelete }: Props) {
         pointerEvents: 'auto',
       }}
     >
-      {/* Collapsed: small yellow square */}
+      {/* Collapsed: small yellow square with delete badge */}
       {!expanded && (
-        <div
-          onClick={() => setExpanded(true)}
-          style={{
-            width: 28,
-            height: 28,
-            background: '#fef08a',
-            border: '1px solid #eab308',
-            borderRadius: 4,
-            cursor: 'pointer',
-            boxShadow: '1px 2px 4px rgba(0,0,0,0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 14,
-          }}
-        >
-          <span style={{ lineHeight: 1 }}>&#9998;</span>
+        <div style={{ position: 'relative', width: 28, height: 28 }}>
+          <div
+            onClick={() => setExpanded(true)}
+            style={{
+              width: 28,
+              height: 28,
+              background: '#fef08a',
+              border: '1px solid #eab308',
+              borderRadius: 4,
+              cursor: 'pointer',
+              boxShadow: '1px 2px 4px rgba(0,0,0,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 14,
+            }}
+          >
+            <span style={{ lineHeight: 1 }}>&#9998;</span>
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete(note.id); }}
+            title="Delete note"
+            style={{
+              position: 'absolute', top: -6, right: -6,
+              width: 16, height: 16, borderRadius: '50%',
+              background: '#dc2626', color: '#fff',
+              border: 'none', cursor: 'pointer',
+              fontSize: 11, lineHeight: '16px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+            }}
+          >
+            &times;
+          </button>
         </div>
       )}
 
