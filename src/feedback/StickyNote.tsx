@@ -6,17 +6,18 @@ import type { FeedbackNote } from './types';
 interface Props {
   note: FeedbackNote;
   onDelete: (id: string) => void;
+  canDelete: boolean;
 }
 
-export function StickyNote({ note, onDelete }: Props) {
+export function StickyNote({ note, onDelete, canDelete }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  // Portal into document.body with position:absolute so notes
-  // are placed in document-space and scroll with the content.
+  // Portal into document.body with position:fixed so notes
+  // stay at the viewport position where they were placed.
   return createPortal(
     <div
       style={{
-        position: 'absolute',
+        position: 'fixed',
         left: note.xPx,
         top: note.yPx,
         zIndex: Z.note,
@@ -47,21 +48,23 @@ export function StickyNote({ note, onDelete }: Props) {
           >
             <span style={{ lineHeight: 1 }}>&#9998;</span>
           </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); onDelete(note.id); }}
-            title="Delete note"
-            style={{
-              position: 'absolute', top: -6, right: -6,
-              width: 16, height: 16, borderRadius: '50%',
-              background: '#dc2626', color: '#fff',
-              border: 'none', cursor: 'pointer',
-              fontSize: 11, lineHeight: '16px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-            }}
-          >
-            &times;
-          </button>
+          {canDelete && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(note.id); }}
+              title="Delete note"
+              style={{
+                position: 'absolute', top: -6, right: -6,
+                width: 16, height: 16, borderRadius: '50%',
+                background: '#dc2626', color: '#fff',
+                border: 'none', cursor: 'pointer',
+                fontSize: 11, lineHeight: '16px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+              }}
+            >
+              &times;
+            </button>
+          )}
         </div>
       )}
 
@@ -91,16 +94,18 @@ export function StickyNote({ note, onDelete }: Props) {
             >
               &minus;
             </button>
-            <button
-              onClick={() => onDelete(note.id)}
-              title="Delete note"
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontSize: 14, color: '#dc2626', padding: 0, lineHeight: 1,
-              }}
-            >
-              &times;
-            </button>
+            {canDelete && (
+              <button
+                onClick={() => onDelete(note.id)}
+                title="Delete note"
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 14, color: '#dc2626', padding: 0, lineHeight: 1,
+                }}
+              >
+                &times;
+              </button>
+            )}
           </div>
 
           <div style={{ marginBottom: 6, wordBreak: 'break-word' }}>{note.text}</div>

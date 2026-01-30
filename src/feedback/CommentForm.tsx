@@ -21,10 +21,10 @@ export function CommentForm({ xPx, yPx, section, onSubmit, onCancel }: Props) {
     if (trimmed) onSubmit(trimmed);
   };
 
-  // Show the form near the drop point but in viewport coordinates,
-  // clamped so it doesn't overflow offscreen.
-  const viewX = xPx - window.scrollX;
-  const viewY = yPx - window.scrollY;
+  // xPx/yPx are already viewport-relative coordinates.
+  // Clamp so the form doesn't overflow offscreen.
+  const viewX = xPx;
+  const viewY = yPx;
   const left = Math.min(Math.max(viewX, 10), window.innerWidth - 300);
   const top = Math.min(Math.max(viewY, 10), window.innerHeight - 250);
 

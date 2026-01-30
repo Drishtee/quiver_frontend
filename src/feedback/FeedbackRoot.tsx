@@ -128,7 +128,7 @@ function FeedbackInner() {
       )}
 
       {notes.filter((n) => n.route === currentRoute).map((note) => (
-        <StickyNote key={note.id} note={note} onDelete={handleDelete} />
+        <StickyNote key={note.id} note={note} onDelete={handleDelete} canDelete={unlocked} />
       ))}
     </>
   );

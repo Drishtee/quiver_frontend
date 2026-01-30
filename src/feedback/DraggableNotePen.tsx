@@ -52,9 +52,10 @@ export function DraggableNotePen({ onDrop }: Props) {
         return;
       }
 
-      // Convert to document-space pixels (scroll-inclusive)
-      const xPx = cx + window.scrollX;
-      const yPx = cy + window.scrollY;
+      // Store viewport-relative coordinates (not scroll-inclusive)
+      // so notes stay at the same screen position across refreshes.
+      const xPx = cx;
+      const yPx = cy;
 
       setPos(null);
       onDrop(xPx, yPx, cx, cy);
