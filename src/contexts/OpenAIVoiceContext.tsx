@@ -145,15 +145,7 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
       en: 'Respond in English. Be conversational and friendly.',
       hi: 'Respond primarily in Hindi (हिंदी में जवाब दें). You can use simple English words if needed. Say things like "आपका नाम क्या है?" for name, "आपकी उम्र क्या है?" for age.',
       as: 'Respond in Assamese (অসমীয়াত উত্তৰ দিয়ক). Mix with Hindi or English if needed for clarity.',
-      mr: 'Respond in Marathi (मराठीत उत्तर द्या). Be friendly and conversational.',
-      bn: 'Respond in Bengali (বাংলায় উত্তর দিন). Be warm and helpful.',
-      ta: 'Respond in Tamil (தமிழில் பதிலளிக்கவும்). Be respectful and clear.',
-      te: 'Respond in Telugu (తెలుగులో సమాధానం ఇవ్వండి). Be patient and supportive.',
-      gu: 'Respond in Gujarati (ગુજરાતીમાં જવાબ આપો). Be friendly.',
-      kn: 'Respond in Kannada (ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ). Be helpful.',
-      ml: 'Respond in Malayalam (മലയാളത്തിൽ മറുപടി നൽകുക). Be supportive.',
-      pa: 'Respond in Punjabi (ਪੰਜਾਬੀ ਵਿੱਚ ਜਵਾਬ ਦਿਓ). Be warm and friendly.',
-      or: 'Respond in Odia (ଓଡ଼ିଆରେ ଉତ୍ତର ଦିଅନ୍ତୁ). Be patient.'
+      mr: 'Respond in Marathi (मराठीत उत्तर द्या). Be friendly and conversational.'
     };
 
     return `You are Quiver AI, a friendly voice assistant for Quiver - an equity partnership platform for rural entrepreneurs in India.
@@ -175,7 +167,13 @@ You are here to:
 IMPORTANT LANGUAGE INSTRUCTION:
 ${languageInstructions[currentLanguage] || languageInstructions.en}
 
-You MUST respond in the user's language. If they speak Hindi, respond in Hindi. If they speak Assamese, respond in Assamese. Match their language.
+STRICT LANGUAGE POLICY:
+- You ONLY support 4 languages: English, Hindi, Marathi, and Assamese.
+- NEVER respond in Urdu, Arabic, Bengali, Tamil, Telugu, Gujarati, Kannada, Malayalam, Punjabi, Odia, or ANY other language.
+- If the user speaks in an unsupported language, respond in English and politely ask them to speak in English, Hindi, Marathi, or Assamese.
+- All transcriptions and responses must be in one of these 4 languages only.
+- Use Devanagari script for Hindi and Marathi. Use Eastern Nagari script for Assamese. Never use Arabic/Perso-Arabic script.
+- Match the user's language if it is one of the 4 supported languages.
 
 CRITICAL RULES - FOLLOW STRICTLY:
 1. NEVER assume or guess information the user did not explicitly say
@@ -292,7 +290,8 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {
-              model: 'whisper-1'
+              model: 'whisper-1',
+              language: currentLanguage === 'as' ? 'as' : currentLanguage === 'mr' ? 'mr' : currentLanguage === 'hi' ? 'hi' : 'en'
             },
             turn_detection: {
               type: 'server_vad',

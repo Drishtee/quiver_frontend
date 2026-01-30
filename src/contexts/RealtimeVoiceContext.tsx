@@ -128,15 +128,23 @@ export const RealtimeVoiceProvider: React.FC<RealtimeVoiceProviderProps> = ({ ch
     const screenFields = state.currentScreen ? getFieldsForScreen(state.currentScreen) : [];
     const fieldsList = screenFields.map(f => `- ${f.fieldKey}: ${f.aliases.en[0]}`).join('\n');
 
-    const languageInstructions = {
+    const languageInstructions: Record<string, string> = {
       en: 'Respond in English.',
       hi: 'Respond in Hindi (हिंदी में जवाब दें).',
-      as: 'Respond in Assamese (অসমীয়াত উত্তৰ দিয়ক).'
+      as: 'Respond in Assamese (অসমীয়াত উত্তৰ দিয়ক).',
+      mr: 'Respond in Marathi (मराठीत उत्तर द्या).'
     };
 
     return `You are a friendly voice assistant helping users fill out onboarding forms for Quiver, a platform that connects entrepreneurs with mentors and investors.
 
-${languageInstructions[currentLanguage as keyof typeof languageInstructions] || languageInstructions.en}
+${languageInstructions[currentLanguage] || languageInstructions.en}
+
+STRICT LANGUAGE POLICY:
+- You ONLY support 4 languages: English, Hindi, Marathi, and Assamese.
+- NEVER respond in Urdu, Arabic, Bengali, Tamil, Telugu, Gujarati, Kannada, Malayalam, Punjabi, Odia, or ANY other language.
+- If the user speaks in an unsupported language, respond in English and politely ask them to speak in English, Hindi, Marathi, or Assamese.
+- All transcriptions and responses must be in one of these 4 languages only.
+- Use Devanagari script for Hindi and Marathi. Use Eastern Nagari script for Assamese. Never use Arabic/Perso-Arabic script.
 
 Your role is to:
 1. Guide the user through filling out form fields naturally through conversation
@@ -180,7 +188,10 @@ Keep responses concise and conversational.`;
           instructions: getSystemPrompt(),
           input_audio_format: 'pcm16',
           output_audio_format: 'pcm16',
-          input_audio_transcription: { model: 'whisper-1' },
+          input_audio_transcription: {
+            model: 'whisper-1',
+            language: currentLanguage === 'as' ? 'as' : currentLanguage === 'mr' ? 'mr' : currentLanguage === 'hi' ? 'hi' : 'en'
+          },
           turn_detection: {
             type: 'server_vad',
             threshold: 0.5,
@@ -221,7 +232,8 @@ Keep responses concise and conversational.`;
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {
-              model: 'whisper-1'
+              model: 'whisper-1',
+              language: currentLanguage === 'as' ? 'as' : currentLanguage === 'mr' ? 'mr' : currentLanguage === 'hi' ? 'hi' : 'en'
             },
             turn_detection: {
               type: 'server_vad',

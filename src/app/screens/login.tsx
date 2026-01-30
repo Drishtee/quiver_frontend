@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Checkbox } from "../components/ui/checkbox";
-import { ArrowLeft, Sparkles, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { verifyOTP } from "../../services/api";
 
 import type { VerifyOTPResponse } from "../../types/api";
@@ -71,9 +71,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
+            <img src="/logo.jpg" alt="Quiver Logo" className="w-8 h-8 object-contain" />
             <h1 className="text-lg md:text-xl font-semibold text-foreground">Quiver</h1>
           </div>
         </div>
