@@ -85,8 +85,7 @@
       "tools": {
         "title": "Tools & Support",
         "description": "Practical help and tools to make your work easier every day."
-      },
-      "learnMore": "Ask our AI"
+      }
     },
     "equity": {
       "badge": "Understanding Partnership",
@@ -100,7 +99,7 @@
         "description": "You work alone with limited resources"
       },
       "after": {
-        "title": "With Quiver",
+        "title": "With Quiver Partnership",
         "youOwn": "You Own",
         "percent": "85-90%",
         "quiverPercent": "10-15%",
@@ -121,8 +120,7 @@
           "title": "We Earn Together",
           "description": "Only when you succeed"
         }
-      },
-      "cta": "Have Questions? Ask Our AI"
+      }
     },
     "notEquity": {
       "title": "What Equity is NOT",
@@ -160,35 +158,32 @@
       "title": "How Quiver Decides What You Need",
       "subtitle": "Simple steps. You're always in control.",
       "step1": {
-        "title": "Tell Us About Your Business",
+        "title": "1. You Tell Us About Your Business",
         "description": "Use voice or answer simple questions in your language. No complicated forms."
       },
       "step2": {
-        "title": "We Understand Your Challenges",
+        "title": "2. We Understand Your Challenges",
         "description": "Our team listens carefully and identifies what will help you grow most."
       },
       "step3": {
-        "title": "We Suggest Support",
+        "title": "3. We Suggest Support",
         "description": "Money, mentorship, education, or tools — only what makes sense for you."
       },
       "step4": {
-        "title": "You Decide — Always",
+        "title": "4. You Decide — Always",
         "description": "Nothing is forced. Everything is explained. You choose what's right for you."
       },
-      "bottomNote": "Nothing is forced. Everything is explained.",
-      "cta": "Get Started Now"
-    },
-    "stats": {
-      "heading": "Growing Across India",
-      "subtitle": "Trusted by entrepreneurs in 15+ states",
-      "businesses": "Businesses Growing",
-      "support": "Support Provided",
-      "states": "States Covered"
+      "bottomNote": "Nothing is forced. Everything is explained."
     },
     "cta": {
       "title": "You Build the Business.",
       "titleLine2": "We Help It Grow.",
       "subtitle": "Quiver is not a lender. Not a boss. A growth partner.",
+      "stats": {
+        "businesses": "Businesses Growing",
+        "support": "Support Provided",
+        "states": "States Covered"
+      },
       "continueLanguage": "Continue in Your Language",
       "startVoice": "Start with Voice",
       "features": {
@@ -199,9 +194,9 @@
     },
     "trust": {
       "title": "Trusted by Small Businesses Across India",
-      "retail": "Retail Shops",
-      "restaurants": "Restaurants",
-      "logistics": "Logistics",
+      "retail": "Farmers",
+      "restaurants": "Retailers",
+      "logistics": "Distributors  ",
       "services": "Services"
     },
     "footer": {
@@ -224,8 +219,7 @@
     },
     "socialProof": {
       "title": "See How Quiver Helps Businesses Grow",
-      "subtitle": "Real stories from real entrepreneurs",
-      "cta": "Start Your Growth Journey"
+      "subtitle": "Real stories from real entrepreneurs"
     }
   },
   "consent": {
