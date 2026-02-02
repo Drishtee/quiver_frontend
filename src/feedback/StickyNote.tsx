@@ -55,7 +55,7 @@ export function StickyNote({ note, onDelete, canDelete }: Props) {
               style={{
                 position: 'absolute', top: -6, right: -6,
                 width: 16, height: 16, borderRadius: '50%',
-                background: '#dc2626', color: '#fff',
+                background: '#475569', color: '#fff',
                 border: 'none', cursor: 'pointer',
                 fontSize: 11, lineHeight: '16px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -100,7 +100,7 @@ export function StickyNote({ note, onDelete, canDelete }: Props) {
                 title="Delete note"
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: 14, color: '#dc2626', padding: 0, lineHeight: 1,
+                  fontSize: 14, color: '#475569', padding: 0, lineHeight: 1,
                 }}
               >
                 &times;
@@ -114,7 +114,7 @@ export function StickyNote({ note, onDelete, canDelete }: Props) {
             {note.section && <div>{note.section}</div>}
             <div>{new Date(note.timestamp).toLocaleString()}</div>
             {!note.webhookSent && (
-              <div style={{ color: '#dc2626', marginTop: 2 }}>Webhook failed</div>
+              <div style={{ color: '#D97706', marginTop: 2 }}>Webhook failed</div>
             )}
           </div>
         </div>

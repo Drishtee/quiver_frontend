@@ -186,7 +186,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           {/* Business Name */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
             <label className="text-sm font-medium text-gray-900">
-              व्यवसाय का नाम | Business Name <span className="text-red-500">*</span>
+              व्यवसाय का नाम | Business Name <span className="text-amber-500">*</span>
             </label>
             <Input
               type="text"
@@ -200,7 +200,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           {/* Sector Selection */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
             <label className="text-sm font-medium text-gray-900">
-              व्यवसाय क्षेत्र | Sector <span className="text-red-500">*</span>
+              व्यवसाय क्षेत्र | Sector <span className="text-amber-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-4">
               {sectors.map((sector) => {
@@ -238,7 +238,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           {/* Year Started */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
             <label className="text-sm font-medium text-gray-900">
-              व्यवसाय शुरू करने का वर्ष | Year Started <span className="text-red-500">*</span>
+              व्यवसाय शुरू करने का वर्ष | Year Started <span className="text-amber-500">*</span>
             </label>
             <Input
               type="number"
@@ -254,7 +254,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           {/* Ownership Type */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
             <label className="text-sm font-medium text-gray-900">
-              स्वामित्व | Ownership Type <span className="text-red-500">*</span>
+              स्वामित्व | Ownership Type <span className="text-amber-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
               {ownershipTypes.map((type) => {
@@ -284,7 +284,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           {/* Role */}
           <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-4">
             <label className="text-sm font-medium text-gray-900">
-              आपकी भूमिका | Your Role <span className="text-red-500">*</span>
+              आपकी भूमिका | Your Role <span className="text-amber-500">*</span>
             </label>
             <RadioGroup
               value={formData.role}

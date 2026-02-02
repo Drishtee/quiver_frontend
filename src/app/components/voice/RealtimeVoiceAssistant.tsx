@@ -164,11 +164,11 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
       case 'connecting':
         return { text: texts.connecting, color: 'text-yellow-600', bg: 'bg-yellow-100' };
       case 'connected':
-        if (voice.isRecording) return { text: texts.listening, color: 'text-red-600', bg: 'bg-red-100' };
+        if (voice.isRecording) return { text: texts.listening, color: 'text-amber-600', bg: 'bg-amber-100' };
         if (voice.isSpeaking) return { text: texts.speaking, color: 'text-blue-600', bg: 'bg-blue-100' };
         return { text: texts.connected, color: 'text-green-600', bg: 'bg-green-100' };
       case 'error':
-        return { text: texts.error, color: 'text-red-600', bg: 'bg-red-100' };
+        return { text: texts.error, color: 'text-amber-600', bg: 'bg-amber-100' };
       default:
         return { text: texts.disconnected, color: 'text-gray-600', bg: 'bg-gray-100' };
     }
@@ -203,7 +203,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
         {/* Status indicator */}
         <div className={`px-4 py-2 rounded-full ${statusInfo.bg} ${statusInfo.color} text-sm font-medium flex items-center gap-2 shadow-lg`}>
           {voice.connectionStatus === 'connecting' && <Loader2 className="w-4 h-4 animate-spin" />}
-          {voice.isRecording && <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
+          {voice.isRecording && <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />}
           {voice.isSpeaking && <AudioLines className="w-4 h-4 animate-pulse" />}
           <span>{statusInfo.text}</span>
         </div>
@@ -212,7 +212,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
         <button
           onClick={voice.toggleMute}
           className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-colors ${
-            voice.isMuted ? 'bg-red-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+            voice.isMuted ? 'bg-amber-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
           }`}
         >
           {voice.isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -274,7 +274,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
         <div className={`flex items-center gap-2 ${statusInfo.color} text-sm font-medium`}>
           {voice.connectionStatus === 'connecting' && <Loader2 className="w-4 h-4 animate-spin" />}
           {voice.connectionStatus === 'connected' && voice.isRecording && (
-            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
           )}
           {voice.connectionStatus === 'connected' && voice.isSpeaking && (
             <AudioLines className="w-4 h-4 animate-pulse" />
@@ -284,7 +284,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
         {voice.connectionStatus === 'connected' && (
           <button
             onClick={voice.disconnect}
-            className="text-xs text-red-600 hover:text-red-700 font-medium flex items-center gap-1"
+            className="text-xs text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
           >
             <PhoneOff className="w-3 h-3" />
             {texts.endCall}
@@ -457,7 +457,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
               ))}
               <button
                 onClick={voice.clearRecordings}
-                className="w-full text-xs text-red-600 hover:text-red-700 py-1"
+                className="w-full text-xs text-amber-600 hover:text-amber-700 py-1"
               >
                 {texts.delete} All
               </button>
@@ -468,10 +468,10 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
 
       {/* Error display */}
       {voice.error && (
-        <div className="px-4 py-2 bg-red-50 border-t border-red-100 flex items-center gap-2 flex-shrink-0">
-          <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <p className="text-xs text-red-700 flex-1">{voice.error}</p>
-          <button onClick={voice.clearError} className="text-red-500 hover:text-red-700">
+        <div className="px-4 py-2 bg-amber-50 border-t border-amber-100 flex items-center gap-2 flex-shrink-0">
+          <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <p className="text-xs text-amber-700 flex-1">{voice.error}</p>
+          <button onClick={voice.clearError} className="text-amber-500 hover:text-amber-700">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -505,7 +505,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
                 onClick={voice.toggleMute}
                 className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all ${
                   voice.isMuted
-                    ? 'bg-red-500 hover:bg-red-600'
+                    ? 'bg-amber-500 hover:bg-amber-600'
                     : 'bg-gradient-to-br from-primary to-secondary hover:shadow-lg'
                 }`}
               >
@@ -516,8 +516,8 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
                 )}
                 {!voice.isMuted && voice.isRecording && (
                   <>
-                    <span className="absolute inset-0 rounded-full bg-red-500/50 animate-ping" />
-                    <span className="absolute inset-[-4px] rounded-full border-2 border-red-300 animate-pulse" />
+                    <span className="absolute inset-0 rounded-full bg-amber-500/50 animate-ping" />
+                    <span className="absolute inset-[-4px] rounded-full border-2 border-amber-300 animate-pulse" />
                   </>
                 )}
                 {voice.isSpeaking && (

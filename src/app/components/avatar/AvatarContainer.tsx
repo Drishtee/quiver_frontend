@@ -315,7 +315,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
               onClick={isListening ? stopListening : startListening}
               className={`p-3 rounded-full transition-all ${
                 isListening
-                  ? 'bg-red-500 text-white animate-pulse'
+                  ? 'bg-amber-500 text-white animate-pulse'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >

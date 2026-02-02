@@ -71,8 +71,8 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="max-w-md w-full mx-auto px-6">
           <div className="bg-white rounded-2xl border border-border shadow-sm p-8 text-center space-y-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-              <PhoneOff className="w-8 h-8 text-red-600" />
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
+              <PhoneOff className="w-8 h-8 text-amber-600" />
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-semibold text-foreground">
@@ -118,7 +118,7 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
           <Button
             onClick={onEndCall}
             variant="outline"
-            className="border-red-200 text-red-600 hover:bg-red-50"
+            className="border-amber-200 text-amber-600 hover:bg-amber-50"
           >
             <PhoneOff className="w-4 h-4 mr-2" />
             Leave
@@ -146,11 +146,11 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
                 {meetData?.recording_enabled && (
                   <div className="flex items-start gap-3">
                     <div className="w-5 h-5 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-foreground">Recording</p>
-                      <p className="text-sm text-red-600">This meeting is being recorded</p>
+                      <p className="text-sm text-amber-600">This meeting is being recorded</p>
                     </div>
                   </div>
                 )}

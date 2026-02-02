@@ -165,11 +165,11 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
       case 'connecting':
         return { text: texts.connecting, color: 'text-amber-600', bg: 'bg-amber-50', pulse: true };
       case 'connected':
-        if (voice.isRecording) return { text: texts.listening, color: 'text-red-600', bg: 'bg-red-50', pulse: true };
+        if (voice.isRecording) return { text: texts.listening, color: 'text-amber-600', bg: 'bg-amber-50', pulse: true };
         if (voice.isSpeaking) return { text: texts.speaking, color: 'text-blue-600', bg: 'bg-blue-50', pulse: true };
         return { text: texts.connected, color: 'text-emerald-600', bg: 'bg-emerald-50', pulse: false };
       case 'error':
-        return { text: texts.error, color: 'text-red-600', bg: 'bg-red-50', pulse: false };
+        return { text: texts.error, color: 'text-amber-600', bg: 'bg-amber-50', pulse: false };
       default:
         return { text: texts.disconnected, color: 'text-gray-600', bg: 'bg-gray-50', pulse: false };
     }
@@ -189,10 +189,10 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
         aria-label="Open Quiver AI Assistant"
       >
         {/* Outer glow animation - smaller on mobile */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-40 blur-md md:blur-lg animate-pulse" />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 opacity-40 blur-md md:blur-lg animate-pulse" />
 
         {/* Main button - compact on mobile */}
-        <div className="relative flex items-center gap-2 md:gap-3 px-3 py-2 md:px-5 md:py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 shadow-lg md:shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105">
+        <div className="relative flex items-center gap-2 md:gap-3 px-3 py-2 md:px-5 md:py-3 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 shadow-lg md:shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105">
           {/* Sparkle icon */}
           <div className="relative">
             <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
@@ -226,8 +226,8 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
           {voice.connectionStatus === 'connecting' && <Loader2 className="w-3.5 h-3.5 md:w-4 md:h-4 animate-spin text-amber-600" />}
           {voice.isRecording && (
             <span className="relative flex h-2.5 w-2.5 md:h-3 md:w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 md:h-3 md:w-3 bg-red-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 md:h-3 md:w-3 bg-amber-500"></span>
             </span>
           )}
           {voice.isSpeaking && <AudioLines className="w-3.5 h-3.5 md:w-4 md:h-4 animate-pulse text-blue-600" />}
@@ -239,7 +239,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
           onClick={voice.toggleMute}
           className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${
             voice.isMuted
-              ? 'bg-red-500 text-white hover:bg-red-600'
+              ? 'bg-amber-500 text-white hover:bg-amber-600'
               : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
           }`}
         >
@@ -269,7 +269,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
   return (
     <div className="fixed inset-x-2 bottom-2 md:inset-auto md:bottom-6 md:right-6 z-50 md:w-[380px] max-h-[80vh] md:max-h-[85vh] bg-white rounded-2xl md:rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
       {/* Header with gradient - compact on mobile */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 px-4 py-3 md:px-5 md:py-4 flex items-center justify-between flex-shrink-0">
+      <div className="bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 px-4 py-3 md:px-5 md:py-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2 md:gap-3">
           <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
             <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
@@ -303,8 +303,8 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
           {voice.connectionStatus === 'connecting' && <Loader2 className="w-3.5 h-3.5 md:w-4 md:h-4 animate-spin" />}
           {voice.connectionStatus === 'connected' && voice.isRecording && (
             <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-red-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-amber-500"></span>
             </span>
           )}
           {voice.connectionStatus === 'connected' && voice.isSpeaking && (
@@ -315,7 +315,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
         {voice.connectionStatus === 'connected' && (
           <button
             onClick={voice.disconnect}
-            className="flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs text-red-600 hover:text-red-700 font-medium px-1.5 py-0.5 md:px-2 md:py-1 rounded-md hover:bg-red-50 transition-colors"
+            className="flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs text-amber-600 hover:text-amber-700 font-medium px-1.5 py-0.5 md:px-2 md:py-1 rounded-md hover:bg-amber-50 transition-colors"
           >
             <PhoneOff className="w-3 h-3 md:w-3.5 md:h-3.5" />
             {texts.endCall}
@@ -329,8 +329,8 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
           <div className="text-center py-4 md:py-8">
             {voice.connectionStatus === 'connected' ? (
               <>
-                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-xl md:rounded-2xl bg-gradient-to-br from-violet-100 to-fuchsia-100 flex items-center justify-center">
-                  <AudioLines className="w-6 h-6 md:w-8 md:h-8 text-violet-500" />
+                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-xl md:rounded-2xl bg-gradient-to-br from-emerald-100 to-green-100 flex items-center justify-center">
+                  <AudioLines className="w-6 h-6 md:w-8 md:h-8 text-emerald-500" />
                 </div>
                 <p className="text-gray-600 font-medium text-sm md:text-base">{texts.listening}</p>
                 <p className="text-gray-400 text-xs md:text-sm mt-1">{texts.noFieldsYet}</p>
@@ -354,7 +354,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                 <div
                   className={`max-w-[88%] md:max-w-[85%] rounded-xl md:rounded-2xl px-3 py-2 md:px-4 md:py-3 ${
                     message.type === 'user'
-                      ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-br-sm md:rounded-br-md'
+                      ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-br-sm md:rounded-br-md'
                       : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm md:rounded-bl-md shadow-sm'
                   }`}
                 >
@@ -408,7 +408,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                       type="text"
                       value={editValue}
                       onChange={(e) => setEditValue(e.target.value)}
-                      className="w-full text-xs md:text-sm border border-gray-200 rounded-md md:rounded-lg px-1.5 py-0.5 md:px-2 md:py-1 mt-0.5 md:mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                      className="w-full text-xs md:text-sm border border-gray-200 rounded-md md:rounded-lg px-1.5 py-0.5 md:px-2 md:py-1 mt-0.5 md:mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       autoFocus
                     />
                   ) : (
@@ -485,7 +485,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                   </div>
                   <button
                     onClick={() => voice.downloadRecording(recording.id)}
-                    className="p-1.5 text-violet-600 hover:bg-violet-100 rounded-lg transition-colors"
+                    className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
                   >
                     <Download className="w-4 h-4" />
                   </button>
@@ -493,7 +493,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
               ))}
               <button
                 onClick={voice.clearRecordings}
-                className="w-full text-xs text-red-500 hover:text-red-600 py-1 font-medium"
+                className="w-full text-xs text-amber-500 hover:text-amber-600 py-1 font-medium"
               >
                 {texts.delete} All
               </button>
@@ -504,10 +504,10 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
 
       {/* Error display */}
       {voice.error && (
-        <div className="px-4 py-2.5 bg-red-50 border-t border-red-100 flex items-center gap-2 flex-shrink-0">
-          <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <p className="text-xs text-red-700 flex-1">{voice.error}</p>
-          <button onClick={voice.clearError} className="text-red-400 hover:text-red-600 transition-colors">
+        <div className="px-4 py-2.5 bg-amber-50 border-t border-amber-100 flex items-center gap-2 flex-shrink-0">
+          <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <p className="text-xs text-amber-700 flex-1">{voice.error}</p>
+          <button onClick={voice.clearError} className="text-amber-400 hover:text-amber-600 transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -519,7 +519,7 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
           <button
             onClick={voice.connect}
             disabled={voice.connectionStatus === 'connecting'}
-            className="w-full h-10 md:h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg md:rounded-xl font-semibold text-sm md:text-base flex items-center justify-center gap-2 hover:from-violet-700 hover:to-fuchsia-700 transition-all disabled:opacity-50 shadow-lg"
+            className="w-full h-10 md:h-12 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg md:rounded-xl font-semibold text-sm md:text-base flex items-center justify-center gap-2 hover:from-emerald-700 hover:to-green-700 transition-all disabled:opacity-50 shadow-lg"
           >
             {voice.connectionStatus === 'connecting' ? (
               <>
@@ -541,8 +541,8 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                 onClick={voice.toggleMute}
                 className={`relative w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all ${
                   voice.isMuted
-                    ? 'bg-red-500 hover:bg-red-600'
-                    : 'bg-gradient-to-br from-violet-600 to-fuchsia-600 hover:shadow-lg'
+                    ? 'bg-amber-500 hover:bg-amber-600'
+                    : 'bg-gradient-to-br from-emerald-600 to-green-600 hover:shadow-lg'
                 }`}
               >
                 {voice.isMuted ? (
@@ -552,12 +552,12 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                 )}
                 {!voice.isMuted && voice.isRecording && (
                   <>
-                    <span className="absolute inset-0 rounded-full bg-red-500/40 animate-ping" />
-                    <span className="absolute inset-[-3px] md:inset-[-4px] rounded-full border-2 border-red-300 animate-pulse" />
+                    <span className="absolute inset-0 rounded-full bg-amber-500/40 animate-ping" />
+                    <span className="absolute inset-[-3px] md:inset-[-4px] rounded-full border-2 border-amber-300 animate-pulse" />
                   </>
                 )}
                 {voice.isSpeaking && (
-                  <span className="absolute inset-[-3px] md:inset-[-4px] rounded-full border-2 border-violet-300 animate-pulse" />
+                  <span className="absolute inset-[-3px] md:inset-[-4px] rounded-full border-2 border-emerald-300 animate-pulse" />
                 )}
               </button>
             </div>
@@ -569,12 +569,12 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 placeholder={texts.typeMessage}
-                className="flex-1 px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm border border-gray-200 rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500"
+                className="flex-1 px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm border border-gray-200 rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
               />
               <button
                 type="submit"
                 disabled={!textInput.trim()}
-                className="px-3 py-2 md:px-4 md:py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg md:rounded-xl hover:from-violet-700 hover:to-fuchsia-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="px-3 py-2 md:px-4 md:py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg md:rounded-xl hover:from-emerald-700 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <Send className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </button>

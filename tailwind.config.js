@@ -8,13 +8,12 @@ module.exports = {
         // Quiver brand colors — exact from official logo
         primary: '#2E3192',      // Deep navy blue from logo V shape
         secondary: '#1A1F6E',    // Darker navy
-        accent: '#ED1C24',       // Bright red from logo circle/head
+        accent: '#00A651',       // Green from logo swoosh
         'quiver-green': '#00A651', // Vivid green from logo swoosh
-        'quiver-red': '#ED1C24',
         'quiver-blue': '#2E3192',
         'quiver-dark': '#141660', // Deep navy for dark backgrounds
-        warm: '#FF6B6B',
-        earth: '#C41A1A'
+        warm: '#F59E0B',         // Amber — warm, friendly
+        earth: '#D97706'         // Dark amber — earthy
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

@@ -147,7 +147,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
             {/* Full Name */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
-                पूरा नाम | Full Name <span className="text-red-500">*</span>
+                पूरा नाम | Full Name <span className="text-amber-500">*</span>
               </label>
               <Input
                 type="text"
@@ -161,7 +161,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
             {/* Gender */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-gray-900">
-                लिंग | Gender <span className="text-red-500">*</span>
+                लिंग | Gender <span className="text-amber-500">*</span>
               </label>
               <RadioGroup
                 value={formData.gender}
@@ -188,7 +188,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
             {/* Age */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
-                आयु | Age <span className="text-red-500">*</span>
+                आयु | Age <span className="text-amber-500">*</span>
               </label>
               <Input
                 type="number"
@@ -204,7 +204,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
             {/* Education Level */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-gray-900">
-                शिक्षा स्तर | Education Level <span className="text-red-500">*</span>
+                शिक्षा स्तर | Education Level <span className="text-amber-500">*</span>
               </label>
               <RadioGroup
                 value={formData.education}
@@ -233,7 +233,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
             {/* State */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
-                राज्य | State <span className="text-red-500">*</span>
+                राज्य | State <span className="text-amber-500">*</span>
               </label>
               <Select value={formData.state} onValueChange={(value) => { updateField('state', value); updateField('district', ''); }}>
                 <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-xl">
@@ -252,7 +252,7 @@ export function ProfileCreation({ onContinue }: ProfileCreationProps) {
             {/* District */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
-                जिला | District <span className="text-red-500">*</span>
+                जिला | District <span className="text-amber-500">*</span>
               </label>
               <Input
                 type="text"

@@ -4,10 +4,10 @@
 :root {
   --primary: #2E3192;           /* Deep navy blue from logo V shape */
   --secondary: #1A1F6E;         /* Darker navy */
-  --accent: #ED1C24;            /* Bright red from logo circle/head */
+  --accent: #00A651;            /* Green from logo swoosh */
   --quiver-green: #00A651;      /* Vivid green from logo swoosh */
-  --warm: #FF6B6B;
-  --earth: #C41A1A;
+  --warm: #F59E0B;              /* Amber — warm, friendly */
+  --earth: #D97706;             /* Dark amber — earthy */
 }
 
 /* Background Colors */
@@ -99,7 +99,7 @@
 
 .from-accent {
   --tw-gradient-from: var(--accent);
-  --tw-gradient-to: rgb(237 28 36 / 0);
+  --tw-gradient-to: rgb(0 166 81 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -109,7 +109,7 @@
 
 .from-warm {
   --tw-gradient-from: var(--warm);
-  --tw-gradient-to: rgb(255 107 107 / 0);
+  --tw-gradient-to: rgb(245 158 11 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -147,6 +147,41 @@
 /* Scrollbar Hidden */
 ::-webkit-scrollbar {
   display: none;
+}
+
+/* Scrollbar-hide utility for horizontal scroll carousels */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Play button gentle pulse on video thumbnails */
+@keyframes play-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.play-btn-pulse {
+  animation: play-pulse 2.5s ease-in-out infinite;
+}
+
+/* AI Avatar breathing glow — premium dark-bg effect */
+@keyframes avatar-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 30px -5px rgba(0, 166, 81, 0.45), 0 0 60px -10px rgba(0, 166, 81, 0.2);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 10px 50px -5px rgba(0, 166, 81, 0.6), 0 0 80px -10px rgba(0, 166, 81, 0.3);
+  }
+}
+
+.avatar-pulse {
+  animation: avatar-pulse 3s ease-in-out infinite;
 }
 
 /* Additional utility classes for better compatibility */

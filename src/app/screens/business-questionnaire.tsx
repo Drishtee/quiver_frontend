@@ -224,7 +224,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आप क्या बनाते / बेचते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">What do you make or sell? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">What do you make or sell? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="relative">
@@ -243,7 +243,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <Users className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आपके मुख्य ग्राहक कौन हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Who are your main customers? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Who are your main customers? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -283,7 +283,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आप कहाँ तक बेचते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Where do you sell? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Where do you sell? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -335,7 +335,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>आप कैसे बेचते हैं?</span>
-                  <span className="block text-xs text-gray-500 font-normal">How do you sell? <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">How do you sell? <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
@@ -444,7 +444,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>हर महीने कितनी बिक्री होती है? (₹)</span>
-                    <span className="block text-xs text-gray-500 font-normal">Monthly sales/revenue <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Monthly sales/revenue <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <Input
@@ -459,10 +459,10 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               {/* Monthly Expenses */}
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-amber-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <span>हर महीने कुल कितना खर्च होता है? (₹)</span>
-                    <span className="block text-xs text-gray-500 font-normal">Monthly expenses <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Monthly expenses <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <Input
@@ -478,13 +478,13 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>अभी व्यवसाय की स्थिति क्या है?</span>
-                  <span className="block text-xs text-gray-500 font-normal">Current business status <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">Current business status <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
                     { value: 'profit', labelHi: 'फ़ायदे में', labelEn: 'In Profit', bgColor: 'bg-green-50', borderColor: 'border-green-500' },
                     { value: 'breakeven', labelHi: 'बराबरी पर', labelEn: 'Break-even', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-500' },
-                    { value: 'loss', labelHi: 'घाटे में', labelEn: 'In Loss', bgColor: 'bg-red-50', borderColor: 'border-red-500' }
+                    { value: 'loss', labelHi: 'घाटे में', labelEn: 'In Loss', bgColor: 'bg-amber-50', borderColor: 'border-amber-500' }
                   ].map((option) => (
                     <label
                       key={option.value}
@@ -515,7 +515,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>पिछले साल बिक्री कैसी रही?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Sales trend last 12 months <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Sales trend last 12 months <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -711,7 +711,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>आप कहाँ से काम करते हैं?</span>
-                  <span className="block text-xs text-gray-500 font-normal">Where do you work from? <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">Where do you work from? <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
@@ -820,7 +820,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>रोज़ाना कितने घंटे काम करते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">How many hours do you work daily? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">How many hours do you work daily? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -856,7 +856,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>क्या आप नए तरीके आज़माने को तैयार हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Are you open to trying new methods? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Are you open to trying new methods? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -892,7 +892,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   <Target className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>अगले साल आप क्या चाहते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Your goals for next 12 months <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Your goals for next 12 months <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -930,7 +930,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>Quiver से आपको क्या मदद चाहिए?</span>
-                  <span className="block text-xs text-gray-500 font-normal">What help do you need from Quiver? <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">What help do you need from Quiver? <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[

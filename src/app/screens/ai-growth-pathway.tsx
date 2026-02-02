@@ -127,7 +127,7 @@ export const AIGrowthPathway: React.FC<AIGrowthPathwayProps> = ({
 
   const getResourceIcon = (type: string) => {
     switch (type) {
-      case 'video': return <Video className="w-4 h-4 text-red-500" />;
+      case 'video': return <Video className="w-4 h-4 text-amber-500" />;
       case 'article': return <BookOpen className="w-4 h-4 text-blue-500" />;
       case 'tool': return <Wrench className="w-4 h-4 text-green-500" />;
       case 'template': return <FileText className="w-4 h-4 text-purple-500" />;

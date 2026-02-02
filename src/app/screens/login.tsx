@@ -96,8 +96,8 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
           {/* Login Form - Mobile-first */}
           <div className="bg-white rounded-xl md:rounded-2xl border border-border shadow-sm p-4 md:p-6 space-y-5 md:space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-600">{error}</p>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-sm text-amber-600">{error}</p>
               </div>
             )}
 

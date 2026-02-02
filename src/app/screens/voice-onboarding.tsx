@@ -628,13 +628,13 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
                   connectionStatus === "connected" ? "bg-green-100 text-green-700" :
                   connectionStatus === "connecting" ? "bg-yellow-100 text-yellow-700" :
-                  connectionStatus === "error" ? "bg-red-100 text-red-700" :
+                  connectionStatus === "error" ? "bg-amber-100 text-amber-700" :
                   "bg-gray-100 text-gray-700"
                 }`}>
                   <div className={`w-2 h-2 rounded-full ${
                     connectionStatus === "connected" ? "bg-green-500 animate-pulse" :
                     connectionStatus === "connecting" ? "bg-yellow-500 animate-pulse" :
-                    connectionStatus === "error" ? "bg-red-500" :
+                    connectionStatus === "error" ? "bg-amber-500" :
                     "bg-gray-400"
                   }`} />
                   {connectionStatus === "connected" ? "Connected" :
@@ -646,9 +646,9 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
 
               {/* Error Display */}
               {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-700">{error}</p>
+                <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-amber-700">{error}</p>
                 </div>
               )}
 
@@ -713,7 +713,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
               {/* Recording Indicator */}
               {isRecording && !isMuted && (
                 <div className="mt-4 flex items-center justify-center gap-2 text-primary">
-                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                  <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse" />
                   <span className="text-sm">Listening...</span>
                 </div>
               )}

@@ -178,8 +178,8 @@ export const VoiceButton: React.FC<VoiceButtonProps> = ({
 
       {/* Error display */}
       {showError && (
-        <div className="absolute left-full ml-3 bg-red-50 border border-red-200 rounded-lg p-2 z-10">
-          <p className="text-xs text-red-600">{sttError}</p>
+        <div className="absolute left-full ml-3 bg-amber-50 border border-amber-200 rounded-lg p-2 z-10">
+          <p className="text-xs text-amber-600">{sttError}</p>
         </div>
       )}
     </div>

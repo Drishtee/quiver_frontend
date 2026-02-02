@@ -252,10 +252,10 @@ export function ReviewSubmit({
             <div className="p-6">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  equityAnswer === 'yes' ? 'bg-green-100' : equityAnswer === 'maybe' ? 'bg-yellow-100' : 'bg-red-100'
+                  equityAnswer === 'yes' ? 'bg-green-100' : equityAnswer === 'maybe' ? 'bg-yellow-100' : 'bg-amber-100'
                 }`}>
                   <Handshake className={`w-5 h-5 ${
-                    equityAnswer === 'yes' ? 'text-green-600' : equityAnswer === 'maybe' ? 'text-yellow-600' : 'text-red-600'
+                    equityAnswer === 'yes' ? 'text-green-600' : equityAnswer === 'maybe' ? 'text-yellow-600' : 'text-amber-600'
                   }`} />
                 </div>
                 <div>

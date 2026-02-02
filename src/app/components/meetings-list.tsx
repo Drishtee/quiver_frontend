@@ -83,7 +83,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
       scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
       in_progress: 'bg-green-100 text-green-700 border-green-200',
       completed: 'bg-gray-100 text-gray-700 border-gray-200',
-      cancelled: 'bg-red-100 text-red-700 border-red-200'
+      cancelled: 'bg-amber-100 text-amber-700 border-amber-200'
     };
 
     const icons = {
@@ -137,8 +137,8 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
   if (error) {
     return (
       <div className="text-center py-12 space-y-4">
-        <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-        <p className="text-red-600">{error}</p>
+        <AlertCircle className="w-12 h-12 text-amber-500 mx-auto" />
+        <p className="text-amber-600">{error}</p>
         <Button onClick={loadMeetings} variant="outline">
           Try Again
         </Button>
@@ -238,7 +238,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
                   onClick={() => handleCancelMeeting(meeting.id)}
                   variant="outline"
                   size="sm"
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                 >
                   Cancel
                 </Button>

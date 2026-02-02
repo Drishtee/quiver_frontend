@@ -148,18 +148,18 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Loan */}
-              <div className="bg-red-50 rounded-xl p-6 border-2 border-red-200">
-                <h5 className="font-bold text-red-700 mb-4 flex items-center gap-2">
+              <div className="bg-amber-50 rounded-xl p-6 border-2 border-amber-200">
+                <h5 className="font-bold text-amber-700 mb-4 flex items-center gap-2">
                   <X className="w-5 h-5" />
                   {showHindi ? 'लोन में:' : 'With Loans:'}
                 </h5>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2 text-gray-700">
-                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                     <span>{showHindi ? 'हर महीने किस्त देनी होती है' : 'Monthly repayments are compulsory'}</span>
                   </li>
                   <li className="flex items-start gap-2 text-gray-700">
-                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                     <span>{showHindi ? 'चाहे व्यवसाय चले या न चले, पैसा लौटाना पड़ता है' : 'Repayment is required even if the business struggles'}</span>
                   </li>
                 </ul>

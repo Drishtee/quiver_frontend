@@ -96,7 +96,7 @@ export function DocumentUpload({ onContinue }: DocumentUploadProps) {
                       </div>
                       <button
                         onClick={() => handleRemove(doc.id)}
-                        className="text-xs text-red-600 hover:underline min-h-touch flex items-center px-2 flex-shrink-0"
+                        className="text-xs text-amber-600 hover:underline min-h-touch flex items-center px-2 flex-shrink-0"
                       >
                         Remove
                       </button>

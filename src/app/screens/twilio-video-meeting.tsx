@@ -235,8 +235,8 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
     return (
       <div className="h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4 max-w-md px-6">
-          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
-            <VideoOff className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto">
+            <VideoOff className="w-8 h-8 text-amber-500" />
           </div>
           <div className="text-white space-y-2">
             <h2 className="text-xl font-semibold">Connection Failed</h2>
@@ -387,7 +387,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
             onClick={toggleMute}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               isMuted
-                ? "bg-red-500 hover:bg-red-600"
+                ? "bg-amber-500 hover:bg-amber-600"
                 : "bg-gray-700 hover:bg-gray-600"
             }`}
             title={isMuted ? "Unmute" : "Mute"}
@@ -404,7 +404,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
             onClick={toggleVideo}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               !isVideoOn
-                ? "bg-red-500 hover:bg-red-600"
+                ? "bg-amber-500 hover:bg-amber-600"
                 : "bg-gray-700 hover:bg-gray-600"
             }`}
             title={isVideoOn ? "Stop Video" : "Start Video"}
@@ -421,7 +421,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
             onClick={() => setIsSpeakerMuted(!isSpeakerMuted)}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               isSpeakerMuted
-                ? "bg-red-500 hover:bg-red-600"
+                ? "bg-amber-500 hover:bg-amber-600"
                 : "bg-gray-700 hover:bg-gray-600"
             }`}
             title={isSpeakerMuted ? "Unmute Speaker" : "Mute Speaker"}
@@ -457,7 +457,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
           {/* End Call */}
           <button
             onClick={handleEndCall}
-            className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors ml-4"
+            className="w-14 h-14 rounded-full bg-amber-500 hover:bg-amber-600 flex items-center justify-center transition-colors ml-4"
             title="End Call"
           >
             <PhoneOff className="w-6 h-6 text-white" />
@@ -477,7 +477,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
           </span>
           <span className="text-xs text-gray-400 w-14 text-center">Share</span>
           <span className="text-xs text-gray-400 w-14 text-center">Chat</span>
-          <span className="text-xs text-red-400 w-14 text-center ml-4">Leave</span>
+          <span className="text-xs text-amber-400 w-14 text-center ml-4">Leave</span>
         </div>
       </div>
     </div>

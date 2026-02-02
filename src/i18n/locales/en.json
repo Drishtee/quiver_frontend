@@ -39,14 +39,14 @@
       "language": "Language"
     },
     "hero": {
-      "badge": "Growth Partner for Your Business",
+      "badge": "No Loan · No Interest · No Risk",
       "title": "We grow your business.",
       "titleHighlight": "We earn only when you do.",
-      "subtitle": "Quiver partners with small businesses to provide money, mentorship, and education — based on what you need.",
+      "subtitle": "Quiver partners with small businesses to provide money, mentorship, and education.",
       "features": {
         "simple": "Simple & Clear",
-        "noHidden": "No Hidden Terms",
-        "yourControl": "Your Control"
+        "noHidden": "No Hidden Fees",
+        "yourControl": "You Stay in Control"
       }
     },
     "avatar": {
@@ -85,7 +85,8 @@
       "tools": {
         "title": "Tools & Support",
         "description": "Practical help and tools to make your work easier every day."
-      }
+      },
+      "learnMore": "Ask our AI"
     },
     "equity": {
       "badge": "Understanding Partnership",
@@ -99,7 +100,7 @@
         "description": "You work alone with limited resources"
       },
       "after": {
-        "title": "With Quiver Partnership",
+        "title": "With Quiver",
         "youOwn": "You Own",
         "percent": "85-90%",
         "quiverPercent": "10-15%",
@@ -120,7 +121,8 @@
           "title": "We Earn Together",
           "description": "Only when you succeed"
         }
-      }
+      },
+      "cta": "Have Questions? Ask Our AI"
     },
     "notEquity": {
       "title": "What Equity is NOT",
@@ -158,32 +160,35 @@
       "title": "How Quiver Decides What You Need",
       "subtitle": "Simple steps. You're always in control.",
       "step1": {
-        "title": "1. You Tell Us About Your Business",
+        "title": "Tell Us About Your Business",
         "description": "Use voice or answer simple questions in your language. No complicated forms."
       },
       "step2": {
-        "title": "2. We Understand Your Challenges",
+        "title": "We Understand Your Challenges",
         "description": "Our team listens carefully and identifies what will help you grow most."
       },
       "step3": {
-        "title": "3. We Suggest Support",
+        "title": "We Suggest Support",
         "description": "Money, mentorship, education, or tools — only what makes sense for you."
       },
       "step4": {
-        "title": "4. You Decide — Always",
+        "title": "You Decide — Always",
         "description": "Nothing is forced. Everything is explained. You choose what's right for you."
       },
-      "bottomNote": "Nothing is forced. Everything is explained."
+      "bottomNote": "Nothing is forced. Everything is explained.",
+      "cta": "Get Started Now"
+    },
+    "stats": {
+      "heading": "Growing Across India",
+      "subtitle": "Trusted by entrepreneurs in 15+ states",
+      "businesses": "Businesses Growing",
+      "support": "Support Provided",
+      "states": "States Covered"
     },
     "cta": {
       "title": "You Build the Business.",
       "titleLine2": "We Help It Grow.",
       "subtitle": "Quiver is not a lender. Not a boss. A growth partner.",
-      "stats": {
-        "businesses": "Businesses Growing",
-        "support": "Support Provided",
-        "states": "States Covered"
-      },
       "continueLanguage": "Continue in Your Language",
       "startVoice": "Start with Voice",
       "features": {
@@ -216,6 +221,11 @@
       "title": "Watch How Quiver Works",
       "description": "A 2-minute video explaining our partnership model",
       "watchNow": "Watch Now"
+    },
+    "socialProof": {
+      "title": "See How Quiver Helps Businesses Grow",
+      "subtitle": "Real stories from real entrepreneurs",
+      "cta": "Start Your Growth Journey"
     }
   },
   "consent": {

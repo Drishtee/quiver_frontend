@@ -82,12 +82,12 @@ export function VoiceFormOverlay({ screen, children }: VoiceFormOverlayProps) {
             {/* Listening indicator */}
             <div className={`relative ${voice.isRecording ? 'animate-pulse' : ''}`}>
               <div className={`w-3 h-3 rounded-full ${
-                voice.isRecording ? 'bg-red-500' :
+                voice.isRecording ? 'bg-amber-500' :
                 voice.isSpeaking ? 'bg-blue-500' :
                 'bg-green-500'
               }`} />
               {voice.isRecording && (
-                <div className="absolute inset-0 w-3 h-3 rounded-full bg-red-500 animate-ping" />
+                <div className="absolute inset-0 w-3 h-3 rounded-full bg-amber-500 animate-ping" />
               )}
             </div>
 

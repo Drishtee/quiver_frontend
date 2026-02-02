@@ -2,32 +2,50 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import './landing.css';
 import { LanguageSelector } from '../components/language-selector';
-import { VideoExplainer } from '../components/video-explainer';
 import { Checkbox } from '../components/ui/checkbox';
 import { QuiverAIAssistant } from '../components/voice/QuiverAIAssistant';
+import { useOpenAIVoice } from '../../contexts/OpenAIVoiceContext';
+import {
+  Mic,
+  Sparkles,
+  Store,
+  Crown,
+  Rocket,
+  TrendingUp,
+  IndianRupee,
+  Users,
+  GraduationCap,
+  Wrench,
+  ChevronRight,
+} from 'lucide-react';
+
+/* YouTube Shorts — vertical (9:16) format */
+const SOCIAL_PROOF_VIDEOS = [
+  { id: 'VCrDDy1rAOw' },
+  { id: 'Md0q1DH7TUY' },
+  { id: 'xDhmsscKp7g' },
+  { id: '82N1MrU_HhI' },
+  { id: 'Op5vVXW_diY' },
+  { id: 'DCWw4kHdZ5E' },
+];
 
 interface LandingProps {
   onGetStarted: (phoneNumber: string) => void;
   onLogin: () => void;
 }
 
-// Named export for the Landing component
 export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
   const { t } = useTranslation();
-  const [isListening, setIsListening] = useState(false);
   const [showPhoneInput, setShowPhoneInput] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+  const voice = useOpenAIVoice();
 
-  const handleVoiceStart = () => {
-    setIsListening(true);
-    setShowPhoneInput(true);
-  };
-
-  const handleTextStart = () => {
-    setShowPhoneInput(true);
-  };
+  /* Video carousel state */
+  const videoScrollRef = useRef<HTMLDivElement>(null);
+  const [activeVideoIdx, setActiveVideoIdx] = useState(0);
+  const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
 
   const handlePhoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,792 +54,595 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
     }
   };
 
-  // Scroll to phone input when it's shown
+  const handleVoiceStart = () => {
+    voice.activate();
+    voice.connect();
+  };
+
   useEffect(() => {
     if (showPhoneInput && heroRef.current) {
       heroRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [showPhoneInput]);
 
+  /* Track active video for scroll dots */
+  useEffect(() => {
+    const el = videoScrollRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const firstChild = el.firstElementChild as HTMLElement | null;
+      if (!firstChild) return;
+      const cardWidth = firstChild.offsetWidth + 16;
+      const idx = Math.round(el.scrollLeft / cardWidth);
+      setActiveVideoIdx(Math.min(idx, SOCIAL_PROOF_VIDEOS.length - 1));
+    };
+
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const handlePlayVideo = (id: string) => {
+    setPlayingVideos(prev => new Set(prev).add(id));
+  };
+
+  /* Reusable phone form renderer (not a component — avoids remounting) */
+  const renderPhoneForm = (idPrefix: string) => (
+    <form onSubmit={handlePhoneSubmit} className="space-y-3">
+      <h3 className="text-lg font-bold text-gray-900">
+        {t('landing.avatar.enterPhone')}
+      </h3>
+      <div className="flex items-center gap-2">
+        <span className="text-gray-700 font-medium">+91</span>
+        <input
+          type="tel"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          placeholder="9876543210"
+          className="flex-1 px-4 py-3 border-2 border-primary/30 rounded-lg focus:border-primary focus:outline-none text-lg bg-white"
+          maxLength={10}
+          pattern="[0-9]{10}"
+          required
+        />
+      </div>
+      <div className="flex items-start gap-3 text-left bg-gray-50 p-3 rounded-lg">
+        <Checkbox
+          id={`${idPrefix}-consent`}
+          checked={consentGiven}
+          onCheckedChange={(checked) => setConsentGiven(checked === true)}
+          className="mt-1"
+        />
+        <label
+          htmlFor={`${idPrefix}-consent`}
+          className="text-sm text-gray-700 cursor-pointer leading-relaxed"
+        >
+          {t('landing.avatar.consent')}
+        </label>
+      </div>
+      <button
+        type="submit"
+        disabled={!consentGiven || phoneNumber.length !== 10}
+        className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
+      >
+        {t('landing.avatar.continue')}
+      </button>
+      <button
+        type="button"
+        onClick={() => { setShowPhoneInput(false); setConsentGiven(false); }}
+        className="w-full text-gray-500 font-medium text-sm"
+      >
+        {t('landing.avatar.cancel')}
+      </button>
+    </form>
+  );
+
   return (
-    <div className="bg-gradient-to-b from-indigo-50 to-white font-sans min-h-screen">
-      {/* Navigation - Mobile-first */}
+    <div className="bg-white font-sans min-h-screen">
+
+      {/* ======================== NAVIGATION ======================== */}
       <nav
         id="header"
-        className="bg-white shadow-sm py-3 px-4 flex justify-between items-center sticky top-0 z-50 md:py-4 md:px-6"
+        className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-5 flex justify-between items-center sticky top-0 z-50"
       >
         <div className="flex items-center">
-          <img
-            src="/logo.jpg"
-            alt="Quiver Logo"
-            className="w-8 h-8 md:w-10 md:h-10 object-contain mr-2 md:mr-3"
-          />
-          <span className="text-xl md:text-2xl font-display font-bold text-primary">Quiver</span>
+          <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 object-contain mr-2" />
+          <span className="text-xl font-display font-bold text-primary">Quiver</span>
         </div>
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="flex items-center gap-2">
           <LanguageSelector variant="compact" />
           <button
             onClick={onLogin}
-            className="bg-white hover:bg-gray-50 text-primary font-medium py-2 px-6 rounded-full border-2 border-primary transition-colors min-h-touch"
+            className="text-primary font-medium text-sm min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             {t('landing.nav.login')}
           </button>
+          {/* Desktop-only nav CTA */}
           <button
-            onClick={() => setShowPhoneInput(true)}
-            className="bg-primary hover:bg-secondary text-white font-medium py-2 px-6 rounded-full transition-colors min-h-touch"
+            onClick={() => {
+              setShowPhoneInput(true);
+              heroRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="hidden lg:flex bg-accent text-white font-bold py-2 px-4 rounded-lg text-sm items-center"
           >
             {t('landing.nav.startGrowing')}
           </button>
         </div>
-        {/* Mobile nav - simplified */}
-        <div className="flex md:hidden items-center gap-2">
-          <LanguageSelector variant="compact" />
-          <button
-            onClick={onLogin}
-            className="text-primary font-medium text-sm min-h-touch min-w-touch flex items-center justify-center"
-          >
-            {t('landing.nav.login')}
-          </button>
-        </div>
       </nav>
 
-      {/* Hero Section - Mobile-first */}
-      <section id="hero-section" className="relative px-4 py-8 overflow-hidden md:px-6 md:py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
-            {/* Left Column - Text Content */}
-            <div className="text-center lg:text-left order-2 lg:order-1">
-              <div className="inline-block bg-accent/20 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-semibold mb-4 md:mb-6">
-                <i className="fa-solid fa-handshake mr-2"></i>{t('landing.hero.badge')}
-              </div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
-                {t('landing.hero.title')}<br/>
-                <span className="text-primary">{t('landing.hero.titleHighlight')}</span>
-              </h1>
-              <p className="text-base md:text-xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
-                {t('landing.hero.subtitle')}
-              </p>
-              {/* Mobile: Stack features vertically */}
-              <div className="mt-6 md:mt-8 flex flex-col gap-2 md:flex-row md:items-center md:justify-center lg:justify-start md:space-x-6 text-sm text-gray-500">
-                <div className="flex items-center justify-center md:justify-start">
-                  <i className="fa-solid fa-check-circle text-accent mr-2"></i>
-                  <span>{t('landing.hero.features.simple')}</span>
-                </div>
-                <div className="flex items-center justify-center md:justify-start">
-                  <i className="fa-solid fa-check-circle text-accent mr-2"></i>
-                  <span>{t('landing.hero.features.noHidden')}</span>
-                </div>
-                <div className="flex items-center justify-center md:justify-start">
-                  <i className="fa-solid fa-check-circle text-accent mr-2"></i>
-                  <span>{t('landing.hero.features.yourControl')}</span>
-                </div>
-              </div>
+      {/* ======================== HERO SECTION ======================== */}
+      <section
+        id="hero-section"
+        ref={heroRef}
+        className="relative overflow-hidden"
+      >
+        {/* Mobile background — portrait, light top built into image */}
+        <div
+          className="absolute inset-0 bg-cover bg-top bg-no-repeat lg:hidden"
+          style={{ backgroundImage: "url('/hero-bg.png')" }}
+        />
+        {/* Desktop background — landscape */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat hidden lg:block"
+          style={{ backgroundImage: "url('/herodesktop.png')" }}
+        />
+        {/* Desktop: soft wash so dark text reads */}
+        <div className="absolute inset-0 hidden lg:block bg-gradient-to-b from-white/80 via-white/40 to-transparent" />
 
-              {/* Video Explainer - hidden on mobile for cleaner layout */}
-              <div className="hidden md:block mt-8">
-                <VideoExplainer
-                  variant="modal"
-                  videoId="dQw4w9WgXcQ"
-                  className="inline-flex"
-                />
-              </div>
-            </div>
+        {/* Full-height flex container */}
+        <div className="relative min-h-[85vh] lg:min-h-[80vh] flex flex-col px-5 lg:px-8 max-w-5xl mx-auto">
 
-            {/* Right Column - Video Avatar Container - Mobile-first */}
-            <div className="relative order-1 lg:order-2">
-              <div
-                id="video-avatar-container"
-                className="bg-white rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl p-4 md:p-8 border-2 md:border-4 border-primary/20"
-              >
-                {/* Avatar Display Area - Mobile optimized */}
-                <div className="aspect-square bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl md:rounded-2xl mb-4 md:mb-6 flex items-center justify-center overflow-hidden relative">
-                  <div id="avatar-video" className="w-full h-full flex items-center justify-center">
-                    {showPhoneInput ? (
-                      <div className="text-center p-6 w-full">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">{t('landing.avatar.enterPhone')}</h3>
-                        <form onSubmit={handlePhoneSubmit} className="space-y-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-700 font-medium">+91</span>
-                            <input
-                              type="tel"
-                              value={phoneNumber}
-                              onChange={(e) => setPhoneNumber(e.target.value)}
-                              placeholder="9876543210"
-                              className="flex-1 px-4 py-3 border-2 border-primary/30 rounded-lg focus:border-primary focus:outline-none text-lg"
-                              maxLength={10}
-                              pattern="[0-9]{10}"
-                              required
-                            />
-                          </div>
-                          {/* Consent Checkbox - Required */}
-                          <div className="flex items-start gap-3 text-left bg-muted/50 p-3 rounded-lg">
-                            <Checkbox
-                              id="landing-consent"
-                              checked={consentGiven}
-                              onCheckedChange={(checked) => setConsentGiven(checked === true)}
-                              className="mt-1"
-                            />
-                            <label
-                              htmlFor="landing-consent"
-                              className="text-sm text-gray-700 cursor-pointer leading-relaxed"
-                            >
-                              {t('landing.avatar.consent')}
-                            </label>
-                          </div>
-                          <button
-                            type="submit"
-                            disabled={!consentGiven || phoneNumber.length !== 10}
-                            className="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary"
-                          >
-                            {t('landing.avatar.continue')}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowPhoneInput(false);
-                              setConsentGiven(false);
-                            }}
-                            className="w-full text-gray-600 hover:text-gray-800 font-medium"
-                          >
-                            {t('landing.avatar.cancel')}
-                          </button>
-                        </form>
-                      </div>
-                    ) : isListening ? (
-                      <div className="text-center animate-pulse">
-                        <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl">
-                          <i className="fa-solid fa-microphone-lines text-white text-5xl animate-pulse"></i>
-                        </div>
-                        <p className="text-primary font-bold text-lg mb-2">{t('landing.avatar.listening')}</p>
-                        <p className="text-gray-600 text-sm">{t('landing.avatar.speakLanguage')}</p>
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-primary flex items-center justify-center">
-                          <i className="fa-solid fa-user-tie text-white text-5xl"></i>
-                        </div>
-                        <div className="animate-pulse">
-                          <div className="flex justify-center space-x-2 mb-4">
-                            <div className="w-3 h-3 bg-primary rounded-full"></div>
-                            <div className="w-3 h-3 bg-primary rounded-full animation-delay-200"></div>
-                            <div className="w-3 h-3 bg-primary rounded-full animation-delay-400"></div>
-                          </div>
-                          <p className="text-gray-600 text-sm">{t('landing.avatar.aiReady')}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Title and Description */}
-                {!showPhoneInput && (
-                  <>
-                    <div className="text-center mb-6">
-                      <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">
-                        {t('landing.avatar.title')}
-                      </h3>
-                      <p className="text-gray-600">{t('landing.avatar.subtitle')}</p>
-                    </div>
-
-                    {/* Action Buttons - Mobile-first touch targets */}
-                    <div className="flex flex-col gap-3 md:gap-4">
-                      <button
-                        id="start-voice-btn"
-                        onClick={handleVoiceStart}
-                        className="bg-primary hover:bg-secondary active:bg-secondary/90 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 flex items-center justify-center min-h-[48px]"
-                      >
-                        <i className="fa-solid fa-microphone mr-2 md:mr-3 text-lg md:text-xl"></i>
-                        <span>{t('landing.avatar.startVoice')}</span>
-                      </button>
-                      <button
-                        id="start-text-btn"
-                        onClick={handleTextStart}
-                        className="bg-white hover:bg-gray-50 active:bg-gray-100 text-primary font-semibold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-lg border-2 border-primary transition-all flex items-center justify-center min-h-[48px]"
-                      >
-                        <i className="fa-solid fa-comments mr-2 md:mr-3 text-lg md:text-xl"></i>
-                        <span>{t('landing.avatar.chatText')}</span>
-                      </button>
-                    </div>
-                  </>
-                )}
-
-                {/* Feature Indicators */}
-                <div className="mt-6 flex items-center justify-center space-x-4 text-xs text-gray-500">
-                  <div className="flex items-center">
-                    <i className="fa-solid fa-language mr-1"></i>
-                    <span>{t('landing.avatar.features.languages')}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <i className="fa-solid fa-shield-halved mr-1"></i>
-                    <span>{t('landing.avatar.features.secure')}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <i className="fa-solid fa-clock mr-1"></i>
-                    <span>{t('landing.avatar.features.available')}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What Quiver Does Section - Mobile-first */}
-      <section id="what-quiver-does" className="py-12 px-4 md:py-20 md:px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900 mb-3 md:mb-4">
-              {t('landing.whatQuiverDoes.title')}
-            </h2>
-            <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('landing.whatQuiverDoes.subtitle')}
+          {/* Top zone: headline + subtitle */}
+          <div className="pt-10 lg:pt-16 text-left lg:text-center">
+            <h1 className="text-[2.15rem] lg:text-[2.6rem] xl:text-5xl font-display font-extrabold text-gray-950 leading-[1.15] tracking-tight">
+              {t('landing.hero.title')}
+              <br />
+              <span className="text-primary">{t('landing.hero.titleHighlight')}</span>
+            </h1>
+            <p className="mt-3 lg:mt-4 text-sm lg:text-base text-gray-600 leading-relaxed max-w-[310px] lg:max-w-lg lg:mx-auto">
+              {t('landing.hero.subtitle')}
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-            {/* Funding Card - Mobile-first */}
-            <div
-              id="funding-card"
-              className="bg-gradient-to-br from-indigo-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-indigo-100 hover:border-primary transition-all hover:shadow-xl"
-            >
-              <div className="w-10 h-10 md:w-16 md:h-16 bg-primary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
-                <i className="fa-solid fa-coins text-white text-xl md:text-3xl"></i>
-              </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.funding.title')}</h3>
-              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                {t('landing.whatQuiverDoes.funding.description')}
-              </p>
-            </div>
+          {/* Middle zone: QUIVER artwork shows through */}
+          <div className="flex-1" />
 
-            {/* Mentorship Card - Mobile-first */}
-            <div
-              id="mentorship-card"
-              className="bg-gradient-to-br from-blue-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-blue-100 hover:border-primary transition-all hover:shadow-xl"
-            >
-              <div className="w-10 h-10 md:w-16 md:h-16 bg-secondary rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
-                <i className="fa-solid fa-user-tie text-white text-xl md:text-3xl"></i>
+          {/* Bottom zone: CTA buttons */}
+          <div className="pb-24 lg:pb-14">
+            {showPhoneInput ? (
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-5 shadow-xl border border-gray-100 max-w-sm lg:mx-auto">
+                {renderPhoneForm('hero')}
               </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.mentorship.title')}</h3>
-              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                {t('landing.whatQuiverDoes.mentorship.description')}
-              </p>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3 lg:justify-center">
+                <button
+                  onClick={handleVoiceStart}
+                  className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-5 lg:py-3.5 lg:px-7 rounded-xl shadow-md active:scale-[0.98] transition-all min-h-[48px] text-sm lg:text-base"
+                >
+                  <Sparkles className="w-4 h-4 lg:w-5 lg:h-5" />
+                  {t('landing.avatar.title')}
+                </button>
+                <button
+                  onClick={() => setShowPhoneInput(true)}
+                  className="inline-flex items-center justify-center gap-2 bg-white/90 backdrop-blur-sm text-gray-800 font-bold py-3 px-5 lg:py-3.5 lg:px-7 rounded-xl border-2 border-accent/30 shadow-sm hover:border-accent hover:text-accent active:scale-[0.98] transition-all min-h-[48px] text-sm lg:text-base"
+                >
+                  {t('landing.nav.startGrowing')}
+                </button>
+              </div>
+            )}
+          </div>
 
-            {/* Education Card - Mobile-first */}
-            <div
-              id="education-card"
-              className="bg-gradient-to-br from-yellow-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-yellow-100 hover:border-primary transition-all hover:shadow-xl"
-            >
-              <div className="w-10 h-10 md:w-16 md:h-16 bg-warm rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
-                <i className="fa-solid fa-graduation-cap text-white text-xl md:text-3xl"></i>
-              </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.education.title')}</h3>
-              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                {t('landing.whatQuiverDoes.education.description')}
-              </p>
-            </div>
+        </div>
+      </section>
 
-            {/* Tools Card - Mobile-first */}
-            <div
-              id="tools-card"
-              className="bg-gradient-to-br from-orange-50 to-white p-4 md:p-8 rounded-xl md:rounded-2xl border-2 border-orange-100 hover:border-primary transition-all hover:shadow-xl"
-            >
-              <div className="w-10 h-10 md:w-16 md:h-16 bg-earth rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6">
-                <i className="fa-solid fa-toolbox text-white text-xl md:text-3xl"></i>
-              </div>
-              <h3 className="text-lg md:text-2xl font-display font-bold text-gray-900 mb-2 md:mb-3">{t('landing.whatQuiverDoes.tools.title')}</h3>
-              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                {t('landing.whatQuiverDoes.tools.description')}
-              </p>
+      {/* ======================== STATS / RESULTS ======================== */}
+      <section id="stats-results" className="px-5 py-8 bg-gradient-to-br from-primary to-secondary text-white">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-lg lg:text-2xl font-display font-bold mb-1">
+            {t('landing.stats.heading')}
+          </h2>
+          <p className="text-xs lg:text-sm opacity-80 mb-5">{t('landing.stats.subtitle')}</p>
+
+          <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto mb-5">
+            <div>
+              <div className="text-xl lg:text-2xl font-bold">1000+</div>
+              <p className="text-xs opacity-80">{t('landing.stats.businesses')}</p>
             </div>
+            <div>
+              <div className="text-xl lg:text-2xl font-bold">₹50Cr+</div>
+              <p className="text-xs opacity-80">{t('landing.stats.support')}</p>
+            </div>
+            <div>
+              <div className="text-xl lg:text-2xl font-bold">15+</div>
+              <p className="text-xs opacity-80">{t('landing.stats.states')}</p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              setShowPhoneInput(true);
+              heroRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="bg-accent text-white font-bold py-3 px-6 rounded-xl min-h-[48px] shadow-lg active:scale-[0.98] transition-all text-sm"
+          >
+            {t('landing.nav.startGrowing')}
+          </button>
+        </div>
+      </section>
+
+      {/* ======================== SOCIAL PROOF VIDEOS ======================== */}
+      <section id="social-proof" className="py-8 lg:py-10 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="px-5 mb-5">
+            <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1 text-center">
+              {t('landing.socialProof.title')}
+            </h2>
+            <p className="text-sm text-gray-600 text-center">
+              {t('landing.socialProof.subtitle')}
+            </p>
+          </div>
+
+          {/* Horizontal scroll carousel */}
+          <div
+            ref={videoScrollRef}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-5"
+          >
+            {SOCIAL_PROOF_VIDEOS.map((video) => (
+              <div key={video.id} className="snap-center flex-shrink-0 w-[68vw] lg:w-[30%]">
+                <div className="aspect-[9/16] rounded-2xl overflow-hidden bg-gray-900 shadow-lg relative">
+                  {playingVideos.has(video.id) ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                      title="Success Story"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  ) : (
+                    <button
+                      onClick={() => handlePlayVideo(video.id)}
+                      className="w-full h-full relative group"
+                      aria-label="Play video"
+                    >
+                      <img
+                        src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                        alt=""
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-active:bg-black/40 transition-colors flex items-center justify-center">
+                        <div className="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center shadow-lg play-btn-pulse">
+                          <svg className="w-6 h-6 text-accent ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Scroll indicator dots */}
+          <div className="flex justify-center gap-1.5 mt-3 lg:hidden">
+            {SOCIAL_PROOF_VIDEOS.map((_, i) => (
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === activeVideoIdx ? 'w-6 bg-accent' : 'w-1.5 bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Social proof CTA */}
+          <div className="text-center mt-5 px-5">
+            <button
+              onClick={() => {
+                setShowPhoneInput(true);
+                heroRef.current?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
+            >
+              {t('landing.socialProof.cta')}
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Equity Explained Section */}
-      <section id="equity-explained" className="py-20 px-6 bg-gradient-to-br from-indigo-50 via-blue-50 to-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-block bg-primary/10 text-primary px-6 py-3 rounded-full text-sm font-bold mb-6">
-              <i className="fa-solid fa-lightbulb mr-2"></i>{t('landing.equity.badge')}
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-6">
+      {/* ======================== EQUITY EXPLAINED ======================== */}
+      <section id="equity-section" className="px-5 py-8 lg:py-10 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-6">
+            <span className="inline-block bg-accent/10 text-accent font-semibold text-xs px-3 py-1 rounded-full mb-2">
+              {t('landing.equity.badge')}
+            </span>
+            <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1">
               {t('landing.equity.title')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('landing.equity.subtitle')}
-            </p>
+            <p className="text-sm text-gray-600">{t('landing.equity.subtitle')}</p>
           </div>
 
-          {/* Before and After Comparison */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+          {/* Circular visualization — Before / After */}
+          <div className="grid grid-cols-2 gap-4 lg:gap-8 mb-6 max-w-2xl mx-auto">
             {/* Before Quiver */}
-            <div className="bg-white p-10 rounded-3xl shadow-xl">
-              <h3 className="text-2xl font-display font-bold text-gray-900 mb-8 text-center">
-                {t('landing.equity.before.title')}
-              </h3>
-              <div className="flex justify-center mb-6">
-                <div className="relative w-72 h-72">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl"></div>
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 shadow-lg">
-                        <div className="text-white text-center">
-                          <i className="fa-solid fa-store text-5xl mb-3"></i>
-                          <div className="text-3xl font-bold">{t('landing.equity.before.percent')}</div>
-                          <div className="text-sm mt-1">{t('landing.equity.before.ownership')}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center space-x-2 text-gray-600">
-                        <i className="fa-solid fa-coins text-yellow-500"></i>
-                        <span className="text-sm font-medium">{t('landing.equity.before.limited')}</span>
-                      </div>
-                    </div>
-                  </div>
+            <div className="flex flex-col items-center">
+              <p className="text-xs font-bold text-gray-900 mb-3 h-8 flex items-end text-center">{t('landing.equity.before.title')}</p>
+              <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+                <div className="text-center text-white">
+                  <Store className="w-5 h-5 lg:w-8 lg:h-8 mx-auto mb-1 opacity-80" />
+                  <div className="text-xl lg:text-3xl font-bold">{t('landing.equity.before.percent')}</div>
+                  <div className="text-[10px] lg:text-xs opacity-80">{t('landing.equity.before.ownership')}</div>
                 </div>
               </div>
-              <p className="text-center text-gray-600 text-lg">
-                {t('landing.equity.before.description')}
-              </p>
+              <p className="text-xs text-gray-500 font-medium mt-3 text-center">{t('landing.equity.before.limited')}</p>
             </div>
 
-            {/* With Quiver Partnership */}
-            <div className="bg-white p-10 rounded-3xl shadow-xl border-4 border-primary relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full"></div>
-              <h3 className="text-2xl font-display font-bold text-primary mb-8 text-center relative z-10">
-                {t('landing.equity.after.title')}
-              </h3>
-              <div className="flex justify-center mb-6 relative z-10">
-                <div className="relative w-72 h-72">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl"></div>
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <div className="relative">
-                      <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg relative">
-                        <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-warm to-earth rounded-full flex items-center justify-center shadow-xl border-4 border-white">
-                          <div className="text-white text-center">
-                            <div className="text-xs font-bold">{t('landing.equity.after.quiverPercent')}</div>
-                          </div>
-                        </div>
-                        <div className="text-white text-center">
-                          <i className="fa-solid fa-store text-5xl mb-3"></i>
-                          <div className="text-3xl font-bold">{t('landing.equity.after.percent')}</div>
-                          <div className="text-sm mt-1">{t('landing.equity.after.youOwn')}</div>
-                        </div>
-                      </div>
-                      <div className="mt-6 grid grid-cols-2 gap-3 text-xs">
-                        <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
-                          <i className="fa-solid fa-coins text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.funding.title')}</div>
-                        </div>
-                        <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
-                          <i className="fa-solid fa-user-tie text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.mentorship.title')}</div>
-                        </div>
-                        <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
-                          <i className="fa-solid fa-graduation-cap text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.education.title')}</div>
-                        </div>
-                        <div className="bg-white px-3 py-2 rounded-lg shadow text-center">
-                          <i className="fa-solid fa-toolbox text-primary mb-1"></i>
-                          <div className="font-semibold text-gray-700">{t('landing.whatQuiverDoes.tools.title')}</div>
-                        </div>
-                      </div>
-                    </div>
+            {/* With Quiver */}
+            <div className="flex flex-col items-center">
+              <p className="text-xs font-bold text-gray-900 mb-3 h-8 flex items-end text-center">{t('landing.equity.after.title')}</p>
+              <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg relative">
+                <div className="text-center text-white">
+                  <Store className="w-5 h-5 lg:w-8 lg:h-8 mx-auto mb-1 opacity-80" />
+                  <div className="text-xl lg:text-3xl font-bold">{t('landing.equity.after.percent')}</div>
+                  <div className="text-[10px] lg:text-xs opacity-80">{t('landing.equity.after.youOwn')}</div>
+                </div>
+                {/* Quiver's share — badge at bottom-right */}
+                <div className="absolute -bottom-2 -right-2 lg:-bottom-2 lg:-right-3 w-14 h-14 lg:w-[4.5rem] lg:h-[4.5rem] rounded-full bg-accent flex items-center justify-center shadow-lg border-[3px] border-white">
+                  <div className="text-center text-white leading-none">
+                    <div className="text-xs lg:text-sm font-extrabold">{t('landing.equity.after.quiverPercent')}</div>
+                    <div className="text-[9px] lg:text-[11px] font-semibold opacity-90">Quiver</div>
                   </div>
                 </div>
               </div>
-              <p className="text-center text-gray-600 text-lg relative z-10">
-                {t('landing.equity.after.description')}
-              </p>
+              <p className="text-xs text-accent font-medium mt-5 text-center">{t('landing.equity.after.description')}</p>
             </div>
           </div>
 
-          {/* Partnership Benefits */}
-          <div className="bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto border-2 border-primary/20">
-            <div className="text-center mb-8">
-              <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-                <i className="fa-solid fa-handshake text-5xl text-primary"></i>
+          {/* Partnership benefits */}
+          <div className="text-center mb-3">
+            <h3 className="text-base font-bold text-gray-900">{t('landing.equity.benefits.title')}</h3>
+            <p className="text-xs text-gray-500">{t('landing.equity.benefits.subtitle')}</p>
+          </div>
+          <div className="grid grid-cols-3 gap-2 max-w-2xl mx-auto">
+            <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
+                <Crown className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
-              <h3 className="text-3xl font-display font-bold text-gray-900 mb-4">
-                {t('landing.equity.benefits.title')}
-              </h3>
-              <p className="text-xl text-gray-600">{t('landing.equity.benefits.subtitle')}</p>
+              <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.stayOwner.title')}</h4>
+              <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.stayOwner.description')}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-indigo-100 hover:border-primary transition-all">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                  <i className="fa-solid fa-crown text-white text-2xl"></i>
-                </div>
-                <p className="font-bold text-gray-900 mb-2 text-lg">{t('landing.equity.benefits.stayOwner.title')}</p>
-                <p className="text-sm text-gray-600">{t('landing.equity.benefits.stayOwner.description')}</p>
+            <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
+                <Rocket className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
-              <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-blue-100 hover:border-primary transition-all">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-accent to-secondary rounded-full flex items-center justify-center">
-                  <i className="fa-solid fa-rocket text-white text-2xl"></i>
-                </div>
-                <p className="font-bold text-gray-900 mb-2 text-lg">{t('landing.equity.benefits.supportGrowth.title')}</p>
-                <p className="text-sm text-gray-600">{t('landing.equity.benefits.supportGrowth.description')}</p>
-              </div>
-              <div className="text-center p-6 bg-white rounded-2xl shadow-md border-2 border-yellow-100 hover:border-primary transition-all">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-warm to-earth rounded-full flex items-center justify-center">
-                  <i className="fa-solid fa-chart-line text-white text-2xl"></i>
-                </div>
-                <p className="font-bold text-gray-900 mb-2 text-lg">{t('landing.equity.benefits.earnTogether.title')}</p>
-                <p className="text-sm text-gray-600">{t('landing.equity.benefits.earnTogether.description')}</p>
-              </div>
+              <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.supportGrowth.title')}</h4>
+              <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.supportGrowth.description')}</p>
             </div>
+            <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
+                <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.earnTogether.title')}</h4>
+              <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.earnTogether.description')}</p>
+            </div>
+          </div>
+
+          {/* Equity section CTA */}
+          <div className="text-center mt-6">
+            <button
+              onClick={handleVoiceStart}
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
+            >
+              <Sparkles className="w-4 h-4" />
+              {t('landing.equity.cta')}
+            </button>
           </div>
         </div>
       </section>
 
-      {/* What Equity is NOT Section */}
-      <section id="what-equity-is-not" className="py-20 px-6 bg-white">
+      {/* ======================== WHAT QUIVER DOES ======================== */}
+      <section id="what-quiver-does" className="px-5 py-8 lg:py-10 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold text-gray-900 mb-4">
-              {t('landing.notEquity.title')}
-            </h2>
-            <p className="text-xl text-gray-600">{t('landing.notEquity.subtitle')}</p>
-          </div>
-
-          {/* What We DON'T Do */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div id="not-takeover" className="bg-red-50 p-8 rounded-2xl border-2 border-red-200">
-              <div className="flex items-start mb-4">
-                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
-                  <i className="fa-solid fa-times text-white text-2xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noTakeover.title')}</h3>
-                  <p className="text-gray-700">{t('landing.notEquity.noTakeover.description')}</p>
-                </div>
-              </div>
-            </div>
-
-            <div id="not-interfere" className="bg-red-50 p-8 rounded-2xl border-2 border-red-200">
-              <div className="flex items-start mb-4">
-                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
-                  <i className="fa-solid fa-times text-white text-2xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noInterfere.title')}</h3>
-                  <p className="text-gray-700">{t('landing.notEquity.noInterfere.description')}</p>
-                </div>
-              </div>
-            </div>
-
-            <div id="not-earn-alone" className="bg-red-50 p-8 rounded-2xl border-2 border-red-200">
-              <div className="flex items-start mb-4">
-                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
-                  <i className="fa-solid fa-times text-white text-2xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noEarnAlone.title')}</h3>
-                  <p className="text-gray-700">{t('landing.notEquity.noEarnAlone.description')}</p>
-                </div>
-              </div>
-            </div>
-
-            <div id="not-hidden" className="bg-red-50 p-8 rounded-2xl border-2 border-red-200">
-              <div className="flex items-start mb-4">
-                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
-                  <i className="fa-solid fa-times text-white text-2xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.noHidden.title')}</h3>
-                  <p className="text-gray-700">{t('landing.notEquity.noHidden.description')}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* What We DO */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div id="we-guide" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fa-solid fa-check text-white text-3xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.weGuide.title')}</h3>
-              <p className="text-gray-700">{t('landing.notEquity.weGuide.description')}</p>
-            </div>
-
-            <div id="we-support" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fa-solid fa-check text-white text-3xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.weSupport.title')}</h3>
-              <p className="text-gray-700">{t('landing.notEquity.weSupport.description')}</p>
-            </div>
-
-            <div id="we-align" className="bg-indigo-50 p-8 rounded-2xl border-2 border-indigo-200 text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fa-solid fa-check text-white text-3xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.notEquity.weAlign.title')}</h3>
-              <p className="text-gray-700">{t('landing.notEquity.weAlign.description')}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-6 bg-gradient-to-b from-white to-blue-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold text-gray-900 mb-4">
-              {t('landing.howItWorks.title')}
-            </h2>
-            <p className="text-xl text-gray-600">{t('landing.howItWorks.subtitle')}</p>
-          </div>
-
-          <div className="relative">
-            {/* Vertical Line (hidden on mobile) */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-primary/20 hidden lg:block"></div>
-
-            <div className="space-y-12">
-              {/* Step 1 */}
-              <div id="step-1" className="flex flex-col lg:flex-row items-center gap-8">
-                <div className="lg:w-1/2 lg:text-right lg:pr-12">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
-                    <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      {t('landing.howItWorks.step1.title')}
-                    </h3>
-                    <p className="text-gray-600 text-lg">
-                      {t('landing.howItWorks.step1.description')}
-                    </p>
-                  </div>
-                </div>
-                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center flex-shrink-0 shadow-xl z-10">
-                  <i className="fa-solid fa-microphone text-white text-2xl"></i>
-                </div>
-                <div className="lg:w-1/2"></div>
-              </div>
-
-              {/* Step 2 */}
-              <div id="step-2" className="flex flex-col lg:flex-row-reverse items-center gap-8">
-                <div className="lg:w-1/2 lg:text-left lg:pl-12">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
-                    <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      {t('landing.howItWorks.step2.title')}
-                    </h3>
-                    <p className="text-gray-600 text-lg">
-                      {t('landing.howItWorks.step2.description')}
-                    </p>
-                  </div>
-                </div>
-                <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 shadow-xl z-10">
-                  <i className="fa-solid fa-brain text-white text-2xl"></i>
-                </div>
-                <div className="lg:w-1/2"></div>
-              </div>
-
-              {/* Step 3 */}
-              <div id="step-3" className="flex flex-col lg:flex-row items-center gap-8">
-                <div className="lg:w-1/2 lg:text-right lg:pr-12">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
-                    <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      {t('landing.howItWorks.step3.title')}
-                    </h3>
-                    <p className="text-gray-600 text-lg">
-                      {t('landing.howItWorks.step3.description')}
-                    </p>
-                  </div>
-                </div>
-                <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center flex-shrink-0 shadow-xl z-10">
-                  <i className="fa-solid fa-lightbulb text-white text-2xl"></i>
-                </div>
-                <div className="lg:w-1/2"></div>
-              </div>
-
-              {/* Step 4 */}
-              <div id="step-4" className="flex flex-col lg:flex-row-reverse items-center gap-8">
-                <div className="lg:w-1/2 lg:text-left lg:pl-12">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-primary/20 hover:border-primary transition-all">
-                    <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                      {t('landing.howItWorks.step4.title')}
-                    </h3>
-                    <p className="text-gray-600 text-lg">
-                      {t('landing.howItWorks.step4.description')}
-                    </p>
-                  </div>
-                </div>
-                <div className="w-20 h-20 bg-warm rounded-full flex items-center justify-center flex-shrink-0 shadow-xl z-10">
-                  <i className="fa-solid fa-hand-pointer text-white text-2xl"></i>
-                </div>
-                <div className="lg:w-1/2"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-16 text-center">
-            <div className="bg-primary/10 inline-block px-8 py-4 rounded-full">
-              <p className="text-lg font-semibold text-primary">
-                <i className="fa-solid fa-shield-heart mr-2"></i>
-                {t('landing.howItWorks.bottomNote')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Emotional Close Section */}
-      <section id="emotional-close" className="py-20 px-6 bg-gradient-to-br from-primary to-secondary text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="mb-8">
-            <img src="/logo.jpg" alt="Quiver" className="w-20 h-20 object-contain mb-6 inline-block bg-white rounded-2xl p-2 shadow-lg" />
-          </div>
-          <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6 leading-tight">
-            {t('landing.cta.title')}<br/>
-            {t('landing.cta.titleLine2')}
+          <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1 text-center">
+            {t('landing.whatQuiverDoes.title')}
           </h2>
-          <p className="text-2xl mb-8 opacity-90">
+          <p className="text-sm text-gray-600 mb-5 text-center max-w-lg mx-auto">
+            {t('landing.whatQuiverDoes.subtitle')}
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            {[
+              { key: 'funding', Icon: IndianRupee },
+              { key: 'mentorship', Icon: Users },
+              { key: 'education', Icon: GraduationCap },
+              { key: 'tools', Icon: Wrench },
+            ].map(({ key, Icon }) => (
+              <div key={key} className="bg-gray-50 p-3.5 lg:p-4 rounded-xl border border-gray-100 flex flex-col">
+                <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-2">
+                  <Icon className="w-5 h-5 lg:w-5 lg:h-5 text-accent" />
+                </div>
+                <h3 className="text-sm lg:text-base font-bold text-gray-900 mb-1">
+                  {t(`landing.whatQuiverDoes.${key}.title`)}
+                </h3>
+                <p className="text-xs lg:text-sm text-gray-600 leading-snug flex-1">
+                  {t(`landing.whatQuiverDoes.${key}.description`)}
+                </p>
+                <button
+                  onClick={handleVoiceStart}
+                  className="mt-2.5 text-xs font-semibold text-accent hover:text-emerald-700 transition-colors text-left flex items-center gap-1"
+                >
+                  {t('landing.whatQuiverDoes.learnMore')}
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================== HOW IT WORKS — 4 steps ======================== */}
+      <section id="how-it-works" className="px-5 py-8 lg:py-10 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1 text-center">
+            {t('landing.howItWorks.title')}
+          </h2>
+          <p className="text-sm text-gray-600 mb-6 text-center">
+            {t('landing.howItWorks.subtitle')}
+          </p>
+
+          {/* Mobile: vertical timeline | Desktop: horizontal 4-col */}
+          <div className="relative space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-4 max-w-3xl mx-auto">
+            {/* Mobile connecting line */}
+            <div className="absolute left-[15px] top-4 bottom-4 w-0.5 bg-accent/20 lg:hidden" />
+
+            {(['step1', 'step2', 'step3', 'step4'] as const).map((key, i) => (
+              <div key={key} className="flex items-start gap-3 relative lg:flex-col lg:items-center lg:text-center">
+                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm shadow-sm z-10">
+                  {i + 1}
+                </div>
+                <div className="bg-white rounded-xl p-3 lg:p-4 flex-1 lg:w-full border border-gray-100">
+                  <h3 className="font-bold text-gray-900 text-sm">
+                    {t(`landing.howItWorks.${key}.title`)}
+                  </h3>
+                  <p className="text-xs lg:text-sm text-gray-600 mt-0.5">
+                    {t(`landing.howItWorks.${key}.description`)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-xs text-gray-500 mt-5 italic">
+            {t('landing.howItWorks.bottomNote')}
+          </p>
+
+          {/* How it works CTA */}
+          <div className="text-center mt-5">
+            <button
+              onClick={() => {
+                setShowPhoneInput(true);
+                heroRef.current?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
+            >
+              {t('landing.howItWorks.cta')}
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================== CTA — bottom ======================== */}
+      <section id="bottom-cta" className="px-5 py-10 lg:py-14 bg-gradient-to-br from-primary to-secondary text-white">
+        <div className="max-w-xl lg:max-w-2xl mx-auto text-center">
+          <h2 className="text-xl lg:text-3xl font-display font-extrabold mb-2 leading-tight">
+            {t('landing.cta.title')}<br />
+            <span className="text-accent">{t('landing.cta.titleLine2')}</span>
+          </h2>
+          <p className="text-sm lg:text-base text-white/70 mb-6">
             {t('landing.cta.subtitle')}
           </p>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-12 max-w-3xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div className="text-5xl font-bold mb-2">1000+</div>
-                <p className="text-lg opacity-90">{t('landing.cta.stats.businesses')}</p>
-              </div>
-              <div>
-                <div className="text-5xl font-bold mb-2">₹50Cr+</div>
-                <p className="text-lg opacity-90">{t('landing.cta.stats.support')}</p>
-              </div>
-              <div>
-                <div className="text-5xl font-bold mb-2">15+</div>
-                <p className="text-lg opacity-90">{t('landing.cta.stats.states')}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 max-w-sm sm:max-w-md mx-auto mb-5">
             <button
-              onClick={() => setShowPhoneInput(true)}
-              className="bg-white hover:bg-gray-100 text-primary font-bold py-5 px-10 rounded-full text-xl transition-all shadow-2xl hover:shadow-3xl transform hover:scale-105"
+              onClick={() => {
+                setShowPhoneInput(true);
+                heroRef.current?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex-1 bg-accent hover:bg-accent/90 text-white font-bold py-3.5 px-6 rounded-xl min-h-[48px] shadow-lg active:scale-[0.98] transition-all text-sm lg:text-base"
             >
-              <i className="fa-solid fa-comments mr-2"></i>{t('landing.cta.continueLanguage')}
+              {t('landing.nav.startGrowing')}
             </button>
             <button
               onClick={handleVoiceStart}
-              className="bg-warm hover:bg-earth text-white font-bold py-5 px-10 rounded-full text-xl transition-all shadow-2xl hover:shadow-3xl transform hover:scale-105"
+              className="flex-1 bg-white/15 text-white font-bold py-3.5 px-6 rounded-xl min-h-[48px] border border-white/25 flex items-center justify-center gap-2 active:scale-[0.98] transition-all hover:bg-white/20 text-sm lg:text-base"
             >
-              <i className="fa-solid fa-microphone mr-2"></i>{t('landing.cta.startVoice')}
+              <Sparkles className="w-4 h-4 lg:w-5 lg:h-5" />
+              <span>{t('landing.cta.startVoice')}</span>
             </button>
           </div>
 
-          <div className="mt-12 flex items-center justify-center space-x-8 text-sm opacity-90">
-            <div className="flex items-center">
-              <i className="fa-solid fa-lock mr-2"></i>
-              <span>{t('landing.cta.features.safe')}</span>
-            </div>
-            <div className="flex items-center">
-              <i className="fa-solid fa-language mr-2"></i>
-              <span>{t('landing.cta.features.yourLanguage')}</span>
-            </div>
-            <div className="flex items-center">
-              <i className="fa-solid fa-heart mr-2"></i>
-              <span>{t('landing.cta.features.madeForYou')}</span>
-            </div>
+          <div className="flex justify-center gap-4 text-xs text-white/50">
+            <span>{t('landing.cta.features.safe')}</span>
+            <span className="text-white/20">|</span>
+            <span>{t('landing.cta.features.yourLanguage')}</span>
+            <span className="text-white/20">|</span>
+            <span>{t('landing.cta.features.madeForYou')}</span>
           </div>
         </div>
       </section>
 
-      {/* Trust Signals Section */}
-      <section id="trust-signals" className="py-16 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-sm uppercase tracking-wider text-gray-500 font-semibold mb-6">
-              {t('landing.trust.title')}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60">
-            <div className="text-center">
-              <i className="fa-solid fa-store text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">{t('landing.trust.retail')}</p>
-            </div>
-            <div className="text-center">
-              <i className="fa-solid fa-utensils text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">{t('landing.trust.restaurants')}</p>
-            </div>
-            <div className="text-center">
-              <i className="fa-solid fa-truck text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">{t('landing.trust.logistics')}</p>
-            </div>
-            <div className="text-center">
-              <i className="fa-solid fa-scissors text-5xl text-primary mb-2"></i>
-              <p className="text-sm font-medium text-gray-700">{t('landing.trust.services')}</p>
-            </div>
+      {/* ======================== TRUST SIGNALS ======================== */}
+      <section className="px-5 py-6 lg:py-8 bg-gray-50">
+        <div className="max-w-5xl mx-auto text-center">
+          <h3 className="text-xs lg:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
+            {t('landing.trust.title')}
+          </h3>
+          <div className="flex flex-wrap justify-center gap-3 lg:gap-6 text-xs lg:text-sm text-gray-600">
+            <span>{t('landing.trust.retail')}</span>
+            <span className="text-gray-300">|</span>
+            <span>{t('landing.trust.restaurants')}</span>
+            <span className="text-gray-300">|</span>
+            <span>{t('landing.trust.logistics')}</span>
+            <span className="text-gray-300">|</span>
+            <span>{t('landing.trust.services')}</span>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer id="footer" className="bg-gray-900 text-gray-300 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            {/* Brand */}
+      {/* ======================== FOOTER — mobile: minimal ======================== */}
+      <footer className="lg:hidden px-5 py-6 bg-gray-900 text-gray-400 text-center text-sm">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <img src="/logo.jpg" alt="Quiver" className="w-6 h-6 object-contain bg-white rounded p-0.5" />
+          <span className="font-display font-bold text-white">Quiver</span>
+        </div>
+        <p className="mb-1 text-xs">{t('landing.footer.tagline')}</p>
+        <p className="text-xs">&copy; 2025 Quiver. {t('landing.footer.copyright')}</p>
+      </footer>
+
+      {/* ======================== FOOTER — desktop: full ======================== */}
+      <footer className="hidden lg:block px-5 py-10 bg-gray-900 text-gray-400">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center mb-4">
-                <img
-                  src="/logo.jpg"
-                  alt="Quiver Logo"
-                  className="w-10 h-10 object-contain mr-3 bg-white rounded-lg p-1"
-                />
-                <span className="text-2xl font-display font-bold text-white">Quiver</span>
+              <div className="flex items-center gap-2 mb-3">
+                <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 object-contain bg-white rounded p-0.5" />
+                <span className="font-display font-bold text-white text-lg">Quiver</span>
               </div>
               <p className="text-sm">{t('landing.footer.tagline')}</p>
             </div>
-
-            {/* Company Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">{t('landing.footer.company')}</h4>
+              <h4 className="text-white font-bold text-sm mb-3">{t('landing.footer.company')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.aboutUs')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.howItWorks')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.successStories')}</a></li>
+                <li><a href="#hero-section" className="hover:text-white transition-colors">{t('landing.footer.aboutUs')}</a></li>
+                <li><a href="#how-it-works" className="hover:text-white transition-colors">{t('landing.footer.howItWorks')}</a></li>
+                <li><a href="#social-proof" className="hover:text-white transition-colors">{t('landing.footer.successStories')}</a></li>
               </ul>
             </div>
-
-            {/* Support Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">{t('landing.footer.support')}</h4>
+              <h4 className="text-white font-bold text-sm mb-3">{t('landing.footer.support')}</h4>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.helpCenter')}</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.contactUs')}</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">{t('landing.footer.faqs')}</a></li>
               </ul>
             </div>
-
-            {/* Language Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">{t('landing.footer.language')}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">हिंदी</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">English</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">অসমীয়া</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">मराठी</a></li>
-              </ul>
+              <h4 className="text-white font-bold text-sm mb-3">{t('landing.footer.language')}</h4>
+              <LanguageSelector variant="compact" />
             </div>
           </div>
-
-          <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>&copy; 2024 Quiver. {t('landing.footer.copyright')}</p>
+          <div className="border-t border-gray-800 pt-4 text-center text-sm">
+            <p>&copy; 2025 Quiver. {t('landing.footer.copyright')}</p>
           </div>
         </div>
       </footer>
 
-      {/* Quiver AI Voice Assistant - Available on landing page */}
+      {/* Quiver AI Voice Assistant */}
       <QuiverAIAssistant />
     </div>
   );
 };
 
-// Also export as default for convenience
 export default Landing;

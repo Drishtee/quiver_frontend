@@ -132,8 +132,8 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
             <div className="space-y-3 md:space-y-4">
               {(t('consent.reasons', { returnObjects: true }) as string[]).map((reason, index) => (
                 <div key={index} className="flex items-start gap-2.5 md:gap-3">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                    <span className="text-red-600 font-bold text-xs md:text-sm">{index + 1}</span>
+                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-amber-600 font-bold text-xs md:text-sm">{index + 1}</span>
                   </div>
                   <p className="text-gray-700 leading-relaxed text-sm md:text-base pt-0.5 md:pt-1">{reason}</p>
                 </div>

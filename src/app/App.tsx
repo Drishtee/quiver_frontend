@@ -699,7 +699,7 @@ export default function App() {
         </div>
       )}
       {error && (
-        <div className="fixed top-4 left-4 right-4 bg-red-500 text-white p-4 rounded-lg z-50">
+        <div className="fixed top-4 left-4 right-4 bg-amber-500 text-white p-4 rounded-lg z-50">
           {error}
           <button 
             onClick={() => setError(null)}

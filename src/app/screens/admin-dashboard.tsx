@@ -475,7 +475,7 @@ export function AdminDashboard() {
       'completed': 'bg-green-100 text-green-700',
       'available': 'bg-green-100 text-green-700',
       'booked': 'bg-blue-100 text-blue-700',
-      'cancelled': 'bg-red-100 text-red-700'
+      'cancelled': 'bg-amber-100 text-amber-700'
     };
     return colors[status] || 'bg-gray-100 text-gray-700';
   };
@@ -551,8 +551,8 @@ export function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
-            <X className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-amber-100 flex items-center justify-center">
+            <X className="w-8 h-8 text-amber-500" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
           <p className="text-gray-600 mb-6">{authError}</p>
@@ -850,11 +850,11 @@ export function AdminDashboard() {
                 </div>
               ) : fetchError ? (
                 <div className="p-12 text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-                    <X className="w-6 h-6 text-red-500" />
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
+                    <X className="w-6 h-6 text-amber-500" />
                   </div>
                   <p className="text-lg font-medium text-gray-900 mb-2">Failed to load entrepreneurs</p>
-                  <p className="text-red-500 mb-4">{fetchError}</p>
+                  <p className="text-amber-500 mb-4">{fetchError}</p>
                   <Button onClick={fetchEntrepreneurs} variant="outline">
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Try Again
@@ -1284,7 +1284,7 @@ export function AdminDashboard() {
                               <Button variant="ghost" size="sm" className="hover:bg-blue-50 hover:text-blue-600">
                                 <Edit className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="hover:bg-red-50 hover:text-red-600">
+                              <Button variant="ghost" size="sm" className="hover:bg-amber-50 hover:text-amber-600">
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>

@@ -142,8 +142,8 @@ export const MeetingConfirmationModal: React.FC<MeetingConfirmationModalProps> =
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-              <Video className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+              <Video className="w-5 h-5 text-amber-600" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-500">{t('meeting.confirmation.details.link')}</p>

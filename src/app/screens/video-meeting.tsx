@@ -63,7 +63,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
             <h1 className="text-lg font-semibold text-white">{meetingTitle}</h1>
             <div className="flex items-center gap-4 text-sm text-gray-400">
               <span className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                 Recording {formatDuration(duration)}
               </span>
               <span>Meeting ID: {meetingId}</span>
@@ -191,7 +191,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
             onClick={() => setIsMuted(!isMuted)}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               isMuted 
-                ? "bg-red-500 hover:bg-red-600" 
+                ? "bg-amber-500 hover:bg-amber-600" 
                 : "bg-gray-700 hover:bg-gray-600"
             }`}
           >
@@ -207,7 +207,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
             onClick={() => setIsVideoOn(!isVideoOn)}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               !isVideoOn 
-                ? "bg-red-500 hover:bg-red-600" 
+                ? "bg-amber-500 hover:bg-amber-600" 
                 : "bg-gray-700 hover:bg-gray-600"
             }`}
           >
@@ -238,7 +238,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
           {/* End Call */}
           <button
             onClick={onEndCall}
-            className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors ml-4"
+            className="w-14 h-14 rounded-full bg-amber-500 hover:bg-amber-600 flex items-center justify-center transition-colors ml-4"
           >
             <PhoneOff className="w-6 h-6 text-white" />
           </button>
@@ -254,7 +254,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
           </span>
           <span className="text-xs text-gray-400 w-14 text-center">Share</span>
           <span className="text-xs text-gray-400 w-14 text-center">Chat</span>
-          <span className="text-xs text-red-400 w-14 text-center ml-4">Leave</span>
+          <span className="text-xs text-amber-400 w-14 text-center ml-4">Leave</span>
         </div>
       </div>
     </div>
