@@ -28,10 +28,10 @@ export function StepProgress({
       {/* Step count display */}
       {showStepCount && (
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-foreground">
+          <span className="text-sm font-medium text-gray-900">
             Step {currentStep} of {totalSteps}
           </span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-gray-500">
             {Math.round(progress)}% complete
           </span>
         </div>
@@ -69,7 +69,7 @@ function ProgressBar({ progress, className }: ProgressBarProps) {
   return (
     <div
       className={cn(
-        "h-2 w-full bg-muted rounded-full overflow-hidden",
+        "h-2 w-full bg-gray-200 rounded-full overflow-hidden",
         className
       )}
     >
@@ -110,7 +110,7 @@ function ProgressDots({
                 "size-3 rounded-full transition-colors",
                 isCompleted && "bg-primary",
                 isCurrent && "bg-primary ring-4 ring-primary/20",
-                !isCompleted && !isCurrent && "bg-muted"
+                !isCompleted && !isCurrent && "bg-gray-200"
               )}
               initial={false}
               animate={{
@@ -123,8 +123,8 @@ function ProgressDots({
                 className={cn(
                   "text-xs mt-1 whitespace-nowrap",
                   (isCompleted || isCurrent)
-                    ? "text-foreground font-medium"
-                    : "text-muted-foreground"
+                    ? "text-gray-900 font-medium"
+                    : "text-gray-500"
                 )}
               >
                 {labels[index]}
@@ -159,7 +159,7 @@ function ProgressSegments({
             key={index}
             className={cn(
               "h-2 flex-1 rounded-full transition-colors",
-              isCompleted ? "bg-primary" : "bg-muted"
+              isCompleted ? "bg-primary" : "bg-gray-200"
             )}
             initial={false}
             animate={{
@@ -186,8 +186,8 @@ export function StepIndicator({
   className,
 }: StepIndicatorProps) {
   return (
-    <span className={cn("text-sm text-muted-foreground", className)}>
-      <span className="font-medium text-foreground">{currentStep}</span>
+    <span className={cn("text-sm text-gray-500", className)}>
+      <span className="font-medium text-gray-900">{currentStep}</span>
       <span className="mx-1">/</span>
       <span>{totalSteps}</span>
     </span>

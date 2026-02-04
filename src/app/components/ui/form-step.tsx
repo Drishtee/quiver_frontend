@@ -54,13 +54,13 @@ export function FormStep({
     <div
       className={cn(
         "flex flex-col min-h-screen md:min-h-0",
-        "bg-background",
+        "bg-white",
         className
       )}
     >
       {/* Progress indicator at top */}
       {showProgress && (
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-4 py-3 md:px-6">
+        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-gray-200 px-4 py-3 md:px-6">
           <StepProgress
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -81,12 +81,12 @@ export function FormStep({
         {(title || description) && (
           <div className="mb-6 md:mb-8">
             {title && (
-              <h2 className="text-xl md:text-2xl font-display font-semibold text-foreground">
+              <h2 className="text-xl md:text-2xl font-display font-semibold text-gray-900">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="mt-2 text-muted-foreground text-sm md:text-base">
+              <p className="mt-2 text-gray-500 text-sm md:text-base">
                 {description}
               </p>
             )}
@@ -112,8 +112,8 @@ export function FormStep({
       <div
         className={cn(
           "sticky bottom-0 z-10",
-          "bg-background/95 backdrop-blur",
-          "border-t border-border",
+          "bg-white/95 backdrop-blur",
+          "border-t border-gray-200",
           "px-4 py-4 md:px-6",
           "pb-safe" // Safe area for notched devices
         )}
@@ -135,7 +135,7 @@ export function FormStep({
             <Button
               variant="ghost"
               onClick={onSkip}
-              className="min-h-[48px] text-muted-foreground"
+              className="min-h-[48px] text-gray-500"
             >
               {skipLabel}
             </Button>
@@ -213,13 +213,13 @@ export function FormStepField({
   return (
     <div className={cn("space-y-2", className)}>
       {label && (
-        <label className="block text-base font-medium text-foreground">
+        <label className="block text-base font-medium text-gray-900">
           {label}
           {required && <span className="text-destructive ml-1">*</span>}
         </label>
       )}
       {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-gray-500">{description}</p>
       )}
       {children}
       {error && (

@@ -4,7 +4,6 @@ import { Menu, X } from "lucide-react";
 import { LanguageSelector } from "../language-selector";
 import { UserMenu } from "../user-menu";
 import { cn } from "../ui/utils";
-import { Button } from "../ui/button";
 
 interface HeaderProps {
   showLanguageSelector?: boolean;
@@ -27,7 +26,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-sm shadow-sm">
       <div className="container flex h-14 max-w-screen-xl items-center justify-between px-4 mx-auto">
         {/* Logo */}
         <div className="flex items-center gap-2">
@@ -58,10 +57,8 @@ export function Header({
 
           {/* Hamburger menu for language selector */}
           {showLanguageSelector && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="min-h-touch min-w-touch"
+            <button
+              className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
               onClick={toggleMobileMenu}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
@@ -71,7 +68,7 @@ export function Header({
               ) : (
                 <Menu className="size-5" />
               )}
-            </Button>
+            </button>
           )}
         </div>
       </div>
@@ -80,7 +77,7 @@ export function Header({
       <div
         className={cn(
           "md:hidden overflow-hidden transition-all duration-200 ease-in-out",
-          isMobileMenuOpen ? "max-h-48 border-b border-border" : "max-h-0"
+          isMobileMenuOpen ? "max-h-48 border-b border-gray-200" : "max-h-0"
         )}
       >
         <div className="container max-w-screen-xl mx-auto px-4 py-4">
@@ -88,7 +85,7 @@ export function Header({
             {/* Language Selector in mobile menu */}
             {showLanguageSelector && (
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">
+                <span className="text-sm font-medium text-gray-500">
                   Language
                 </span>
                 <LanguageSelector />

@@ -55,11 +55,11 @@ export function ReviewSubmit({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-accent rounded-lg flex items-center justify-center mr-2 md:mr-3">
             <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
           <span className="text-base md:text-xl font-display font-bold text-primary">अंतिम पुष्टि | Final Confirmation</span>
@@ -73,7 +73,7 @@ export function ReviewSubmit({
           <ProgressIndicator current={9} total={9} />
 
           <div className="text-center space-y-1 md:space-y-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-3 md:mb-4">
+            <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full bg-accent flex items-center justify-center mb-3 md:mb-4">
               <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
             <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">
@@ -83,15 +83,15 @@ export function ReviewSubmit({
           </div>
 
           {/* Profile Summary */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center gap-3">
-                <User className="w-6 h-6 text-primary" />
+                <User className="w-6 h-6 text-accent" />
                 <h3 className="font-display font-bold text-gray-900">उद्यमी की जानकारी | Entrepreneur Profile</h3>
               </div>
               <button
                 onClick={() => onEdit("profile")}
-                className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -128,15 +128,15 @@ export function ReviewSubmit({
           </div>
 
           {/* Enterprise Summary */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center gap-3">
-                <Building2 className="w-6 h-6 text-primary" />
+                <Building2 className="w-6 h-6 text-accent" />
                 <h3 className="font-display font-bold text-gray-900">व्यवसाय की जानकारी | Enterprise Details</h3>
               </div>
               <button
                 onClick={() => onEdit("enterprise")}
-                className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -169,15 +169,15 @@ export function ReviewSubmit({
           </div>
 
           {/* Financial Summary */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center gap-3">
-                <IndianRupee className="w-6 h-6 text-primary" />
+                <IndianRupee className="w-6 h-6 text-accent" />
                 <h3 className="font-display font-bold text-gray-900">वित्तीय स्थिति | Financial Snapshot</h3>
               </div>
               <button
                 onClick={() => onEdit("questionnaire")}
-                className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -202,15 +202,15 @@ export function ReviewSubmit({
           </div>
 
           {/* Growth Intent Summary */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center gap-3">
-                <Target className="w-6 h-6 text-primary" />
+                <Target className="w-6 h-6 text-accent" />
                 <h3 className="font-display font-bold text-gray-900">विकास की सोच | Growth Intent</h3>
               </div>
               <button
                 onClick={() => onEdit("questionnaire")}
-                className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -235,15 +235,15 @@ export function ReviewSubmit({
           </div>
 
           {/* Partnership Orientation Summary */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center gap-3">
-                <Handshake className="w-6 h-6 text-primary" />
+                <Handshake className="w-6 h-6 text-accent" />
                 <h3 className="font-display font-bold text-gray-900">साझेदारी की सोच | Partnership Orientation</h3>
               </div>
               <button
                 onClick={() => onEdit("equity")}
-                className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -269,10 +269,10 @@ export function ReviewSubmit({
           </div>
 
           {/* Declaration */}
-          <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-1">
+          <div className="bg-accent rounded-2xl p-1">
             <div className="bg-white rounded-xl p-6 space-y-6">
               <div className="flex items-start gap-3">
-                <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                <Shield className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-display font-bold text-gray-900 mb-2">घोषणा | Declaration</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">
@@ -284,7 +284,7 @@ export function ReviewSubmit({
                 </div>
               </div>
 
-              <label className="flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-primary/50 cursor-pointer transition-all">
+              <label className="flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-accent/50 cursor-pointer transition-all">
                 <Checkbox
                   id="declaration"
                   checked={declaration}
@@ -299,9 +299,9 @@ export function ReviewSubmit({
           </div>
 
           {/* Submit Button - Sticky on mobile */}
-          <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border space-y-3 md:space-y-4">
+          <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-gray-200 space-y-3 md:space-y-4">
             <Button
-              className="w-full min-h-[56px] md:h-16 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary active:opacity-90 text-base md:text-lg font-display font-bold rounded-xl transition-all shadow-lg disabled:opacity-50"
+              className="w-full min-h-[56px] md:h-16 bg-accent hover:bg-accent/90 active:opacity-90 text-base md:text-lg font-display font-bold rounded-xl transition-all shadow-lg disabled:opacity-50"
               disabled={!declaration || isSubmitting}
               onClick={onSubmit}
             >

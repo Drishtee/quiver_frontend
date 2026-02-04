@@ -6,7 +6,6 @@ import { Checkbox } from "../components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { ProgressIndicator } from "../components/progress-indicator";
 import { AIAssistant } from "../components/ai-assistant";
-
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import { onboardingStorage } from "../../utils/storage";
 import {
@@ -164,12 +163,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-50">
+      <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center min-w-0">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-accent rounded-lg flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
               <Briefcase className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
             <span className="text-base md:text-xl font-display font-bold text-primary truncate">व्यवसाय विवरण | Business Details</span>
@@ -197,9 +196,9 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                 onClick={() => idx <= sectionIndex && setCurrentSection(section.id)}
                 className={`px-3 py-2 md:px-4 rounded-lg text-sm font-medium whitespace-nowrap transition-all min-h-touch flex items-center ${
                   section.id === currentSection
-                    ? 'bg-accent text-white'
+                    ? 'bg-primary text-white'
                     : idx <= sectionIndex
-                      ? 'bg-gray-100 text-accent hover:bg-gray-200'
+                      ? 'bg-blue-100 text-primary hover:bg-blue-200 active:bg-blue-300'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -220,12 +219,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {currentSection === 'D' && (
             <div className="space-y-4 md:space-y-6">
               {/* Product Description */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आप क्या बनाते / बेचते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">What do you make or sell? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">What do you make or sell? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="relative">
@@ -239,12 +238,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Primary Customers */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <Users className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <Users className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आपके मुख्य ग्राहक कौन हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Who are your main customers? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Who are your main customers? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -260,7 +259,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -279,12 +278,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Sales Geography */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <MapPin className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आप कहाँ तक बेचते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Where do you sell? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Where do you sell? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -299,7 +298,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -318,7 +317,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Avg Customers per Month */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>हर महीने कितने ग्राहक आते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">How many customers per month?</span>
@@ -333,10 +332,10 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Sales Channel */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>आप कैसे बेचते हैं?</span>
-                  <span className="block text-xs text-gray-500 font-normal">How do you sell? <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">How do you sell? <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
@@ -350,7 +349,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -369,7 +368,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Dependency Questions */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-5 md:space-y-6">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-5 md:space-y-6">
                 <div className="space-y-3 md:space-y-4">
                   <label className="text-sm font-medium text-gray-900">
                     <span>क्या आपकी ज़्यादातर बिक्री 1-2 बड़े ग्राहकों से होती है?</span>
@@ -383,15 +382,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-4 py-2.5 md:px-5 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          answers.salesConcentration === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          answers.salesConcentration === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                         onClick={() => updateAnswer('salesConcentration', option.value)}
                       >
                         <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                          answers.salesConcentration === option.value ? 'border-accent' : 'border-gray-300'
+                          answers.salesConcentration === option.value ? 'border-primary' : 'border-gray-300'
                         }`}>
                           {answers.salesConcentration === option.value && (
-                            <div className="w-2 h-2 rounded-full bg-accent" />
+                            <div className="w-2 h-2 rounded-full bg-primary" />
                           )}
                         </div>
                         <span className="text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -415,15 +414,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          answers.businessIndependence === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          answers.businessIndependence === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                         onClick={() => updateAnswer('businessIndependence', option.value)}
                       >
                         <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                          answers.businessIndependence === option.value ? 'border-accent' : 'border-gray-300'
+                          answers.businessIndependence === option.value ? 'border-primary' : 'border-gray-300'
                         }`}>
                           {answers.businessIndependence === option.value && (
-                            <div className="w-2 h-2 rounded-full bg-accent" />
+                            <div className="w-2 h-2 rounded-full bg-primary" />
                           )}
                         </div>
                         <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -440,12 +439,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {currentSection === 'E' && (
             <div className="space-y-4 md:space-y-6">
               {/* Monthly Revenue */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>हर महीने कितनी बिक्री होती है? (₹)</span>
-                    <span className="block text-xs text-gray-500 font-normal">Monthly sales/revenue <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Monthly sales/revenue <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <Input
@@ -458,12 +457,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Monthly Expenses */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-amber-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <span>हर महीने कुल कितना खर्च होता है? (₹)</span>
-                    <span className="block text-xs text-gray-500 font-normal">Monthly expenses <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Monthly expenses <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <Input
@@ -476,10 +475,10 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Current Status */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>अभी व्यवसाय की स्थिति क्या है?</span>
-                  <span className="block text-xs text-gray-500 font-normal">Current business status <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">Current business status <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
@@ -511,12 +510,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Sales Trend */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>पिछले साल बिक्री कैसी रही?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Sales trend last 12 months <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Sales trend last 12 months <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -528,15 +527,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.salesTrend === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.salesTrend === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('salesTrend', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.salesTrend === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.salesTrend === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.salesTrend === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -547,9 +546,9 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Workers */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <Users className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <Users className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आपके साथ कितने लोग काम करते हैं?</span>
                     <span className="block text-xs text-gray-500 font-normal">How many people work with you?</span>
@@ -580,7 +579,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Payment Frequency */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>कर्मचारियों को कैसे पैसे देते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">How do you pay workers?</span>
@@ -594,15 +593,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.paymentFrequency === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.paymentFrequency === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('paymentFrequency', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.paymentFrequency === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.paymentFrequency === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.paymentFrequency === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -613,7 +612,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Bank/UPI Transactions */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>क्या आप UPI/बैंक से लेन-देन करते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">Do you use UPI/Bank for transactions?</span>
@@ -627,15 +626,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.digitalTransactions === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.digitalTransactions === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('digitalTransactions', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.digitalTransactions === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.digitalTransactions === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.digitalTransactions === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -646,9 +645,9 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Records */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <FileText className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <FileText className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आप हिसाब-किताब कैसे रखते हैं?</span>
                     <span className="block text-xs text-gray-500 font-normal">How do you keep records?</span>
@@ -666,7 +665,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -690,9 +689,9 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {currentSection === 'F' && (
             <div className="space-y-4 md:space-y-6">
               {/* Key Assets */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <Building className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <Building className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आपके पास कौन-कौन सी मशीनें/उपकरण हैं?</span>
                     <span className="block text-xs text-gray-500 font-normal">What machines/equipment do you have?</span>
@@ -709,10 +708,10 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Workspace Type */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>आप कहाँ से काम करते हैं?</span>
-                  <span className="block text-xs text-gray-500 font-normal">Where do you work from? <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">Where do you work from? <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
                   {[
@@ -723,15 +722,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.workspaceType === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.workspaceType === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('workspaceType', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.workspaceType === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.workspaceType === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.workspaceType === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -742,7 +741,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Registrations */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>क्या आपके पास कोई पंजीकरण है?</span>
                   <span className="block text-xs text-gray-500 font-normal">Do you have any registrations?</span>
@@ -759,7 +758,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -778,7 +777,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Income Decision Control */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>क्या कमाई पर आपका फ़ैसला चलता है?</span>
                   <span className="block text-xs text-gray-500 font-normal">Do you decide how to use business income?</span>
@@ -792,15 +791,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.incomeControl === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.incomeControl === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('incomeControl', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.incomeControl === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.incomeControl === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.incomeControl === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -816,12 +815,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {currentSection === 'G' && (
             <div className="space-y-4 md:space-y-6">
               {/* Hours per Day */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <Clock className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>रोज़ाना कितने घंटे काम करते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">How many hours do you work daily? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">How many hours do you work daily? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -833,15 +832,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.hoursPerDay === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.hoursPerDay === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('hoursPerDay', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.hoursPerDay === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.hoursPerDay === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.hoursPerDay === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -852,12 +851,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Open to Change */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>क्या आप नए तरीके आज़माने को तैयार हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Are you open to trying new methods? <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Are you open to trying new methods? <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -869,15 +868,15 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                     <label
                       key={option.value}
                       className={`flex items-center gap-2 px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                        answers.openToChange === option.value ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                        answers.openToChange === option.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => updateAnswer('openToChange', option.value)}
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        answers.openToChange === option.value ? 'border-accent' : 'border-gray-300'
+                        answers.openToChange === option.value ? 'border-primary' : 'border-gray-300'
                       }`}>
                         {answers.openToChange === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-accent" />
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
@@ -888,12 +887,12 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Priority */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <Target className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <Target className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>अगले साल आप क्या चाहते हैं?</span>
-                    <span className="block text-xs text-gray-500 font-normal">Your goals for next 12 months <span className="text-red-500">*</span></span>
+                    <span className="block text-xs text-gray-500 font-normal">Your goals for next 12 months <span className="text-amber-500">*</span></span>
                   </div>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -909,7 +908,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -928,10 +927,10 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Quiver Support */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>Quiver से आपको क्या मदद चाहिए?</span>
-                  <span className="block text-xs text-gray-500 font-normal">What help do you need from Quiver? <span className="text-red-500">*</span></span>
+                  <span className="block text-xs text-gray-500 font-normal">What help do you need from Quiver? <span className="text-amber-500">*</span></span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {[
@@ -945,7 +944,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                       <label
                         key={option.value}
                         className={`flex items-center gap-2 px-2.5 py-2.5 md:px-3 md:py-3 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all active:scale-[0.98] ${
-                          selected ? 'border-accent bg-accent/5' : 'border-gray-200 hover:border-gray-300'
+                          selected ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <Checkbox
@@ -964,9 +963,9 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Investment Amount */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
-                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
+                  <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <span>आपको कितने पैसों की ज़रूरत है? (₹)</span>
                     <span className="block text-xs text-gray-500 font-normal">How much funding do you need?</span>
@@ -982,7 +981,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Funding Use */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>पैसों का इस्तेमाल किसमें करेंगे?</span>
                   <span className="block text-xs text-gray-500 font-normal">How will you use the funding?</span>
@@ -1000,7 +999,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           )}
 
           {/* Navigation - Mobile-first sticky at bottom */}
-          <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-gray-200">
+          <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border">
             <div className="flex gap-3">
               {sectionIndex > 0 && (
                 <Button
@@ -1013,7 +1012,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                 </Button>
               )}
               <Button
-                className="flex-1 min-h-[52px] md:h-14 bg-accent hover:bg-accent/90 active:bg-accent/80 text-base md:text-lg font-semibold rounded-xl transition-all"
+                className="flex-1 min-h-[52px] md:h-14 bg-primary hover:bg-secondary active:bg-secondary/90 text-base md:text-lg font-semibold rounded-xl transition-all"
                 onClick={handleNext}
                 disabled={!canProceed()}
               >
@@ -1030,7 +1029,6 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               message="सवालों में मदद चाहिए? बोलकर भी जवाब दे सकते हैं! | Need help? You can also speak to answer!"
             />
           </div>
-
         </div>
       </main>
     </div>

@@ -38,8 +38,12 @@ import {
   BarChart3,
   PieChart,
   Activity,
-  Briefcase
+  Briefcase,
+  Lock,
+  Shield,
+  LogOut
 } from "lucide-react";
+import { sendOTP, verifyOTP, logout } from "../../services/api";
 
 // API Base URL
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -148,7 +152,220 @@ const INDUSTRIES = [
   { value: "other", label: "Other" }
 ];
 
+// Admin Login Component
+function AdminLogin({ onLoginSuccess }: { onLoginSuccess: () => void }) {
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSendOtp = async () => {
+    if (!phone || phone.length < 10) {
+      setError("Please enter a valid phone number");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await sendOTP(phone);
+      setStep("otp");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      setError("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await verifyOTP(phone, otp);
+      onLoginSuccess();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Invalid OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <Shield className="w-10 h-10 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Quiver Admin</h1>
+          <p className="text-gray-500 mt-2">Enter your credentials to access the dashboard</p>
+        </div>
+
+        {/* Login Card */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          {step === "phone" ? (
+            <>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="tel"
+                    placeholder="+91 9876543210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="pl-11 h-12"
+                    onKeyDown={(e) => e.key === "Enter" && handleSendOtp()}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Enter the phone number associated with your admin account
+                </p>
+              </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <Button
+                onClick={handleSendOtp}
+                disabled={isLoading}
+                className="w-full h-12 bg-primary hover:bg-primary/90"
+              >
+                {isLoading ? (
+                  <RefreshCw className="w-5 h-5 animate-spin mr-2" />
+                ) : (
+                  <Lock className="w-5 h-5 mr-2" />
+                )}
+                Send OTP
+              </Button>
+            </>
+          ) : (
+            <>
+              <div className="mb-4">
+                <button
+                  onClick={() => { setStep("phone"); setOtp(""); setError(null); }}
+                  className="text-sm text-primary hover:underline flex items-center gap-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Change phone number
+                </button>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Enter OTP
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="123456"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    className="pl-11 h-12 text-center text-2xl tracking-widest font-mono"
+                    maxLength={6}
+                    onKeyDown={(e) => e.key === "Enter" && handleVerifyOtp()}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  OTP sent to {phone}
+                </p>
+              </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <Button
+                onClick={handleVerifyOtp}
+                disabled={isLoading || otp.length !== 6}
+                className="w-full h-12 bg-primary hover:bg-primary/90"
+              >
+                {isLoading ? (
+                  <RefreshCw className="w-5 h-5 animate-spin mr-2" />
+                ) : (
+                  <Shield className="w-5 h-5 mr-2" />
+                )}
+                Verify & Login
+              </Button>
+
+              <button
+                onClick={handleSendOtp}
+                disabled={isLoading}
+                className="w-full mt-4 text-sm text-gray-500 hover:text-primary"
+              >
+                Resend OTP
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-xs text-gray-400 mt-6">
+          Only authorized administrators can access this dashboard.
+          <br />
+          Contact support if you need admin access.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Main Admin Dashboard Export with Auth Check
 export function AdminDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setIsAuthenticated(false);
+  };
+
+  // Show loading while checking auth
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <RefreshCw className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Show login if not authenticated
+  if (!isAuthenticated) {
+    return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
+  }
+
+  // Show dashboard if authenticated
+  return <AdminDashboardContent onLogout={handleLogout} />;
+}
+
+// The actual dashboard content (renamed from original AdminDashboard)
+function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [isAuthorized, setIsAuthorized] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -181,6 +398,9 @@ export function AdminDashboard() {
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
   const [audioSearchQuery, setAudioSearchQuery] = useState("");
   const [screenFilter, setScreenFilter] = useState("all");
+  const [audioViewMode, setAudioViewMode] = useState<"table" | "grouped">("table");
+  const [entrepreneurFilter, setEntrepreneurFilter] = useState("all");
+  const [expandedTranscript, setExpandedTranscript] = useState<number | null>(null);
 
   // Meetings state
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -463,8 +683,53 @@ export function AdminDashboard() {
       rec.entrepreneur_name?.toLowerCase().includes(audioSearchQuery.toLowerCase()) ||
       rec.entrepreneur_phone?.includes(audioSearchQuery);
     const matchesScreen = screenFilter === "all" || rec.screen === screenFilter;
-    return matchesSearch && matchesScreen;
+    const matchesEntrepreneur = entrepreneurFilter === "all" ||
+      rec.entrepreneur_phone === entrepreneurFilter ||
+      rec.session_id === entrepreneurFilter;
+    return matchesSearch && matchesScreen && matchesEntrepreneur;
   });
+
+  // Get unique entrepreneurs for filter dropdown
+  const uniqueEntrepreneurs = Array.from(
+    new Map(
+      audioRecordings
+        .filter(rec => rec.entrepreneur_phone || rec.session_id)
+        .map(rec => [
+          rec.entrepreneur_phone || rec.session_id,
+          {
+            phone: rec.entrepreneur_phone,
+            name: rec.entrepreneur_name,
+            sessionId: rec.session_id
+          }
+        ])
+    ).values()
+  );
+
+  // Group recordings by entrepreneur
+  const groupedRecordings = filteredRecordings.reduce((acc, rec) => {
+    const key = rec.entrepreneur_phone || rec.session_id || 'unknown';
+    if (!acc[key]) {
+      acc[key] = {
+        name: rec.entrepreneur_name || 'Unknown',
+        phone: rec.entrepreneur_phone || '-',
+        sessionId: rec.session_id,
+        recordings: [],
+        totalDuration: 0
+      };
+    }
+    acc[key].recordings.push(rec);
+    acc[key].totalDuration += rec.duration_seconds || 0;
+    return acc;
+  }, {} as Record<string, { name: string; phone: string; sessionId?: string; recordings: AudioRecord[]; totalDuration: number }>);
+
+  // Audio stats
+  const audioStats = {
+    totalRecordings: filteredRecordings.length,
+    totalDuration: filteredRecordings.reduce((acc, r) => acc + (r.duration_seconds || 0), 0),
+    totalSize: filteredRecordings.reduce((acc, r) => acc + (r.file_size_bytes || 0), 0),
+    uniqueEntrepreneurs: Object.keys(groupedRecordings).length,
+    withTranscript: filteredRecordings.filter(r => r.transcript).length
+  };
 
   // Helpers
   const getStatusColor = (status: string) => {
@@ -534,7 +799,7 @@ export function AdminDashboard() {
         </div>
         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
+            className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
             style={{ width: `${percentage}%` }}
           />
         </div>
@@ -551,8 +816,8 @@ export function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-amber-100 flex items-center justify-center">
-            <X className="w-8 h-8 text-amber-500" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-50 flex items-center justify-center">
+            <X className="w-8 h-8 text-red-500" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
           <p className="text-gray-600 mb-6">{authError}</p>
@@ -591,6 +856,15 @@ export function AdminDashboard() {
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 md:mr-2" />
               <span className="hidden md:inline">Export CSV</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onLogout}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+            >
+              <LogOut className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Logout</span>
             </Button>
           </div>
         </div>
@@ -850,11 +1124,11 @@ export function AdminDashboard() {
                 </div>
               ) : fetchError ? (
                 <div className="p-12 text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
-                    <X className="w-6 h-6 text-amber-500" />
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
+                    <X className="w-6 h-6 text-red-500" />
                   </div>
                   <p className="text-lg font-medium text-gray-900 mb-2">Failed to load entrepreneurs</p>
-                  <p className="text-amber-500 mb-4">{fetchError}</p>
+                  <p className="text-red-500 mb-4">{fetchError}</p>
                   <Button onClick={fetchEntrepreneurs} variant="outline">
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Try Again
@@ -974,6 +1248,65 @@ export function AdminDashboard() {
         {/* RECORDINGS TAB */}
         {activeTab === 'recordings' && (
           <div className="space-y-4">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                    <AudioLines className="w-4 h-4 text-violet-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Total</p>
+                    <p className="text-lg font-bold text-gray-900">{audioStats.totalRecordings}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Clock className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Duration</p>
+                    <p className="text-lg font-bold text-gray-900">{formatDuration(audioStats.totalDuration)}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                    <Users className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Entrepreneurs</p>
+                    <p className="text-lg font-bold text-gray-900">{audioStats.uniqueEntrepreneurs}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <FileAudio className="w-4 h-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">With Transcript</p>
+                    <p className="text-lg font-bold text-gray-900">{audioStats.withTranscript}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <Download className="w-4 h-4 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Size</p>
+                    <p className="text-lg font-bold text-gray-900">{formatFileSize(audioStats.totalSize)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Filters */}
             <div className="bg-white rounded-xl border border-gray-200 p-4">
               <div className="flex flex-col md:flex-row gap-3">
@@ -986,6 +1319,19 @@ export function AdminDashboard() {
                     className="pl-10"
                   />
                 </div>
+                <Select value={entrepreneurFilter} onValueChange={setEntrepreneurFilter}>
+                  <SelectTrigger className="w-full md:w-[200px]">
+                    <SelectValue placeholder="Entrepreneur" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Entrepreneurs</SelectItem>
+                    {uniqueEntrepreneurs.map((ent) => (
+                      <SelectItem key={ent.phone || ent.sessionId} value={ent.phone || ent.sessionId || ''}>
+                        {ent.name || ent.phone || 'Unknown'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Select value={screenFilter} onValueChange={setScreenFilter}>
                   <SelectTrigger className="w-full md:w-[180px]">
                     <SelectValue placeholder="Screen" />
@@ -998,6 +1344,28 @@ export function AdminDashboard() {
                     <SelectItem value="equity">Partnership</SelectItem>
                   </SelectContent>
                 </Select>
+                <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setAudioViewMode("table")}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      audioViewMode === "table"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    Table
+                  </button>
+                  <button
+                    onClick={() => setAudioViewMode("grouped")}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      audioViewMode === "grouped"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    Grouped
+                  </button>
+                </div>
                 <Button variant="outline" onClick={fetchAudioRecordings} disabled={loadingAudio}>
                   <RefreshCw className={`w-4 h-4 mr-2 ${loadingAudio ? 'animate-spin' : ''}`} />
                   Refresh
@@ -1005,109 +1373,202 @@ export function AdminDashboard() {
               </div>
             </div>
 
-            {/* Recordings Table */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              {loadingAudio ? (
-                <div className="p-12 text-center">
-                  <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-                  <p className="text-gray-500">Loading recordings...</p>
-                </div>
-              ) : filteredRecordings.length === 0 ? (
-                <div className="p-12 text-center">
-                  <FileAudio className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg font-medium text-gray-900 mb-2">No recordings found</p>
-                  <p className="text-gray-500">Voice recordings will appear here</p>
-                </div>
-              ) : (
-                <>
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-gray-50">
-                          <TableHead className="w-12"></TableHead>
-                          <TableHead className="font-semibold">Entrepreneur</TableHead>
-                          <TableHead className="font-semibold">Screen</TableHead>
-                          <TableHead className="font-semibold">Transcript</TableHead>
-                          <TableHead className="font-semibold">Duration</TableHead>
-                          <TableHead className="font-semibold">Date</TableHead>
-                          <TableHead className="font-semibold text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredRecordings.map((rec) => (
-                          <TableRow key={rec.id} className="hover:bg-gray-50">
-                            <TableCell>
-                              <button
-                                onClick={() => handlePlayPause(rec)}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                                  playingId === rec.id
-                                    ? 'bg-primary text-white'
-                                    : 'bg-gray-100 hover:bg-primary/10 text-gray-600 hover:text-primary'
-                                }`}
-                              >
-                                {playingId === rec.id ? (
-                                  <Pause className="w-4 h-4" />
-                                ) : (
-                                  <Play className="w-4 h-4 ml-0.5" />
-                                )}
-                              </button>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center">
-                                  <User className="w-4 h-4 text-violet-600" />
-                                </div>
-                                <div>
-                                  <p className="font-medium text-gray-900 text-sm">{rec.entrepreneur_name || 'Unknown'}</p>
-                                  <p className="text-xs text-gray-500">{rec.entrepreneur_phone || '-'}</p>
-                                </div>
+            {/* Recordings Content */}
+            {loadingAudio ? (
+              <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                <p className="text-gray-500">Loading recordings...</p>
+              </div>
+            ) : filteredRecordings.length === 0 ? (
+              <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                <FileAudio className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p className="text-lg font-medium text-gray-900 mb-2">No recordings found</p>
+                <p className="text-gray-500">Voice recordings will appear here</p>
+              </div>
+            ) : audioViewMode === "table" ? (
+              /* Table View */
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50">
+                        <TableHead className="w-12"></TableHead>
+                        <TableHead className="font-semibold">Entrepreneur</TableHead>
+                        <TableHead className="font-semibold">Screen</TableHead>
+                        <TableHead className="font-semibold">Transcript</TableHead>
+                        <TableHead className="font-semibold">Duration</TableHead>
+                        <TableHead className="font-semibold">Date</TableHead>
+                        <TableHead className="font-semibold text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredRecordings.map((rec) => (
+                        <TableRow key={rec.id} className="hover:bg-gray-50">
+                          <TableCell>
+                            <button
+                              onClick={() => handlePlayPause(rec)}
+                              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                                playingId === rec.id
+                                  ? 'bg-primary text-white'
+                                  : 'bg-gray-100 hover:bg-primary/10 text-gray-600 hover:text-primary'
+                              }`}
+                            >
+                              {playingId === rec.id ? (
+                                <Pause className="w-4 h-4" />
+                              ) : (
+                                <Play className="w-4 h-4 ml-0.5" />
+                              )}
+                            </button>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center">
+                                <User className="w-4 h-4 text-violet-600" />
                               </div>
-                            </TableCell>
-                            <TableCell>
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                                {getScreenLabel(rec.screen)}
-                              </span>
-                            </TableCell>
-                            <TableCell className="max-w-xs">
-                              <p className="text-sm text-gray-700 truncate" title={rec.transcript}>
+                              <div>
+                                <p className="font-medium text-gray-900 text-sm">{rec.entrepreneur_name || 'Unknown'}</p>
+                                <p className="text-xs text-gray-500">{rec.entrepreneur_phone || '-'}</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                              {getScreenLabel(rec.screen)}
+                            </span>
+                          </TableCell>
+                          <TableCell className="max-w-xs">
+                            <button
+                              onClick={() => setExpandedTranscript(expandedTranscript === rec.id ? null : rec.id)}
+                              className="text-left w-full"
+                            >
+                              <p className={`text-sm text-gray-700 ${expandedTranscript === rec.id ? '' : 'truncate'}`} title={rec.transcript}>
                                 {rec.transcript || <span className="text-gray-400 italic">No transcript</span>}
                               </p>
-                            </TableCell>
-                            <TableCell className="text-gray-500 text-sm">
-                              {formatDuration(rec.duration_seconds)}
-                            </TableCell>
-                            <TableCell className="text-gray-500 text-sm">
-                              {formatDateTime(rec.recorded_at || rec.created_at)}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => window.open(rec.audio_url, '_blank')}
-                                className="hover:bg-blue-50 hover:text-blue-600"
-                              >
-                                <Download className="w-4 h-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+                              {rec.transcript && rec.transcript.length > 50 && (
+                                <span className="text-xs text-primary hover:underline">
+                                  {expandedTranscript === rec.id ? 'Show less' : 'Show more'}
+                                </span>
+                              )}
+                            </button>
+                          </TableCell>
+                          <TableCell className="text-gray-500 text-sm">
+                            {formatDuration(rec.duration_seconds)}
+                          </TableCell>
+                          <TableCell className="text-gray-500 text-sm">
+                            {formatDateTime(rec.recorded_at || rec.created_at)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => window.open(rec.audio_url, '_blank')}
+                              className="hover:bg-blue-50 hover:text-blue-600"
+                            >
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            ) : (
+              /* Grouped View */
+              <div className="space-y-4">
+                {Object.entries(groupedRecordings).map(([key, group]) => (
+                  <div key={key} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    {/* Entrepreneur Header */}
+                    <div className="p-4 bg-gradient-to-r from-violet-50 to-white border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-violet-100 flex items-center justify-center">
+                            <User className="w-6 h-6 text-violet-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{group.name}</h3>
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                              <Phone className="w-3 h-3" />
+                              <span>{group.phone}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-4">
+                            <div className="text-center">
+                              <p className="text-2xl font-bold text-primary">{group.recordings.length}</p>
+                              <p className="text-xs text-gray-500">Recordings</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-2xl font-bold text-blue-600">{formatDuration(group.totalDuration)}</p>
+                              <p className="text-xs text-gray-500">Total Duration</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-                  {/* Summary */}
-                  <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
-                    <p className="text-sm text-gray-500">
-                      {filteredRecordings.length} recording{filteredRecordings.length !== 1 ? 's' : ''}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>Total: {formatDuration(filteredRecordings.reduce((acc, r) => acc + (r.duration_seconds || 0), 0))}</span>
-                      <span>{formatFileSize(filteredRecordings.reduce((acc, r) => acc + (r.file_size_bytes || 0), 0))}</span>
+                    {/* Recordings List */}
+                    <div className="divide-y divide-gray-100">
+                      {group.recordings.map((rec) => (
+                        <div key={rec.id} className="p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-start gap-3">
+                            <button
+                              onClick={() => handlePlayPause(rec)}
+                              className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                                playingId === rec.id
+                                  ? 'bg-primary text-white'
+                                  : 'bg-gray-100 hover:bg-primary/10 text-gray-600 hover:text-primary'
+                              }`}
+                            >
+                              {playingId === rec.id ? (
+                                <Pause className="w-4 h-4" />
+                              ) : (
+                                <Play className="w-4 h-4 ml-0.5" />
+                              )}
+                            </button>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                  {getScreenLabel(rec.screen)}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {formatDateTime(rec.recorded_at || rec.created_at)}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {formatDuration(rec.duration_seconds)}
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => setExpandedTranscript(expandedTranscript === rec.id ? null : rec.id)}
+                                className="text-left w-full"
+                              >
+                                <p className={`text-sm text-gray-700 ${expandedTranscript === rec.id ? '' : 'line-clamp-2'}`}>
+                                  {rec.transcript || <span className="text-gray-400 italic">No transcript available</span>}
+                                </p>
+                                {rec.transcript && rec.transcript.length > 100 && (
+                                  <span className="text-xs text-primary hover:underline">
+                                    {expandedTranscript === rec.id ? 'Show less' : 'Show more'}
+                                  </span>
+                                )}
+                              </button>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => window.open(rec.audio_url, '_blank')}
+                              className="hover:bg-blue-50 hover:text-blue-600 flex-shrink-0"
+                            >
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </>
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -1141,7 +1602,7 @@ export function AdminDashboard() {
             {/* Add Slot Button */}
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold text-gray-900">Meeting Slots</h2>
-              <Button onClick={() => setShowAddSlot(true)} className="bg-primary hover:bg-primary/90">
+              <Button onClick={() => setShowAddSlot(true)} className="bg-accent hover:bg-accent/90">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Slot
               </Button>
@@ -1194,7 +1655,7 @@ export function AdminDashboard() {
                       <Button variant="outline" className="flex-1" onClick={() => setShowAddSlot(false)}>
                         Cancel
                       </Button>
-                      <Button className="flex-1 bg-primary" onClick={createSlot}>
+                      <Button className="flex-1 bg-accent" onClick={createSlot}>
                         Create Slot
                       </Button>
                     </div>
@@ -1284,7 +1745,7 @@ export function AdminDashboard() {
                               <Button variant="ghost" size="sm" className="hover:bg-blue-50 hover:text-blue-600">
                                 <Edit className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="hover:bg-amber-50 hover:text-amber-600">
+                              <Button variant="ghost" size="sm" className="hover:bg-red-50 hover:text-red-600">
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>

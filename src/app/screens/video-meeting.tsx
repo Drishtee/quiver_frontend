@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "../components/ui/button";
+
 import { 
   Mic, 
   MicOff, 
@@ -87,7 +87,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
           {/* Simulated video feed */}
           <div className="w-full h-full bg-gradient-to-br from-blue-900 to-teal-900 flex items-center justify-center">
             <div className="text-center space-y-4">
-              <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
+              <div className="w-32 h-32 mx-auto rounded-full bg-accent flex items-center justify-center">
                 <span className="text-5xl text-white font-semibold">
                   {mentorName.charAt(0)}
                 </span>
@@ -125,17 +125,17 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
 
         {/* Chat Panel */}
         {showChat && (
-          <div className="w-96 bg-white border-l border-border flex flex-col">
+          <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
             {/* Chat Header */}
-            <div className="p-4 border-b border-border">
-              <h3 className="font-semibold text-foreground">Meeting Chat</h3>
+            <div className="p-4 border-b border-gray-200">
+              <h3 className="font-semibold text-gray-900">Meeting Chat</h3>
             </div>
 
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {chatMessages.map((msg, index) => (
                 <div key={index} className={`space-y-1 ${msg.sender === "You" ? "text-right" : ""}`}>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
                     {msg.sender === "You" ? (
                       <>
                         <span className="ml-auto">{msg.time}</span>
@@ -151,7 +151,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
                   <div className={`inline-block px-4 py-2 rounded-lg ${
                     msg.sender === "You" 
                       ? "bg-primary text-white" 
-                      : "bg-gray-100 text-foreground"
+                      : "bg-gray-100 text-gray-900"
                   }`}>
                     <p className="text-sm">{msg.message}</p>
                   </div>
@@ -160,7 +160,7 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
             </div>
 
             {/* Chat Input */}
-            <div className="p-4 border-t border-border">
+            <div className="p-4 border-t border-gray-200">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -168,15 +168,14 @@ export function VideoMeeting({ meetingId, meetingTitle, mentorName, onEndCall }:
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  className="flex-1 px-4 py-2 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
-                <Button 
-                  size="sm"
+                <button
                   onClick={handleSendMessage}
-                  className="bg-primary hover:bg-primary/90"
+                  className="px-4 py-2 bg-accent hover:bg-accent/90 text-white text-sm font-medium rounded-lg"
                 >
                   Send
-                </Button>
+                </button>
               </div>
             </div>
           </div>

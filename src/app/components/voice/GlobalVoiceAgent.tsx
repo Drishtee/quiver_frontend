@@ -101,7 +101,7 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
     return (
       <button
         onClick={voiceAgent.expand}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-secondary shadow-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-xl group"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-accent shadow-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-xl group"
         aria-label="Open voice assistant"
       >
         <Mic className="w-6 h-6 text-white" />
@@ -115,7 +115,7 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
   return (
     <div className="fixed bottom-6 right-6 z-50 w-96 max-h-[80vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary px-4 py-3 flex items-center justify-between">
+      <div className="bg-accent px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
             <MessageSquare className="w-4 h-4 text-white" />
@@ -238,7 +238,7 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
             className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all ${
               voiceAgent.isListening
                 ? 'bg-amber-500 hover:bg-amber-600'
-                : 'bg-gradient-to-br from-primary to-secondary hover:shadow-lg'
+                : 'bg-accent hover:shadow-lg'
             } ${voiceAgent.isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
             aria-label={voiceAgent.isListening ? 'Stop listening' : 'Start listening'}
           >

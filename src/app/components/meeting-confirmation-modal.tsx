@@ -142,8 +142,8 @@ export const MeetingConfirmationModal: React.FC<MeetingConfirmationModalProps> =
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Video className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+              <Video className="w-5 h-5 text-accent" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-500">{t('meeting.confirmation.details.link')}</p>
@@ -196,7 +196,7 @@ export const MeetingConfirmationModal: React.FC<MeetingConfirmationModalProps> =
 
           <button
             onClick={onClose}
-            className="w-full h-12 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-bold hover:from-secondary hover:to-primary transition-all"
+            className="w-full h-12 bg-accent hover:bg-accent/90 text-white rounded-xl font-bold transition-colors"
           >
             {t('meeting.confirmation.actions.done')}
           </button>

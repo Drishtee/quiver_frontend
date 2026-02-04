@@ -51,20 +51,20 @@ export function UserMenu({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 h-10 px-3 rounded-lg hover:bg-gray-100 transition-colors"
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center shadow-sm">
+        <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center shadow-sm">
           <span className="text-white text-sm font-semibold">{initials}</span>
         </div>
         <div className="hidden sm:flex sm:flex-col sm:items-start">
-          <span className="text-sm font-medium text-foreground">
+          <span className="text-sm font-medium text-gray-900">
             {userName || 'User'}
           </span>
           {tenantName && (
-            <span className="text-xs text-muted-foreground truncate max-w-[120px]">
+            <span className="text-xs text-gray-500 truncate max-w-[120px]">
               {tenantName}
             </span>
           )}
         </div>
-        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}
@@ -80,11 +80,11 @@ export function UserMenu({
           <div className="absolute right-0 mt-2 w-72 sm:w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
             {/* User Info */}
             <div className="px-4 py-3 border-b border-gray-100">
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="text-sm font-medium text-gray-900 truncate">
                 {userName || 'User Account'}
               </p>
               {userEmail && (
-                <p className="text-xs text-muted-foreground truncate mt-0.5">
+                <p className="text-xs text-gray-500 truncate mt-0.5">
                   {userEmail}
                 </p>
               )}
@@ -93,7 +93,7 @@ export function UserMenu({
             {/* Organization Info */}
             {tenantName && (
               <div className="px-4 py-2 border-b border-gray-100 bg-gray-50">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
                   <Building2 className="w-3 h-3 flex-shrink-0" />
                   <span className="truncate">Organization: {tenantName}</span>
                 </div>
@@ -105,9 +105,9 @@ export function UserMenu({
               {onViewProfile && (
                 <button
                   onClick={() => handleMenuItemClick(onViewProfile)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-900 hover:bg-gray-50 transition-colors"
                 >
-                  <User className="w-4 h-4 text-muted-foreground" />
+                  <User className="w-4 h-4 text-gray-500" />
                   <span>View Profile</span>
                 </button>
               )}
@@ -115,9 +115,9 @@ export function UserMenu({
               {onSettings && (
                 <button
                   onClick={() => handleMenuItemClick(onSettings)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-900 hover:bg-gray-50 transition-colors"
                 >
-                  <Settings className="w-4 h-4 text-muted-foreground" />
+                  <Settings className="w-4 h-4 text-gray-500" />
                   <span>Settings</span>
                 </button>
               )}
@@ -127,7 +127,7 @@ export function UserMenu({
             <div className="border-t border-gray-100">
               <button
                 onClick={() => handleMenuItemClick(onLogout)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-amber-600 hover:bg-amber-50 transition-colors rounded-b-lg"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors rounded-b-lg"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="font-medium">Log Out</span>

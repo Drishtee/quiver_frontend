@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Button } from "../components/ui/button";
 import { ArrowLeft, Mic, MicOff, Volume2, VolumeX, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { getVoiceAgentToken, getVoiceAgentConfig, submitVoiceAgentData } from "../../services/api";
 
@@ -602,16 +601,16 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <header className="border-b border-border bg-white sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-5 sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto flex items-center gap-4">
           <button onClick={onBack} className="p-2 -ml-2 hover:bg-gray-100 rounded-lg">
-            <ArrowLeft className="w-5 h-5 text-foreground" />
+            <ArrowLeft className="w-5 h-5 text-gray-900" />
           </button>
           <div>
-            <h1 className="text-lg font-semibold text-foreground">Voice-Guided Onboarding</h1>
-            <p className="text-sm text-muted-foreground">Speak naturally to complete your profile</p>
+            <h1 className="text-lg font-semibold text-gray-900">Voice-Guided Onboarding</h1>
+            <p className="text-sm text-gray-500">Speak naturally to complete your profile</p>
           </div>
         </div>
       </header>
@@ -622,19 +621,19 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
           {/* Voice Interaction Panel */}
           <div className="space-y-6">
             {/* Connection Status */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-foreground">Voice Assistant</h3>
+                <h3 className="font-semibold text-gray-900">Voice Assistant</h3>
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
                   connectionStatus === "connected" ? "bg-green-100 text-green-700" :
                   connectionStatus === "connecting" ? "bg-yellow-100 text-yellow-700" :
-                  connectionStatus === "error" ? "bg-amber-100 text-amber-700" :
+                  connectionStatus === "error" ? "bg-red-100 text-red-600" :
                   "bg-gray-100 text-gray-700"
                 }`}>
                   <div className={`w-2 h-2 rounded-full ${
                     connectionStatus === "connected" ? "bg-green-500 animate-pulse" :
                     connectionStatus === "connecting" ? "bg-yellow-500 animate-pulse" :
-                    connectionStatus === "error" ? "bg-amber-500" :
+                    connectionStatus === "error" ? "bg-red-500" :
                     "bg-gray-400"
                   }`} />
                   {connectionStatus === "connected" ? "Connected" :
@@ -646,9 +645,9 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
 
               {/* Error Display */}
               {error && (
-                <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-amber-700">{error}</p>
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-600">{error}</p>
                 </div>
               )}
 
@@ -676,43 +675,43 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
               {/* Controls */}
               <div className="flex items-center justify-center gap-4">
                 {connectionStatus === "disconnected" || connectionStatus === "error" ? (
-                  <Button
+                  <button
                     onClick={connectToVoiceAgent}
-                    className="h-14 px-8 bg-primary hover:bg-primary/90"
+                    className="h-14 px-8 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] flex items-center justify-center"
                   >
                     <Mic className="w-5 h-5 mr-2" />
                     {hasRestoredSession && collectedFields.length > 0 ? "Continue Session" : "Start Voice Onboarding"}
-                  </Button>
+                  </button>
                 ) : connectionStatus === "connecting" ? (
-                  <Button disabled className="h-14 px-8">
+                  <button disabled className="h-14 px-8 border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] flex items-center justify-center opacity-70 cursor-not-allowed">
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                     Connecting...
-                  </Button>
+                  </button>
                 ) : (
                   <>
-                    <Button
-                      variant={isMuted ? "destructive" : "outline"}
-                      size="lg"
+                    <button
                       onClick={toggleMute}
-                      className="h-14 w-14 rounded-full p-0"
+                      className={`h-14 w-14 rounded-full p-0 flex items-center justify-center ${
+                        isMuted
+                          ? "bg-red-500 hover:bg-red-600 text-white"
+                          : "border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900"
+                      }`}
                     >
                       {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
+                    </button>
+                    <button
                       onClick={disconnect}
-                      className="h-14 px-6"
+                      className="border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] px-6 h-14 flex items-center justify-center"
                     >
                       End Session
-                    </Button>
+                    </button>
                   </>
                 )}
               </div>
 
               {/* Recording Indicator */}
               {isRecording && !isMuted && (
-                <div className="mt-4 flex items-center justify-center gap-2 text-primary">
+                <div className="mt-4 flex items-center justify-center gap-2 text-accent">
                   <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse" />
                   <span className="text-sm">Listening...</span>
                 </div>
@@ -720,11 +719,11 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
             </div>
 
             {/* Transcript */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-              <h3 className="font-semibold text-foreground mb-4">Conversation</h3>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Conversation</h3>
               <div className="h-64 overflow-y-auto space-y-3">
                 {transcript.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-8">
+                  <p className="text-sm text-gray-500 text-center py-8">
                     Start the voice session to begin the conversation
                   </p>
                 ) : (
@@ -747,15 +746,15 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
 
           {/* Collected Information Panel */}
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-              <h3 className="font-semibold text-foreground mb-4">Information Collected</h3>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Information Collected</h3>
 
               {collectedFields.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Volume2 className="w-8 h-8 text-gray-400" />
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-500">
                     As you speak, your information will appear here
                   </p>
                 </div>
@@ -776,14 +775,14 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
               )}
 
               {/* Progress */}
-              <div className="mt-6 pt-4 border-t border-border">
+              <div className="mt-6 pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Progress</span>
+                  <span className="text-gray-500">Progress</span>
                   <span className="font-medium">{collectedFields.length} / 12 fields</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-primary transition-all duration-300"
+                    className="h-full bg-accent transition-all duration-300"
                     style={{ width: `${(collectedFields.length / 12) * 100}%` }}
                   />
                 </div>
@@ -791,23 +790,23 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
             </div>
 
             {/* Tips */}
-            <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl border border-blue-100 p-6">
-              <h4 className="font-semibold text-foreground mb-3">Tips for Voice Onboarding</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+              <h4 className="font-semibold text-gray-900 mb-3">Tips for Voice Onboarding</h4>
+              <ul className="space-y-2 text-sm text-gray-500">
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">1.</span>
+                  <span className="text-accent">1.</span>
                   Speak clearly and at a normal pace
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">2.</span>
+                  <span className="text-accent">2.</span>
                   Wait for the assistant to finish speaking before responding
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">3.</span>
+                  <span className="text-accent">3.</span>
                   You can speak in Hindi, English, or Assamese
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">4.</span>
+                  <span className="text-accent">4.</span>
                   If something is unclear, ask the assistant to repeat
                 </li>
               </ul>
@@ -815,10 +814,10 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
 
             {/* Manual Submit */}
             {collectedFields.length >= 6 && (
-              <Button
-                onClick={handleOnboardingComplete}
+              <button
+                onClick={() => handleOnboardingComplete()}
                 disabled={isSubmitting}
-                className="w-full h-12 bg-primary hover:bg-secondary"
+                className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -831,7 +830,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
                     Complete Onboarding
                   </>
                 )}
-              </Button>
+              </button>
             )}
           </div>
         </div>

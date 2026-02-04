@@ -184,7 +184,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
           voice.activate();
           voice.connect();
         }}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary shadow-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-xl group"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-accent shadow-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-xl group"
         aria-label="Open voice assistant"
       >
         <Mic className="w-7 h-7 text-white" />
@@ -241,7 +241,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
   return (
     <div className="fixed bottom-6 right-6 z-50 w-[420px] max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <div className="bg-accent px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
             <MessageSquare className="w-5 h-5 text-white" />
@@ -483,7 +483,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
           <button
             onClick={voice.connect}
             disabled={voice.connectionStatus === 'connecting'}
-            className="w-full h-12 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full h-12 bg-accent text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {voice.connectionStatus === 'connecting' ? (
               <>
@@ -506,7 +506,7 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
                 className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all ${
                   voice.isMuted
                     ? 'bg-amber-500 hover:bg-amber-600'
-                    : 'bg-gradient-to-br from-primary to-secondary hover:shadow-lg'
+                    : 'bg-accent hover:shadow-lg'
                 }`}
               >
                 {voice.isMuted ? (

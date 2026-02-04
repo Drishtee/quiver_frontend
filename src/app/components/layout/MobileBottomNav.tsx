@@ -80,8 +80,8 @@ export function MobileBottomNav({
     <nav
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50",
-        "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80",
-        "border-t border-border",
+        "bg-white/95 backdrop-blur-sm",
+        "border-t border-gray-200",
         "pb-safe", // Safe area padding for notched devices
         "md:hidden" // Only visible on mobile
       )}
@@ -100,7 +100,7 @@ export function MobileBottomNav({
                 "touch-target", // Custom class for touch accessibility
                 isActive
                   ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
               )}
               aria-label={item.label}
               aria-current={isActive ? "page" : undefined}
@@ -116,7 +116,7 @@ export function MobileBottomNav({
               <span
                 className={cn(
                   "text-xs mt-1 font-medium",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  isActive ? "text-primary" : "text-gray-500"
                 )}
               >
                 {item.label}

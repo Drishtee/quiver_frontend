@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Button } from "../components/ui/button";
+
 import {
   Mic,
   MicOff,
@@ -221,7 +221,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
     return (
       <div className="h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+          <Loader2 className="w-12 h-12 text-accent animate-spin mx-auto" />
           <div className="text-white space-y-2">
             <h2 className="text-xl font-semibold">Connecting to meeting...</h2>
             <p className="text-gray-400">Please wait while we set up your video call</p>
@@ -243,12 +243,12 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
             <p className="text-gray-400">{error}</p>
           </div>
           <div className="space-y-2">
-            <Button onClick={connectToRoom} className="w-full bg-primary hover:bg-primary/90">
+            <button onClick={connectToRoom} className="w-full py-3 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px]">
               Try Again
-            </Button>
-            <Button onClick={onEndCall} variant="outline" className="w-full text-white border-gray-600 hover:bg-gray-800">
+            </button>
+            <button onClick={onEndCall} className="w-full py-3 border-2 border-gray-600 text-white hover:bg-gray-800 font-medium rounded-xl min-h-[48px]">
               Exit Meeting
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -297,7 +297,7 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
           {participants.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center space-y-4">
-                <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
+                <div className="w-32 h-32 mx-auto rounded-full bg-accent flex items-center justify-center">
                   <span className="text-5xl text-white font-semibold">
                     {mentorName.charAt(0)}
                   </span>
@@ -326,14 +326,14 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
 
         {/* Chat Panel */}
         {showChat && (
-          <div className="w-96 bg-white border-l border-border flex flex-col">
-            <div className="p-4 border-b border-border">
-              <h3 className="font-semibold text-foreground">Meeting Chat</h3>
+          <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
+            <div className="p-4 border-b border-gray-200">
+              <h3 className="font-semibold text-gray-900">Meeting Chat</h3>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {chatMessages.map((msg, index) => (
                 <div key={index} className={`space-y-1 ${msg.sender === "You" ? "text-right" : ""}`}>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
                     {msg.sender === "You" ? (
                       <>
                         <span className="ml-auto">{msg.time}</span>
@@ -349,14 +349,14 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
                   <div className={`inline-block px-4 py-2 rounded-lg ${
                     msg.sender === "You"
                       ? "bg-primary text-white"
-                      : "bg-gray-100 text-foreground"
+                      : "bg-gray-100 text-gray-900"
                   }`}>
                     <p className="text-sm">{msg.message}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="p-4 border-t border-border">
+            <div className="p-4 border-t border-gray-200">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -364,15 +364,14 @@ export function TwilioVideoMeeting({ meetingId, meetingTitle, mentorName, onEndC
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  className="flex-1 px-4 py-2 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
-                <Button
-                  size="sm"
+                <button
                   onClick={handleSendMessage}
-                  className="bg-primary hover:bg-primary/90"
+                  className="px-4 py-2 bg-accent hover:bg-accent/90 text-white text-sm font-medium rounded-lg"
                 >
                   Send
-                </Button>
+                </button>
               </div>
             </div>
           </div>

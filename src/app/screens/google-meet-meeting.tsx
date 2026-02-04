@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Button } from "../components/ui/button";
 import {
   PhoneOff,
   ExternalLink,
@@ -57,10 +56,10 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
-          <p className="text-muted-foreground">Loading meeting...</p>
+          <Loader2 className="w-12 h-12 text-accent animate-spin mx-auto" />
+          <p className="text-gray-500">Loading meeting...</p>
         </div>
       </div>
     );
@@ -68,32 +67,31 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="max-w-md w-full mx-auto px-6">
-          <div className="bg-white rounded-2xl border border-border shadow-sm p-8 text-center space-y-6">
-            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
-              <PhoneOff className="w-8 h-8 text-amber-600" />
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center space-y-6">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto">
+              <PhoneOff className="w-8 h-8 text-red-600" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-semibold text-foreground">
+              <h2 className="text-2xl font-semibold text-gray-900">
                 Unable to Load Meeting
               </h2>
-              <p className="text-muted-foreground">{error}</p>
+              <p className="text-gray-500">{error}</p>
             </div>
             <div className="flex gap-3">
-              <Button
+              <button
                 onClick={fetchMeetLink}
-                className="flex-1 bg-primary hover:bg-primary/90"
+                className="flex-1 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] px-4 inline-flex items-center justify-center"
               >
                 Try Again
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={onEndCall}
-                variant="outline"
-                className="flex-1"
+                className="flex-1 border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] px-4 inline-flex items-center justify-center"
               >
                 Go Back
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -102,27 +100,26 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="border-b border-border bg-white">
+      <header className="border-b border-gray-200 bg-white">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-              <Video className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+              <Video className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-foreground">{meetingTitle}</h1>
-              <p className="text-sm text-muted-foreground">Google Meet Conference</p>
+              <h1 className="text-lg font-semibold text-gray-900">{meetingTitle}</h1>
+              <p className="text-sm text-gray-500">Google Meet Conference</p>
             </div>
           </div>
-          <Button
+          <button
             onClick={onEndCall}
-            variant="outline"
-            className="border-amber-200 text-amber-600 hover:bg-amber-50"
+            className="border-2 border-red-200 text-red-600 hover:bg-red-50 bg-white font-medium rounded-xl min-h-[48px] px-4 inline-flex items-center justify-center"
           >
             <PhoneOff className="w-4 h-4 mr-2" />
             Leave
-          </Button>
+          </button>
         </div>
       </header>
 
@@ -131,15 +128,15 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Meeting Info Card */}
           <div className="lg:col-span-1 space-y-4">
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">Meeting Details</h2>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-gray-900">Meeting Details</h2>
 
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <Video className="w-5 h-5 text-primary mt-0.5" />
+                  <Video className="w-5 h-5 text-accent mt-0.5" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">Status</p>
-                    <p className="text-sm text-muted-foreground capitalize">{meetData?.status}</p>
+                    <p className="text-sm font-medium text-gray-900">Status</p>
+                    <p className="text-sm text-gray-500 capitalize">{meetData?.status}</p>
                   </div>
                 </div>
 
@@ -149,7 +146,7 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
                       <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Recording</p>
+                      <p className="text-sm font-medium text-gray-900">Recording</p>
                       <p className="text-sm text-amber-600">This meeting is being recorded</p>
                     </div>
                   </div>
@@ -157,14 +154,14 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
 
                 {meetData?.calendar_link && (
                   <div className="flex items-start gap-3">
-                    <Calendar className="w-5 h-5 text-primary mt-0.5" />
+                    <Calendar className="w-5 h-5 text-accent mt-0.5" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Calendar Event</p>
+                      <p className="text-sm font-medium text-gray-900">Calendar Event</p>
                       <a
                         href={meetData.calendar_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+                        className="text-sm text-accent hover:underline inline-flex items-center gap-1"
                       >
                         View in Calendar
                         <ExternalLink className="w-3 h-3" />
@@ -177,18 +174,17 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
 
             {/* Actions */}
             <div className="space-y-3">
-              <Button
+              <button
                 onClick={handleJoinMeeting}
-                className="w-full h-12 bg-primary hover:bg-primary/90"
+                className="w-full bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] px-4 inline-flex items-center justify-center"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Join Google Meet
-              </Button>
+              </button>
 
-              <Button
+              <button
                 onClick={handleCopyLink}
-                variant="outline"
-                className="w-full h-12"
+                className="w-full border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] px-4 inline-flex items-center justify-center"
               >
                 {copied ? (
                   <>
@@ -201,13 +197,13 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
                     Copy Meeting Link
                   </>
                 )}
-              </Button>
+              </button>
             </div>
 
             {/* Meeting Link Display */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
-              <p className="text-xs text-muted-foreground mb-2">Meeting Link</p>
-              <p className="text-sm text-foreground break-all font-mono bg-gray-50 p-3 rounded-lg">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+              <p className="text-xs text-gray-500 mb-2">Meeting Link</p>
+              <p className="text-sm text-gray-900 break-all font-mono bg-gray-50 p-3 rounded-lg">
                 {meetData?.meet_link}
               </p>
             </div>
@@ -215,7 +211,7 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
 
           {/* Embedded Google Meet (Optional) */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
                 <iframe
                   src={meetData?.meet_link}
@@ -228,8 +224,8 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
             </div>
 
             {/* Info Banner */}
-            <div className="mt-4 bg-blue-50 rounded-xl p-4 border border-blue-100">
-              <p className="text-sm text-foreground">
+            <div className="mt-4 bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <p className="text-sm text-gray-900">
                 <strong>Tip:</strong> If the meeting doesn't load, click "Join Google Meet"
                 to open it in a new window. Make sure pop-ups are enabled for this site.
               </p>

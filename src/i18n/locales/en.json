@@ -32,6 +32,26 @@
     "mr": "Marathi",
     "selectLanguage": "Select Language"
   },
+  "login": {
+    "title": "Log In to Quiver",
+    "subtitle": "Enter your phone number to continue",
+    "phoneLabel": "Mobile Number",
+    "phonePlaceholder": "Enter your 10-digit number",
+    "sendOtp": "Continue with OTP",
+    "sendingOtp": "Sending OTP...",
+    "otpSent": "Enter the OTP sent to +91 {{phone}}",
+    "otpLabel": "Enter OTP",
+    "otpPlaceholder": "6-digit OTP",
+    "verifyLogin": "Log In",
+    "verifying": "Verifying...",
+    "resendOtp": "Resend OTP",
+    "changeNumber": "Change phone number",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up here",
+    "trustLine": "Your data is safe and secure with us",
+    "errorInvalidPhone": "Please enter a valid 10-digit phone number",
+    "errorInvalidOtp": "Please enter a valid 6-digit OTP"
+  },
   "landing": {
     "nav": {
       "login": "Login",
@@ -85,12 +105,14 @@
       "tools": {
         "title": "Tools & Support",
         "description": "Practical help and tools to make your work easier every day."
-      }
+      },
+      "learnMore": "Learn More"
     },
     "equity": {
       "badge": "Understanding Partnership",
       "title": "What Does \"Equity\" Mean?",
       "subtitle": "It's simple: Partnership, not control. You remain the owner.",
+      "cta": "Ask Our Growth Expert",
       "before": {
         "title": "Before Quiver",
         "ownership": "Your Business",
@@ -173,7 +195,8 @@
         "title": "4. You Decide — Always",
         "description": "Nothing is forced. Everything is explained. You choose what's right for you."
       },
-      "bottomNote": "Nothing is forced. Everything is explained."
+      "bottomNote": "Nothing is forced. Everything is explained.",
+      "cta": "Get Started Now"
     },
     "cta": {
       "title": "You Build the Business.",
@@ -217,39 +240,55 @@
       "description": "A 2-minute video explaining our partnership model",
       "watchNow": "Watch Now"
     },
+    "stats": {
+      "heading": "Our Impact So Far",
+      "subtitle": "Real numbers, real growth",
+      "businesses": "Businesses",
+      "support": "Support",
+      "states": "States"
+    },
     "socialProof": {
       "title": "See How Quiver Helps Businesses Grow",
-      "subtitle": "Real stories from real entrepreneurs"
+      "subtitle": "Real stories from real entrepreneurs",
+      "cta": "Start Your Growth Journey"
     }
   },
   "consent": {
     "title": "What is QUIVER & Why We Exist",
     "subtitle": "Understanding our partnership model",
-    "selectLanguage": "Preferred Language | पसंदीदा भाषा",
+    "selectLanguage": "Preferred Language",
     "description": "Quiver is a rural enterprise growth and investment partnership platform. We work with rural and semi-rural entrepreneurs who already run businesses but face challenges in scaling due to lack of systems, market access, strategic guidance, and patient capital.",
     "challenge": "Quiver exists because capital alone does not build strong businesses — and systems without capital cannot grow. We partner long-term with entrepreneurs to strengthen business fundamentals, enable market access, and explore growth capital when enterprises are ready.",
-    "whyQuiver": "Why Quiver exists:",
+    "whyQuiver": "Why does Quiver exist?",
     "reasons": [
       "Loans or grants alone don't build strong businesses",
       "Capital without systems becomes a risk",
-      "And systems without capital remain incomplete"
+      "Systems without capital remain incomplete"
     ],
-    "whatWeDo": "Quiver works in long-term partnership with entrepreneurs. We:",
+    "whatWeDo": "What Quiver does as your long-term partner",
     "services": [
       "Understand your business deeply",
       "Strengthen sales, costs, profits and operations",
       "Connect you to markets, networks and experts",
-      "And when the business is ready, explore growth capital (investment / revenue-share)"
+      "When the business is ready, explore growth capital (investment / revenue-share)"
     ],
     "notProgram": "Quiver is not a grant or subsidy program.",
     "partner": "Entrepreneurs are partners in a shared growth journey. Our goal is to build dignified, sustainable, and investment-ready rural enterprises.",
-    "consentTitle": "Consent | सहमति",
+    "consentTitle": "Your Acknowledgment and Consent",
+    "consentExplanation": "By checking the boxes below, you acknowledge that you have read and understood the information above about Quiver's partnership model.",
     "consent1": "I am interested in exploring a structured business-growth journey with Quiver",
-    "consent2": "I understand that Quiver is not a grant or subsidy program",
+    "consent2": "I understand that Quiver is not a grant or subsidy program — it is a long-term business partnership",
     "consent3": "I consent to Quiver processing my data to assess my business and provide partnership support",
+    "consent4": "I understand and acknowledge that Quiver's partnership may include equity or revenue-sharing arrangements, and I am open to learning more about how this investment model works",
+    "chooseMethod": "How would you like to proceed?",
+    "formOption": "Fill Forms",
+    "formOptionDesc": "Type your answers step by step",
+    "voiceOption": "Voice Assistant",
+    "voiceOptionDesc": "Speak with our AI guide",
+    "recommended": "Recommended",
     "agreedAt": "Agreed at",
     "pleaseAgreeAll": "Please agree to all terms to continue",
-    "allConsentsRecorded": "All consents recorded with timestamps. You can proceed.",
+    "allConsentsRecorded": "All consents recorded. You may proceed.",
     "aiHelp": "Have questions? I'm here to help!",
     "preferredLanguage": "Preferred Language",
     "mobileNumber": "Mobile Number",
@@ -259,6 +298,9 @@
   "profile": {
     "title": "Your Profile",
     "subtitle": "Tell us about yourself",
+    "stepTitle": "Your Profile",
+    "stepSubtitle": "Tell us about yourself",
+    "selectDistrictFirst": "Please select a state first",
     "fullName": "Full Name",
     "fullNamePlaceholder": "Enter your full name",
     "email": "Email Address",

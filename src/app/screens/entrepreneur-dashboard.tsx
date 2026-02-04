@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { AIAssistant } from "../components/ai-assistant";
 import { UserMenu } from "../components/user-menu";
 import { LanguageSelector } from "../components/language-selector";
 import { listMeetings, getMyProfile } from "../../services/api";
@@ -209,10 +208,10 @@ export function EntrepreneurDashboard({
       label: t('dashboard.overview.upcomingMeetings'),
       value: upcomingMeetings.length,
       icon: Video,
-      stripeColor: "border-l-primary",
-      bgColor: "bg-gradient-to-br from-primary/10 to-primary/5",
+      stripeColor: "border-l-accent",
+      bgColor: "bg-gradient-to-br from-accent/10 to-accent/5",
       iconColor: "text-white",
-      iconBg: "bg-gradient-to-br from-primary to-primary/80"
+      iconBg: "bg-gradient-to-br from-accent to-accent/80"
     },
     {
       label: t('dashboard.overview.milestones'),
@@ -227,8 +226,8 @@ export function EntrepreneurDashboard({
       label: t('dashboard.overview.pendingDocs'),
       value: 2,
       icon: FileText,
-      stripeColor: "border-l-amber-500",
-      bgColor: "bg-gradient-to-br from-amber-50 to-amber-50/50",
+      stripeColor: "border-l-gray-400",
+      bgColor: "bg-gradient-to-br from-gray-50 to-gray-50/50",
       iconColor: "text-white",
       iconBg: "bg-gradient-to-br from-amber-500 to-amber-400"
     }
@@ -237,16 +236,16 @@ export function EntrepreneurDashboard({
   const greeting = getTimeGreeting(t);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 to-white pb-20 md:pb-0 mobile-full-screen">
+    <div className="min-h-screen bg-white pb-20 md:pb-0 mobile-full-screen">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-primary/10 sticky top-0 z-50">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 md:h-16">
             <div className="flex items-center gap-2 md:gap-3">
               <img src="/logo.jpg" alt="Quiver Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
               <div className="hidden sm:block">
                 <h1 className="text-base md:text-lg font-bold text-gray-900">Quiver</h1>
-                <p className="text-xs text-muted-foreground -mt-0.5">{t('dashboard.title')}</p>
+                <p className="text-xs text-gray-500 -mt-0.5">{t('dashboard.title')}</p>
               </div>
             </div>
 
@@ -258,7 +257,7 @@ export function EntrepreneurDashboard({
               </button>
               <Button
                 onClick={onScheduleMeeting}
-                className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm hidden md:flex"
+                className="bg-accent hover:bg-accent/90 rounded-xl shadow-sm hidden md:flex"
                 size="sm"
               >
                 <Plus className="w-4 h-4 mr-1.5" />
@@ -279,7 +278,7 @@ export function EntrepreneurDashboard({
       <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         {/* Welcome Hero Card */}
         <div className="mb-6 md:mb-8">
-          <div className="bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl shadow-xl p-5 sm:p-6 md:p-8 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-br from-accent via-accent/50 to-accent rounded-2xl shadow-xl p-5 sm:p-6 md:p-8 text-white relative overflow-hidden">
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
@@ -317,7 +316,7 @@ export function EntrepreneurDashboard({
           {/* Mobile Schedule Button */}
           <Button
             onClick={onScheduleMeeting}
-            className="bg-primary hover:bg-primary/90 active:bg-primary/80 rounded-xl shadow-sm md:hidden w-full min-h-[48px] mt-3"
+            className="bg-accent hover:bg-accent/90 active:bg-accent/80 rounded-xl shadow-sm md:hidden w-full min-h-[48px] mt-3"
           >
             <Plus className="w-4 h-4 mr-2" />
             {t('dashboard.overview.scheduleMeeting')}
@@ -327,28 +326,28 @@ export function EntrepreneurDashboard({
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 md:space-y-6">
           <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-hide scroll-momentum">
-            <TabsList className="bg-white border border-primary/10 p-1 rounded-xl md:rounded-2xl shadow-sm w-max sm:w-auto flex">
+            <TabsList className="bg-white border border-gray-200 p-1 rounded-xl md:rounded-2xl shadow-sm w-max sm:w-auto flex">
               <TabsTrigger
                 value="overview"
-                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-accent data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
               >
                 {t('dashboard.tabs.overview')}
               </TabsTrigger>
               <TabsTrigger
                 value="meetings"
-                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-accent data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
               >
                 {t('dashboard.tabs.meetings')}
               </TabsTrigger>
               <TabsTrigger
                 value="progress"
-                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-accent data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
               >
                 {t('dashboard.tabs.progress')}
               </TabsTrigger>
               <TabsTrigger
                 value="profile"
-                className="rounded-lg md:rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
+                className="rounded-lg md:rounded-xl data-[state=active]:bg-accent data-[state=active]:text-white px-4 md:px-6 py-2 min-h-touch text-sm md:text-base whitespace-nowrap"
               >
                 {t('dashboard.tabs.profile')}
               </TabsTrigger>
@@ -369,7 +368,7 @@ export function EntrepreneurDashboard({
                       <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                      <p className="text-sm text-gray-500">{stat.label}</p>
                       <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                     </div>
                   </div>
@@ -380,7 +379,7 @@ export function EntrepreneurDashboard({
             {/* Next Meeting Card */}
             {upcomingMeetings.length > 0 && (
               <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-                <div className="bg-gradient-to-r from-primary to-secondary p-5 sm:p-6 text-white">
+                <div className="bg-accent p-5 sm:p-6 text-white">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Video className="w-5 h-5" />
@@ -399,20 +398,20 @@ export function EntrepreneurDashboard({
                 </div>
                 <div className="p-5 sm:p-6 bg-white">
                   <div className="flex items-center gap-4 mb-5">
-                    <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-primary font-bold text-xl">
+                    <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-gradient-to-br from-accent/20 to-accent/20 flex items-center justify-center text-accent font-bold text-xl">
                       {upcomingMeetings[0].avatar}
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900">{upcomingMeetings[0].mentor}</p>
-                      <p className="text-sm text-muted-foreground">{upcomingMeetings[0].mentorRole}</p>
+                      <p className="text-sm text-gray-500">{upcomingMeetings[0].mentorRole}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-gray-900">{upcomingMeetings[0].date}</p>
-                      <p className="text-sm text-muted-foreground">{upcomingMeetings[0].time} &bull; {upcomingMeetings[0].duration}</p>
+                      <p className="text-sm text-gray-500">{upcomingMeetings[0].time} &bull; {upcomingMeetings[0].duration}</p>
                     </div>
                   </div>
                   <Button
-                    className="w-full bg-primary hover:bg-primary/90 rounded-xl h-12 text-base font-semibold shadow-sm"
+                    className="w-full bg-accent hover:bg-accent/90 rounded-xl h-12 text-base font-semibold shadow-sm"
                     onClick={() => {
                       if (upcomingMeetings[0].meetLink) {
                         window.open(upcomingMeetings[0].meetLink, '_blank');
@@ -430,13 +429,13 @@ export function EntrepreneurDashboard({
 
             {/* Empty meeting state on overview */}
             {!loadingMeetings && upcomingMeetings.length === 0 && (
-              <Card className="p-8 border-primary/10 rounded-2xl text-center">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <CalendarIcon className="w-8 h-8 text-primary" />
+              <Card className="p-8 border-gray-200 rounded-2xl text-center">
+                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                  <CalendarIcon className="w-8 h-8 text-accent" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('dashboard.overview.noMeetings')}</h3>
-                <p className="text-muted-foreground mb-4">{t('dashboard.overview.scheduleFirst')}</p>
-                <Button onClick={onScheduleMeeting} className="bg-primary hover:bg-primary/90 rounded-xl">
+                <p className="text-gray-500 mb-4">{t('dashboard.overview.scheduleFirst')}</p>
+                <Button onClick={onScheduleMeeting} className="bg-accent hover:bg-accent/90 rounded-xl">
                   <Plus className="w-4 h-4 mr-2" />
                   {t('dashboard.overview.scheduleMeeting')}
                 </Button>
@@ -447,27 +446,27 @@ export function EntrepreneurDashboard({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={onScheduleMeeting}
-                className="group bg-white border-2 border-primary/10 rounded-2xl p-5 md:p-6 hover:border-primary/30 hover:shadow-md transition-all text-left min-h-[100px]"
+                className="group bg-white border-2 border-gray-200 rounded-2xl p-5 md:p-6 hover:border-accent/30 hover:shadow-md transition-all text-left min-h-[100px]"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:from-primary/30 group-hover:to-primary/20 transition-colors flex-shrink-0">
-                    <CalendarIcon className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center group-hover:from-accent/30 group-hover:to-accent/20 transition-colors flex-shrink-0">
+                    <CalendarIcon className="w-7 h-7 text-accent" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-accent transition-colors">
                       {t('dashboard.overview.scheduleNew')}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {t('dashboard.overview.scheduleNewDesc')}
                     </p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors mt-1" />
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-accent transition-colors mt-1" />
                 </div>
               </button>
 
               <button
                 onClick={onViewGrowthPlan}
-                className="group bg-white border-2 border-primary/10 rounded-2xl p-5 md:p-6 hover:border-accent/30 hover:shadow-md transition-all text-left min-h-[100px]"
+                className="group bg-white border-2 border-gray-200 rounded-2xl p-5 md:p-6 hover:border-accent/30 hover:shadow-md transition-all text-left min-h-[100px]"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center group-hover:from-accent/30 group-hover:to-accent/20 transition-colors flex-shrink-0">
@@ -477,7 +476,7 @@ export function EntrepreneurDashboard({
                     <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-accent transition-colors">
                       {t('dashboard.overview.viewGrowthPlan')}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {t('dashboard.overview.trackProgress')}
                     </p>
                   </div>
@@ -487,10 +486,10 @@ export function EntrepreneurDashboard({
             </div>
 
             {/* Recent Activity - Timeline style */}
-            <Card className="p-5 md:p-6 border-primary/10 rounded-2xl shadow-sm">
+            <Card className="p-5 md:p-6 border-gray-200 rounded-2xl shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="font-semibold text-gray-900">{t('dashboard.overview.recentActivity')}</h3>
-                <button className="text-sm text-primary hover:text-primary/80 font-medium">{t('common.viewAll')}</button>
+                <button className="text-sm text-accent hover:text-accent/80 font-medium">{t('common.viewAll')}</button>
               </div>
               <div className="space-y-1">
                 {/* Timeline connector */}
@@ -503,9 +502,9 @@ export function EntrepreneurDashboard({
                       </div>
                       <div className="flex-1 bg-green-50 rounded-xl p-3">
                         <p className="font-medium text-gray-900">{t('dashboard.overview.onboardingCompleted')}</p>
-                        <p className="text-sm text-muted-foreground">{t('dashboard.overview.profileVerified')}</p>
+                        <p className="text-sm text-gray-500">{t('dashboard.overview.profileVerified')}</p>
                       </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap mt-3">2d</span>
+                      <span className="text-xs text-gray-500 whitespace-nowrap mt-3">2d</span>
                     </div>
                     <div className="flex items-start gap-4 relative">
                       <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 z-10 shadow-sm">
@@ -513,9 +512,9 @@ export function EntrepreneurDashboard({
                       </div>
                       <div className="flex-1 bg-blue-50 rounded-xl p-3">
                         <p className="font-medium text-gray-900">{t('dashboard.overview.meetingScheduled')}</p>
-                        <p className="text-sm text-muted-foreground">{t('dashboard.overview.growthSession')}</p>
+                        <p className="text-sm text-gray-500">{t('dashboard.overview.growthSession')}</p>
                       </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap mt-3">3d</span>
+                      <span className="text-xs text-gray-500 whitespace-nowrap mt-3">3d</span>
                     </div>
                   </div>
                 </div>
@@ -528,9 +527,9 @@ export function EntrepreneurDashboard({
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{t('dashboard.meetings.upcoming')}</h2>
-                <p className="text-sm text-muted-foreground mt-1">{t('dashboard.meetings.manageSessions')}</p>
+                <p className="text-sm text-gray-500 mt-1">{t('dashboard.meetings.manageSessions')}</p>
               </div>
-              <Button onClick={onScheduleMeeting} className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm">
+              <Button onClick={onScheduleMeeting} className="bg-accent hover:bg-accent/90 rounded-xl shadow-sm">
                 <Plus className="w-4 h-4 mr-2" />
                 {t('dashboard.overview.scheduleMeeting')}
               </Button>
@@ -541,16 +540,16 @@ export function EntrepreneurDashboard({
               {upcomingMeetings.map((meeting) => (
                 <Card
                   key={meeting.id}
-                  className="p-5 border-l-4 border-l-primary border-primary/10 hover:shadow-md transition-all rounded-2xl"
+                  className="p-5 border-l-4 border-l-accent border-gray-200 hover:shadow-md transition-all rounded-2xl"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     <div className="flex items-center gap-4 flex-1">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/20 flex items-center justify-center text-accent font-bold text-lg flex-shrink-0">
                         {meeting.avatar}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900 mb-1">{meeting.title}</h4>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
                           <span className="flex items-center gap-1">
                             <User className="w-4 h-4" />
                             {meeting.mentor}
@@ -565,7 +564,7 @@ export function EntrepreneurDashboard({
                           </span>
                         </div>
                         <div className="mt-2 flex gap-2">
-                          <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                          <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent">
                             {meeting.type}
                           </span>
                           <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
@@ -575,7 +574,7 @@ export function EntrepreneurDashboard({
                       </div>
                     </div>
                     <Button
-                      className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm w-full sm:w-auto"
+                      className="bg-accent hover:bg-accent/90 rounded-xl shadow-sm w-full sm:w-auto"
                       onClick={() => {
                         if (meeting.meetLink) {
                           window.open(meeting.meetLink, '_blank');
@@ -600,7 +599,7 @@ export function EntrepreneurDashboard({
                   {pastMeetings.map((meeting) => (
                     <Card
                       key={meeting.id}
-                      className="p-5 border-l-4 border-l-gray-300 border-primary/10 bg-gray-50/50 rounded-2xl"
+                      className="p-5 border-l-4 border-l-gray-300 border-gray-200 bg-gray-50/50 rounded-2xl"
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-lg flex-shrink-0">
@@ -613,7 +612,7 @@ export function EntrepreneurDashboard({
                               {t('dashboard.meetings.completed')}
                             </span>
                           </div>
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
                             <span className="flex items-center gap-1">
                               <User className="w-4 h-4" />
                               {meeting.mentor}
@@ -632,18 +631,18 @@ export function EntrepreneurDashboard({
             )}
 
             {loadingMeetings ? (
-              <Card className="p-12 border-primary/10 rounded-2xl text-center">
-                <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
-                <p className="text-muted-foreground">{t('common.loading')}</p>
+              <Card className="p-12 border-gray-200 rounded-2xl text-center">
+                <Loader2 className="w-8 h-8 text-accent animate-spin mx-auto mb-4" />
+                <p className="text-gray-500">{t('common.loading')}</p>
               </Card>
             ) : upcomingMeetings.length === 0 && (
-              <Card className="p-12 border-primary/10 rounded-2xl text-center">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <CalendarIcon className="w-8 h-8 text-primary" />
+              <Card className="p-12 border-gray-200 rounded-2xl text-center">
+                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                  <CalendarIcon className="w-8 h-8 text-accent" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('dashboard.meetings.noUpcoming')}</h3>
-                <p className="text-muted-foreground mb-6">{t('dashboard.meetings.scheduleFirst')}</p>
-                <Button onClick={onScheduleMeeting} className="bg-primary hover:bg-primary/90 rounded-xl">
+                <p className="text-gray-500 mb-6">{t('dashboard.meetings.scheduleFirst')}</p>
+                <Button onClick={onScheduleMeeting} className="bg-accent hover:bg-accent/90 rounded-xl">
                   <Plus className="w-4 h-4 mr-2" />
                   {t('dashboard.meetings.scheduleYourFirst')}
                 </Button>
@@ -655,12 +654,12 @@ export function EntrepreneurDashboard({
           <TabsContent value="progress" className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-gray-900">{t('dashboard.progress.title')}</h2>
-              <p className="text-sm text-muted-foreground mt-1">{t('dashboard.progress.subtitle')}</p>
+              <p className="text-sm text-gray-500 mt-1">{t('dashboard.progress.subtitle')}</p>
             </div>
 
             {/* Overall Progress Card with Circular Ring */}
-            <Card className="p-6 border-primary/10 rounded-2xl shadow-sm bg-gradient-to-br from-primary/5 to-accent/5 overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <Card className="p-6 border-gray-200 rounded-2xl shadow-sm bg-gradient-to-br from-accent/5 to-accent/5 overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
                 {/* Mobile: Circular progress, Desktop: also circular */}
                 <div className="relative flex-shrink-0">
@@ -671,22 +670,22 @@ export function EntrepreneurDashboard({
                       strokeDasharray={2 * Math.PI * 34}
                       strokeDashoffset={2 * Math.PI * 34 - (progressPercent / 100) * 2 * Math.PI * 34}
                       strokeLinecap="round"
-                      className="text-primary transition-all duration-700"
+                      className="text-accent transition-all duration-700"
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xl font-bold text-primary">{progressPercent}%</span>
+                    <span className="text-xl font-bold text-accent">{progressPercent}%</span>
                   </div>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.progress.overallProgress')}</h3>
-                  <p className="text-muted-foreground">{t('dashboard.progress.milestonesCompleted', { completed: completedMilestones, total: milestones.length })}</p>
+                  <p className="text-gray-500">{t('dashboard.progress.milestonesCompleted', { completed: completedMilestones, total: milestones.length })}</p>
                 </div>
               </div>
             </Card>
 
             {/* Milestones Timeline - Enhanced */}
-            <Card className="p-6 border-primary/10 rounded-2xl shadow-sm">
+            <Card className="p-6 border-gray-200 rounded-2xl shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-6">{t('dashboard.progress.journeyMilestones')}</h3>
               <div className="space-y-1">
                 {milestones.map((milestone, index) => (
@@ -697,7 +696,7 @@ export function EntrepreneurDashboard({
                         milestone.status === 'completed'
                           ? 'bg-gradient-to-b from-accent to-accent/50'
                           : milestone.status === 'in_progress'
-                          ? 'bg-gradient-to-b from-primary/50 to-gray-200'
+                          ? 'bg-gradient-to-b from-accent/50 to-gray-200'
                           : 'bg-gray-200'
                       }`} />
                     )}
@@ -706,7 +705,7 @@ export function EntrepreneurDashboard({
                       milestone.status === 'completed'
                         ? 'bg-green-50'
                         : milestone.status === 'in_progress'
-                        ? 'bg-primary/5'
+                        ? 'bg-accent/5'
                         : 'bg-gray-50'
                     }`}>
                       {/* Larger milestone dots */}
@@ -714,7 +713,7 @@ export function EntrepreneurDashboard({
                         milestone.status === 'completed'
                           ? 'bg-accent text-white shadow-sm'
                           : milestone.status === 'in_progress'
-                          ? 'bg-primary text-white shadow-sm'
+                          ? 'bg-accent text-white shadow-sm'
                           : 'bg-gray-200 text-gray-400'
                       }`}>
                         {milestone.status === 'completed' ? (
@@ -730,13 +729,13 @@ export function EntrepreneurDashboard({
                           milestone.status === 'completed'
                             ? 'text-gray-900'
                             : milestone.status === 'in_progress'
-                            ? 'text-primary font-semibold'
+                            ? 'text-accent font-semibold'
                             : 'text-gray-500'
                         }`}>
                           {milestone.title}
                         </h4>
                         {milestone.date && (
-                          <p className="text-sm text-muted-foreground">{milestone.date}</p>
+                          <p className="text-sm text-gray-500">{milestone.date}</p>
                         )}
                       </div>
                       {milestone.status === 'completed' && (
@@ -745,7 +744,7 @@ export function EntrepreneurDashboard({
                         </span>
                       )}
                       {milestone.status === 'in_progress' && (
-                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary animate-pulse">
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent animate-pulse">
                           {t('dashboard.progress.inProgress')}
                         </span>
                       )}
@@ -756,19 +755,19 @@ export function EntrepreneurDashboard({
             </Card>
 
             {/* Growth Plan CTA */}
-            <Card className="p-6 border-primary/10 rounded-2xl shadow-sm overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl" />
+            <Card className="p-6 border-gray-200 rounded-2xl shadow-sm overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/20 to-accent/20 rounded-full blur-3xl" />
               <div className="relative flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-7 h-7 text-accent" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900">{t('dashboard.progress.aiGrowthPlan')}</h3>
-                  <p className="text-sm text-muted-foreground">{t('dashboard.progress.personalizedRec')}</p>
+                  <p className="text-sm text-gray-500">{t('dashboard.progress.personalizedRec')}</p>
                 </div>
                 <Button
                   onClick={onViewGrowthPlan}
-                  className="bg-primary hover:bg-primary/90 rounded-xl shadow-sm"
+                  className="bg-accent hover:bg-accent/90 rounded-xl shadow-sm"
                 >
                   {t('dashboard.progress.viewPlan')}
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -781,27 +780,27 @@ export function EntrepreneurDashboard({
           <TabsContent value="profile" className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-gray-900">{t('dashboard.profile.title')}</h2>
-              <p className="text-sm text-muted-foreground mt-1">{t('dashboard.profile.subtitle')}</p>
+              <p className="text-sm text-gray-500 mt-1">{t('dashboard.profile.subtitle')}</p>
             </div>
 
             {loadingProfile ? (
-              <Card className="p-12 border-primary/10 rounded-2xl text-center">
-                <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
-                <p className="text-muted-foreground">{t('dashboard.profile.loadingProfile')}</p>
+              <Card className="p-12 border-gray-200 rounded-2xl text-center">
+                <Loader2 className="w-8 h-8 text-accent animate-spin mx-auto mb-4" />
+                <p className="text-gray-500">{t('dashboard.profile.loadingProfile')}</p>
               </Card>
             ) : !myProfile?.has_profile ? (
-              <Card className="p-12 border-primary/10 rounded-2xl text-center">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <User className="w-8 h-8 text-primary" />
+              <Card className="p-12 border-gray-200 rounded-2xl text-center">
+                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                  <User className="w-8 h-8 text-accent" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('dashboard.profile.noProfile')}</h3>
-                <p className="text-muted-foreground">{t('dashboard.profile.completeOnboarding')}</p>
+                <p className="text-gray-500">{t('dashboard.profile.completeOnboarding')}</p>
               </Card>
             ) : (
               <>
                 {/* Profile Header Card - Larger avatar on mobile */}
                 <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-                  <div className="bg-gradient-to-r from-primary to-secondary p-5 sm:p-6 text-white">
+                  <div className="bg-accent p-5 sm:p-6 text-white">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0 border border-white/20">
                         {userName.charAt(0).toUpperCase()}
@@ -839,20 +838,20 @@ export function EntrepreneurDashboard({
                 </Card>
 
                 {/* Personal Information */}
-                <Card className="p-5 sm:p-6 border-primary/10 rounded-2xl shadow-sm">
+                <Card className="p-5 sm:p-6 border-gray-200 rounded-2xl shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <User className="w-4 h-4 text-accent" />
                     </div>
                     <h3 className="font-semibold text-gray-900">{t('dashboard.profile.personalInfo')}</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.fullName')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.fullName')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.full_name || myProfile.profile?.owner_name || myProfile.profile?.fullName || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.phone')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.phone')}</p>
                       <p className="font-medium text-gray-900 flex items-center gap-1.5">
                         <Phone className="w-3.5 h-3.5 text-gray-400" />
                         {myProfile.phone || '-'}
@@ -862,88 +861,88 @@ export function EntrepreneurDashboard({
                       </p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.email')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.email')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.email || myProfile.profile?.email_address || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.gender')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.gender')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.gender || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.age')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.age')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.age || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.education')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.education')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.education || '-'}</p>
                     </div>
                   </div>
                 </Card>
 
                 {/* Location */}
-                <Card className="p-5 sm:p-6 border-primary/10 rounded-2xl shadow-sm">
+                <Card className="p-5 sm:p-6 border-gray-200 rounded-2xl shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <MapPin className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <MapPin className="w-4 h-4 text-accent" />
                     </div>
                     <h3 className="font-semibold text-gray-900">{t('dashboard.profile.location')}</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.state')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.state')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.state || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.district')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.district')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.district || '-'}</p>
                     </div>
                   </div>
                 </Card>
 
                 {/* Business Information */}
-                <Card className="p-5 sm:p-6 border-primary/10 rounded-2xl shadow-sm">
+                <Card className="p-5 sm:p-6 border-gray-200 rounded-2xl shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Building2 className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <Building2 className="w-4 h-4 text-accent" />
                     </div>
                     <h3 className="font-semibold text-gray-900">{t('dashboard.profile.businessInfo')}</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.businessName')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.businessName')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.business_name || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.sector')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.sector')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.sector || myProfile.profile?.business_type || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.yearStarted')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.yearStarted')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.year_started || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.ownershipType')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.ownershipType')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.ownership_type || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.role')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.role')}</p>
                       <p className="font-medium text-gray-900">{myProfile.profile?.role || '-'}</p>
                     </div>
                     {myProfile.profile?.products_services && (
                       <div className="p-3 bg-gray-50 rounded-xl">
-                        <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.products')}</p>
+                        <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.products')}</p>
                         <p className="font-medium text-gray-900">{myProfile.profile.products_services}</p>
                       </div>
                     )}
                     {myProfile.profile?.total_employees && (
                       <div className="p-3 bg-gray-50 rounded-xl">
-                        <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.employees')}</p>
+                        <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.employees')}</p>
                         <p className="font-medium text-gray-900">{myProfile.profile.total_employees}</p>
                       </div>
                     )}
                     {myProfile.profile?.annual_revenue && (
                       <div className="p-3 bg-gray-50 rounded-xl">
-                        <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.revenue')}</p>
+                        <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.revenue')}</p>
                         <p className="font-medium text-gray-900">{myProfile.profile.annual_revenue}</p>
                       </div>
                     )}
@@ -964,17 +963,17 @@ export function EntrepreneurDashboard({
                   );
                   if (extraFields.length === 0) return null;
                   return (
-                    <Card className="p-5 sm:p-6 border-primary/10 rounded-2xl shadow-sm">
+                    <Card className="p-5 sm:p-6 border-gray-200 rounded-2xl shadow-sm">
                       <div className="flex items-center gap-2 mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <FileText className="w-4 h-4 text-primary" />
+                        <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                          <FileText className="w-4 h-4 text-accent" />
                         </div>
                         <h3 className="font-semibold text-gray-900">{t('dashboard.profile.additionalInfo')}</h3>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {extraFields.map(([key, value]) => (
                           <div key={key} className="p-3 bg-gray-50 rounded-xl">
-                            <p className="text-xs text-muted-foreground mb-1">
+                            <p className="text-xs text-gray-500 mb-1">
                               {key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                             </p>
                             <p className="font-medium text-gray-900 text-sm break-words">{value}</p>
@@ -986,20 +985,20 @@ export function EntrepreneurDashboard({
                 })()}
 
                 {/* Account Status */}
-                <Card className="p-5 sm:p-6 border-primary/10 rounded-2xl shadow-sm">
+                <Card className="p-5 sm:p-6 border-gray-200 rounded-2xl shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <CheckCircle2 className="w-4 h-4 text-accent" />
                     </div>
                     <h3 className="font-semibold text-gray-900">{t('dashboard.profile.accountStatus')}</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.onboardingStatus')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.onboardingStatus')}</p>
                       <p className="font-medium text-gray-900 capitalize">{myProfile.status?.replace('_', ' ') || '-'}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.dateJoined')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.dateJoined')}</p>
                       <p className="font-medium text-gray-900">
                         {myProfile.date_joined
                           ? new Date(myProfile.date_joined).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -1007,7 +1006,7 @@ export function EntrepreneurDashboard({
                       </p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-muted-foreground mb-1">{t('dashboard.profile.voiceRecordings')}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t('dashboard.profile.voiceRecordings')}</p>
                       <p className="font-medium text-gray-900">{myProfile.audio_count || 0}</p>
                     </div>
                   </div>
@@ -1018,8 +1017,7 @@ export function EntrepreneurDashboard({
         </Tabs>
       </main>
 
-      {/* AI Assistant */}
-      <AIAssistant message={t('dashboard.overview.aiHelp') || "Need help with your dashboard?"} />
+      
     </div>
   );
 }

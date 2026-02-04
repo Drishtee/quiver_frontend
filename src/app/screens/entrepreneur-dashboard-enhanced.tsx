@@ -1,8 +1,4 @@
 import { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Card } from "../components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { AIAssistant } from "../components/ai-assistant";
 import { MeetingsList } from "../components/meetings-list";
 import {
   Calendar as CalendarIcon,
@@ -40,23 +36,23 @@ export function EntrepreneurDashboard({ profileData, onScheduleMeeting, onJoinMe
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <header className="border-b border-border bg-white sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-5 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-semibold text-foreground">Quiver Dashboard</h1>
+              <h1 className="text-xl font-semibold text-gray-900">Quiver Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
-              <Button onClick={onScheduleMeeting} className="bg-primary hover:bg-primary/90">
+              <button onClick={onScheduleMeeting} className="inline-flex items-center bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] px-4 py-2">
                 <CalendarIcon className="w-4 h-4 mr-2" />
                 Schedule Meeting
-              </Button>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
+              </button>
+              <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
                 <span className="text-white font-semibold">
                   {profileData?.fullName?.charAt(0) || 'U'}
                 </span>
@@ -70,147 +66,155 @@ export function EntrepreneurDashboard({ profileData, onScheduleMeeting, onJoinMe
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
-          <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl border border-blue-100 p-8">
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8">
             <div className="flex items-start justify-between">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-foreground">
+                <h2 className="text-2xl font-semibold text-gray-900">
                   Welcome back, {profileData?.fullName || 'Entrepreneur'}! 👋
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-gray-500">
                   Here's what's happening with your business journey today.
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-200 shadow-sm">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+              <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
                   <TrendingUp className="w-4 h-4" />
                   Growth Score
                 </div>
-                <div className="text-3xl font-bold text-primary">8.5/10</div>
+                <div className="text-3xl font-bold text-accent">8.5/10</div>
               </div>
             </div>
           </div>
 
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="bg-white border border-border">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="meetings">Meetings</TabsTrigger>
-              <TabsTrigger value="milestones">Milestones</TabsTrigger>
-              <TabsTrigger value="resources">Resources</TabsTrigger>
-            </TabsList>
+          <div className="space-y-6">
+            <div className="bg-white border border-gray-200 rounded-lg inline-flex p-1 gap-1">
+              {["overview", "meetings", "milestones", "resources"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    activeTab === tab
+                      ? "bg-accent text-white"
+                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
 
             {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-6">
+            {activeTab === "overview" && <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="p-6 border border-border">
+                <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <Video className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <Video className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Upcoming Meetings</p>
-                      <p className="text-2xl font-semibold text-foreground">3</p>
+                      <p className="text-sm text-gray-500">Upcoming Meetings</p>
+                      <p className="text-2xl font-semibold text-gray-900">3</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full" onClick={onScheduleMeeting}>
+                  <button onClick={onScheduleMeeting} className="w-full border border-gray-200 rounded-xl py-2 px-4 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors">
                     Schedule New
-                  </Button>
-                </Card>
+                  </button>
+                </div>
 
-                <Card className="p-6 border border-border">
+                <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                      <CheckCircle2 className="w-5 h-5 text-green-600" />
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <CheckCircle2 className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Completed Tasks</p>
-                      <p className="text-2xl font-semibold text-foreground">12</p>
+                      <p className="text-sm text-gray-500">Completed Tasks</p>
+                      <p className="text-2xl font-semibold text-gray-900">12</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full">
+                  <button className="w-full border border-gray-200 rounded-xl py-2 px-4 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors">
                     View All
-                  </Button>
-                </Card>
+                  </button>
+                </div>
 
-                <Card className="p-6 border border-border">
+                <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-purple-600" />
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Resources</p>
-                      <p className="text-2xl font-semibold text-foreground">8</p>
+                      <p className="text-sm text-gray-500">Resources</p>
+                      <p className="text-2xl font-semibold text-gray-900">8</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full">
+                  <button className="w-full border border-gray-200 rounded-xl py-2 px-4 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors">
                     Browse
-                  </Button>
-                </Card>
+                  </button>
+                </div>
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 justify-start"
+                  <button
+                    className="h-auto p-4 text-left border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
                     onClick={onScheduleMeeting}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <CalendarIcon className="w-5 h-5 text-blue-600" />
+                      <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <CalendarIcon className="w-5 h-5 text-accent" />
                       </div>
                       <div className="text-left">
                         <p className="font-medium">Schedule Mentorship Call</p>
-                        <p className="text-sm text-muted-foreground">Book a video session with WhatsApp reminders</p>
+                        <p className="text-sm text-gray-500">Book a video session with WhatsApp reminders</p>
                       </div>
                     </div>
-                  </Button>
+                  </button>
 
-                  <Button variant="outline" className="h-auto p-4 justify-start">
+                  <button className="h-auto p-4 text-left border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <MessageCircle className="w-5 h-5 text-green-600" />
+                      <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <MessageCircle className="w-5 h-5 text-accent" />
                       </div>
                       <div className="text-left">
                         <p className="font-medium">Chat with AI Assistant</p>
-                        <p className="text-sm text-muted-foreground">Get instant help and guidance</p>
+                        <p className="text-sm text-gray-500">Get instant help and guidance</p>
                       </div>
                     </div>
-                  </Button>
+                  </button>
                 </div>
               </div>
-            </TabsContent>
+            </div>}
 
             {/* Meetings Tab - Uses new MeetingsList component */}
-            <TabsContent value="meetings" className="space-y-6">
-              <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
+            {activeTab === "meetings" && <div className="space-y-6">
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground">Your Meetings</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="text-lg font-semibold text-gray-900">Your Meetings</h3>
+                    <p className="text-sm text-gray-500">
                       Manage your scheduled video calls with mentors
                     </p>
                   </div>
-                  <Button onClick={onScheduleMeeting} className="bg-primary hover:bg-primary/90">
+                  <button onClick={onScheduleMeeting} className="inline-flex items-center bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] px-4 py-2">
                     <Plus className="w-4 h-4 mr-2" />
                     New Meeting
-                  </Button>
+                  </button>
                 </div>
 
                 {/* Integrated Meetings List Component */}
                 <MeetingsList onJoinMeeting={onJoinMeeting} />
 
                 {/* Info Box */}
-                <div className="mt-6 bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div className="mt-6 bg-gray-50 rounded-xl p-4 border border-gray-200">
                   <div className="flex items-start gap-3">
-                    <MessageCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <MessageCircle className="w-5 h-5 text-accent mt-0.5" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground mb-1">
+                      <p className="text-sm font-medium text-gray-900 mb-1">
                         WhatsApp Reminders Enabled
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-500">
                         You'll receive WhatsApp notifications before your scheduled meetings.
                         All video calls use Google Meet for high-quality conferencing.
                       </p>
@@ -218,31 +222,31 @@ export function EntrepreneurDashboard({ profileData, onScheduleMeeting, onJoinMe
                   </div>
                 </div>
               </div>
-            </TabsContent>
+            </div>}
 
             {/* Milestones Tab */}
-            <TabsContent value="milestones" className="space-y-6">
-              <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-6">Growth Milestones</h3>
+            {activeTab === "milestones" && <div className="space-y-6">
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Growth Milestones</h3>
                 <div className="space-y-4">
                   {milestones.map((milestone) => (
-                    <div key={milestone.id} className="flex items-center gap-4 p-4 border border-border rounded-lg">
+                    <div key={milestone.id} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        milestone.status === 'completed' ? 'bg-green-100' :
-                        milestone.status === 'in_progress' ? 'bg-blue-100' : 'bg-gray-100'
+                        milestone.status === 'completed' ? 'bg-accent/10' :
+                        milestone.status === 'in_progress' ? 'bg-accent/10' : 'bg-gray-100'
                       }`}>
                         <CheckCircle2 className={`w-5 h-5 ${
-                          milestone.status === 'completed' ? 'text-green-600' :
-                          milestone.status === 'in_progress' ? 'text-blue-600' : 'text-gray-400'
+                          milestone.status === 'completed' ? 'text-accent' :
+                          milestone.status === 'in_progress' ? 'text-accent' : 'text-gray-400'
                         }`} />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-foreground">{milestone.title}</p>
-                        <p className="text-sm text-muted-foreground">{milestone.date}</p>
+                        <p className="font-medium text-gray-900">{milestone.title}</p>
+                        <p className="text-sm text-gray-500">{milestone.date}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        milestone.status === 'completed' ? 'bg-green-100 text-green-700' :
-                        milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                        milestone.status === 'completed' ? 'bg-accent/10 text-accent' :
+                        milestone.status === 'in_progress' ? 'bg-accent/10 text-accent' : 'bg-gray-100 text-gray-700'
                       }`}>
                         {milestone.status.replace('_', ' ')}
                       </span>
@@ -250,34 +254,31 @@ export function EntrepreneurDashboard({ profileData, onScheduleMeeting, onJoinMe
                   ))}
                 </div>
               </div>
-            </TabsContent>
+            </div>}
 
             {/* Resources Tab */}
-            <TabsContent value="resources" className="space-y-6">
-              <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-6">Learning Resources</h3>
+            {activeTab === "resources" && <div className="space-y-6">
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Learning Resources</h3>
                 <div className="space-y-3">
                   {resources.map((resource) => (
-                    <div key={resource.id} className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-purple-600" />
+                    <div key={resource.id} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-accent" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-foreground">{resource.title}</p>
-                        <p className="text-sm text-muted-foreground">{resource.type} • {resource.date}</p>
+                        <p className="font-medium text-gray-900">{resource.title}</p>
+                        <p className="text-sm text-gray-500">{resource.type} • {resource.date}</p>
                       </div>
-                      <Button size="sm" variant="outline">Download</Button>
+                      <button className="border border-gray-200 rounded-xl py-1.5 px-3 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors">Download</button>
                     </div>
                   ))}
                 </div>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>}
+          </div>
         </div>
       </main>
-
-      {/* AI Assistant */}
-      <AIAssistant message="Need help? Ask me anything!" />
     </div>
   );
 }

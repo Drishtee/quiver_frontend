@@ -7,15 +7,15 @@ import { QuiverAIAssistant } from '../components/voice/QuiverAIAssistant';
 import { useOpenAIVoice } from '../../contexts/OpenAIVoiceContext';
 import {
   Mic,
-  Sparkles,
   Store,
-  Crown,
-  Rocket,
+  ShieldCheck,
+  Handshake,
   TrendingUp,
   IndianRupee,
-  Users,
-  GraduationCap,
-  Wrench,
+  HeartHandshake,
+  BookOpen,
+  Smartphone,
+  MessageCircle,
   ChevronRight,
 } from 'lucide-react';
 
@@ -218,7 +218,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   onClick={handleVoiceStart}
                   className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-5 lg:py-3.5 lg:px-7 rounded-xl shadow-md active:scale-[0.98] transition-all min-h-[48px] text-sm lg:text-base"
                 >
-                  <Sparkles className="w-4 h-4 lg:w-5 lg:h-5" />
+                  <Mic className="w-4 h-4 lg:w-5 lg:h-5" />
                   {t('landing.avatar.title')}
                 </button>
                 <button
@@ -408,14 +408,14 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           <div className="grid grid-cols-3 gap-2 max-w-2xl mx-auto">
             <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
               <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
-                <Crown className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.stayOwner.title')}</h4>
               <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.stayOwner.description')}</p>
             </div>
             <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
               <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
-                <Rocket className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                <Handshake className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.supportGrowth.title')}</h4>
               <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.supportGrowth.description')}</p>
@@ -435,7 +435,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               onClick={handleVoiceStart}
               className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
             >
-              <Sparkles className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4" />
               {t('landing.equity.cta')}
             </button>
           </div>
@@ -454,9 +454,9 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
             {[
               { key: 'funding', Icon: IndianRupee },
-              { key: 'mentorship', Icon: Users },
-              { key: 'education', Icon: GraduationCap },
-              { key: 'tools', Icon: Wrench },
+              { key: 'mentorship', Icon: HeartHandshake },
+              { key: 'education', Icon: BookOpen },
+              { key: 'tools', Icon: Smartphone },
             ].map(({ key, Icon }) => (
               <div key={key} className="bg-gray-50 p-3.5 lg:p-4 rounded-xl border border-gray-100 flex flex-col">
                 <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-2">
@@ -558,7 +558,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               onClick={handleVoiceStart}
               className="flex-1 bg-white/15 text-white font-bold py-3.5 px-6 rounded-xl min-h-[48px] border border-white/25 flex items-center justify-center gap-2 active:scale-[0.98] transition-all hover:bg-white/20 text-sm lg:text-base"
             >
-              <Sparkles className="w-4 h-4 lg:w-5 lg:h-5" />
+              <Mic className="w-4 h-4 lg:w-5 lg:h-5" />
               <span>{t('landing.cta.startVoice')}</span>
             </button>
           </div>

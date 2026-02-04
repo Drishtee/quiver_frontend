@@ -79,7 +79,7 @@ export const ResumeJourneyModal: React.FC<ResumeJourneyModalProps> = ({
             </div>
             <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
+                className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
                 style={{ width: `${completionPercentage}%` }}
               />
             </div>
@@ -111,7 +111,7 @@ export const ResumeJourneyModal: React.FC<ResumeJourneyModalProps> = ({
         <div className="space-y-3">
           <button
             onClick={onResume}
-            className="w-full h-12 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-bold hover:from-secondary hover:to-primary transition-all shadow-lg flex items-center justify-center gap-2"
+            className="w-full h-12 bg-accent hover:bg-accent/90 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
           >
             <PlayCircle className="w-5 h-5" />
             {t('resume.resume')}

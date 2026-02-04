@@ -1,0 +1,303 @@
+import { useState, useEffect } from "react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
+import { AIAssistant } from "../components/ai-assistant";
+import { ProgressIndicator } from "../components/progress-indicator";
+import { User, Users } from "lucide-react";
+import { useOnboarding } from "../../contexts/OnboardingContext";
+import '../screens/landing.css';
+
+interface ProfileCreationProps {
+  onContinue: (data: ProfileData) => void;
+}
+
+export interface ProfileData {
+  fullName: string;
+  email: string;
+  gender: string;
+  age: string;
+  education: string;
+  state: string;
+  district: string;
+}
+
+const states = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+];
+
+const educationLevels = [
+  { value: "no-formal", labelHi: "औपचारिक शिक्षा नहीं", labelEn: "No formal schooling" },
+  { value: "primary", labelHi: "प्राथमिक", labelEn: "Primary" },
+  { value: "secondary", labelHi: "माध्यमिक", labelEn: "Secondary" },
+  { value: "graduate", labelHi: "स्नातक या अधिक", labelEn: "Graduate+" }
+];
+
+const genderOptions = [
+  { value: "female", labelHi: "महिला", labelEn: "Female" },
+  { value: "male", labelHi: "पुरुष", labelEn: "Male" },
+  { value: "other", labelHi: "अन्य", labelEn: "Other" }
+];
+
+export function ProfileCreation({ onContinue }: ProfileCreationProps) {
+  const onboarding = useOnboarding();
+
+  // Initialize form data from onboarding context
+  const [formData, setFormData] = useState<ProfileData>(() => ({
+    fullName: onboarding.getField('fullName', '') || onboarding.getField('full_name', ''),
+    email: onboarding.getField('email', ''),
+    gender: onboarding.getField('gender', ''),
+    age: onboarding.getField('age', ''),
+    education: onboarding.getField('education', ''),
+    state: onboarding.getField('state', ''),
+    district: onboarding.getField('district', '')
+  }));
+
+  // Sync form data when voice fields are applied
+  useEffect(() => {
+    const handleVoiceFieldsApplied = (event: CustomEvent<Record<string, any>>) => {
+      const fields = event.detail;
+      setFormData(prev => ({
+        fullName: fields.fullName || fields.full_name || prev.fullName,
+        email: fields.email || prev.email,
+        gender: fields.gender || prev.gender,
+        age: fields.age || prev.age,
+        education: fields.education || prev.education,
+        state: fields.state || prev.state,
+        district: fields.district || prev.district
+      }));
+    };
+
+    window.addEventListener('voiceFieldsApplied', handleVoiceFieldsApplied as EventListener);
+    return () => {
+      window.removeEventListener('voiceFieldsApplied', handleVoiceFieldsApplied as EventListener);
+    };
+  }, []);
+
+  // Also sync when onboarding context changes
+  useEffect(() => {
+    const fullName = onboarding.getField('fullName', '') || onboarding.getField('full_name', '');
+    const email = onboarding.getField('email', '');
+    const gender = onboarding.getField('gender', '');
+    const age = onboarding.getField('age', '');
+    const education = onboarding.getField('education', '');
+    const state = onboarding.getField('state', '');
+    const district = onboarding.getField('district', '');
+
+    // Only update if we have actual values from context
+    if (fullName || email || gender || age || education || state || district) {
+      setFormData(prev => ({
+        fullName: fullName || prev.fullName,
+        email: email || prev.email,
+        gender: gender || prev.gender,
+        age: age || prev.age,
+        education: education || prev.education,
+        state: state || prev.state,
+        district: district || prev.district
+      }));
+    }
+  }, [onboarding.formData]);
+
+  // Update local state and sync to context
+  const updateField = (key: keyof ProfileData, value: string) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
+    onboarding.setField(key, value);
+  };
+
+  const handleSubmit = () => {
+    onContinue(formData);
+  };
+
+  const isValid = formData.fullName && formData.gender && formData.age && formData.education && formData.state && formData.district;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24 md:pb-20 mobile-full-screen">
+      {/* Header - Mobile-first */}
+      <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto flex items-center">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center mr-2 md:mr-3">
+            <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
+          </div>
+          <span className="text-base md:text-xl font-display font-bold text-primary truncate">उद्यमी की जानकारी | Entrepreneur Profile</span>
+        </div>
+      </header>
+
+      {/* Main Content - Mobile-first */}
+      <main className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="space-y-6 md:space-y-8">
+          {/* Progress */}
+          <ProgressIndicator current={2} total={9} />
+
+          <div className="text-center space-y-1 md:space-y-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">
+              Section B: उद्यमी की जानकारी
+            </h2>
+            <p className="text-sm md:text-base text-gray-600">
+              Entrepreneur Profile | अपने बारे में बताएं
+            </p>
+          </div>
+
+          {/* Form Card - Mobile-first */}
+          <div className="bg-white rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-lg p-4 md:p-8 space-y-5 md:space-y-6">
+            {/* Full Name */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                पूरा नाम | Full Name <span className="text-amber-500">*</span>
+              </label>
+              <Input
+                type="text"
+                placeholder="अपना पूरा नाम दर्ज करें"
+                value={formData.fullName}
+                onChange={(e) => updateField('fullName', e.target.value)}
+                className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+              />
+            </div>
+
+            {/* Gender */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-900">
+                लिंग | Gender <span className="text-amber-500">*</span>
+              </label>
+              <RadioGroup
+                value={formData.gender}
+                onValueChange={(value) => updateField('gender', value)}
+                className="flex flex-wrap gap-3"
+              >
+                {genderOptions.map((option) => (
+                  <label
+                    key={option.value}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                      formData.gender === option.value
+                        ? 'border-primary bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <RadioGroupItem value={option.value} id={`gender-${option.value}`} />
+                    <span className="font-medium text-gray-900">{option.labelHi}</span>
+                    <span className="text-sm text-gray-500">| {option.labelEn}</span>
+                  </label>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Age */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                आयु | Age <span className="text-amber-500">*</span>
+              </label>
+              <Input
+                type="number"
+                placeholder="आयु दर्ज करें (जैसे: 35)"
+                value={formData.age}
+                onChange={(e) => updateField('age', e.target.value)}
+                min="18"
+                max="100"
+                className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+              />
+            </div>
+
+            {/* Education Level */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-900">
+                शिक्षा स्तर | Education Level <span className="text-amber-500">*</span>
+              </label>
+              <RadioGroup
+                value={formData.education}
+                onValueChange={(value) => updateField('education', value)}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+              >
+                {educationLevels.map((level) => (
+                  <label
+                    key={level.value}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                      formData.education === level.value
+                        ? 'border-primary bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <RadioGroupItem value={level.value} id={`edu-${level.value}`} />
+                    <div className="flex flex-col">
+                      <span className="font-medium text-gray-900">{level.labelHi}</span>
+                      <span className="text-xs text-gray-500">{level.labelEn}</span>
+                    </div>
+                  </label>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* State */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                राज्य | State <span className="text-amber-500">*</span>
+              </label>
+              <Select value={formData.state} onValueChange={(value) => { updateField('state', value); updateField('district', ''); }}>
+                <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-xl">
+                  <SelectValue placeholder="राज्य चुनें | Select your state" />
+                </SelectTrigger>
+                <SelectContent>
+                  {states.map((state) => (
+                    <SelectItem key={state} value={state.toLowerCase().replace(/\s+/g, '-')}>
+                      {state}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* District */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                जिला | District <span className="text-amber-500">*</span>
+              </label>
+              <Input
+                type="text"
+                placeholder="जिले का नाम लिखें | Enter district name"
+                value={formData.district}
+                onChange={(e) => updateField('district', e.target.value)}
+                className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+              />
+            </div>
+
+            {/* Email (Optional) */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                ईमेल | Email <span className="text-gray-400">(वैकल्पिक | Optional)</span>
+              </label>
+              <Input
+                type="email"
+                placeholder="your.email@example.com"
+                value={formData.email}
+                onChange={(e) => updateField('email', e.target.value)}
+                className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-primary focus:ring-primary"
+              />
+            </div>
+
+            {/* Submit Button - Mobile-first with sticky positioning on mobile */}
+            <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border">
+              <Button
+                className="w-full min-h-[52px] md:h-14 bg-primary hover:bg-secondary active:bg-secondary/90 text-base md:text-lg font-semibold rounded-xl transition-all"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                आगे बढ़ें | Continue
+              </Button>
+            </div>
+          </div>
+
+          {/* AI Assistant - Hidden on small mobile for cleaner UI */}
+          <div className="hidden sm:block">
+            <AIAssistant
+              position="inline"
+              message="फॉर्म भरने में मदद चाहिए? बोलकर भी भर सकते हैं! | Need help? You can also speak to fill the form!"
+            />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

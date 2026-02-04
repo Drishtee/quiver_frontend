@@ -106,14 +106,14 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
   const isFormValid = selectedDate && selectedTime;
 
   return (
-    <div className="min-h-screen bg-background pb-24 md:pb-20 mobile-full-screen">
+    <div className="min-h-screen bg-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
-      <header className="border-b border-border bg-white sticky top-0 z-10">
+      <header className="border-b border-gray-200 bg-white sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-3 md:px-6 md:py-4 flex items-center gap-3 md:gap-4">
           <button onClick={onBack} className="p-2 -ml-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg min-h-touch min-w-touch flex items-center justify-center">
-            <ArrowLeft className="w-5 h-5 text-foreground" />
+            <ArrowLeft className="w-5 h-5 text-gray-900" />
           </button>
-          <h1 className="text-base md:text-lg font-semibold text-foreground truncate">Schedule Meeting with Quiver Team</h1>
+          <h1 className="text-base md:text-lg font-semibold text-gray-900 truncate">Schedule Meeting with Quiver Team</h1>
         </div>
       </header>
 
@@ -122,9 +122,9 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
           {/* Calendar Section - Mobile-first */}
           <div className="space-y-4 md:space-y-6">
-            <div className="bg-white rounded-xl md:rounded-2xl border border-border shadow-sm p-4 md:p-6">
-              <h3 className="font-semibold text-foreground mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
-                <CalendarIcon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 shadow-sm p-4 md:p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
+                <CalendarIcon className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                 Select Date
               </h3>
               <Calendar
@@ -138,9 +138,9 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
 
             {/* Selected Date Display - Compact on mobile */}
             {selectedDate && (
-              <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl md:rounded-2xl border border-blue-100 p-4 md:p-6">
-                <h4 className="font-semibold text-foreground mb-1 md:mb-2 text-sm md:text-base">Selected Date</h4>
-                <p className="text-lg md:text-2xl font-semibold text-primary">
+              <div className="bg-gray-50 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
+                <h4 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Selected Date</h4>
+                <p className="text-lg md:text-2xl font-semibold text-accent">
                   {selectedDate.toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -155,9 +155,9 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
           {/* Meeting Details Section - Mobile-first */}
           <div className="space-y-4 md:space-y-6">
             {/* Time Slot Selection - Touch-friendly */}
-            <div className="bg-white rounded-xl md:rounded-2xl border border-border shadow-sm p-4 md:p-6 space-y-3 md:space-y-4">
-              <h3 className="font-semibold text-foreground flex items-center gap-2 text-sm md:text-base">
-                <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 shadow-sm p-4 md:p-6 space-y-3 md:space-y-4">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-sm md:text-base">
+                <Clock className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                 Select Time Slot
               </h3>
               <div className="grid grid-cols-2 gap-2 md:gap-3">
@@ -167,8 +167,8 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
                     onClick={() => setSelectedTime(time)}
                     className={`min-h-[48px] md:h-12 rounded-lg border-2 transition-all text-sm md:text-base font-medium ${
                       selectedTime === time
-                        ? "border-primary bg-blue-50 text-primary"
-                        : "border-border hover:border-gray-300 active:border-primary/50 text-foreground"
+                        ? "border-accent bg-accent/5 text-accent"
+                        : "border-gray-200 hover:border-gray-300 active:border-accent/50 text-gray-900"
                     }`}
                   >
                     {time}
@@ -178,37 +178,37 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
             </div>
 
             {/* Meeting With Info */}
-            <div className="bg-gradient-to-br from-primary/10 to-blue-50 rounded-2xl border border-primary/20 p-6 space-y-2">
-              <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
+            <div className="bg-accent/5 rounded-2xl border border-gray-200 p-6 space-y-2">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <User className="w-5 h-5 text-accent" />
                 Meeting With
               </h3>
               <p className="text-lg font-medium text-primary">Quiver Team</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-500">
                 Our team will help you with onboarding, business strategy, and support.
               </p>
             </div>
 
             {/* Google Meet Info */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-2">
-              <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <Video className="w-5 h-5 text-primary" />
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-2">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <Video className="w-5 h-5 text-accent" />
                 Video Call via Google Meet
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-500">
                 A Google Meet link will be generated automatically and shared with you.
               </p>
             </div>
 
             {/* WhatsApp Reminders */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
               <div className="flex items-start gap-3">
-                <MessageCircle className="w-5 h-5 text-primary mt-1" />
+                <MessageCircle className="w-5 h-5 text-accent mt-1" />
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-foreground">WhatsApp Reminders</h3>
-                      <p className="text-sm text-muted-foreground">Get meeting reminders on WhatsApp</p>
+                      <h3 className="font-semibold text-gray-900">WhatsApp Reminders</h3>
+                      <p className="text-sm text-gray-500">Get meeting reminders on WhatsApp</p>
                     </div>
                     <Checkbox
                       checked={enableWhatsAppReminder}
@@ -218,7 +218,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
 
                   {enableWhatsAppReminder && (
                     <div className="space-y-3 pl-2 border-l-2 border-blue-200">
-                      <p className="text-sm text-muted-foreground">When to send reminders:</p>
+                      <p className="text-sm text-gray-500">When to send reminders:</p>
                       <div className="space-y-2">
                         {[
                           { value: "24h", label: "24 hours before" },
@@ -230,7 +230,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
                               checked={reminderTimes.includes(option.value)}
                               onCheckedChange={() => toggleReminderTime(option.value)}
                             />
-                            <label className="text-sm text-foreground cursor-pointer">
+                            <label className="text-sm text-gray-900 cursor-pointer">
                               {option.label}
                             </label>
                           </div>
@@ -243,18 +243,18 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
             </div>
 
             {/* Additional Notes */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6 space-y-4">
-              <h3 className="font-semibold text-foreground">Additional Notes (Optional)</h3>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+              <h3 className="font-semibold text-gray-900">Additional Notes (Optional)</h3>
               <Textarea
                 placeholder="Add any specific topics or questions you'd like to discuss..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="min-h-[120px] bg-input-background border-border resize-none"
+                className="min-h-[120px] bg-gray-50 border-gray-200 resize-none"
               />
             </div>
 
             {/* Schedule Button - Sticky on mobile */}
-            <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-border">
+            <div className="sticky bottom-0 -mx-4 md:mx-0 px-4 py-4 md:p-0 bg-white md:bg-transparent border-t md:border-0 border-gray-200">
               <Button
                 className="w-full min-h-[52px] md:h-12 bg-primary hover:bg-primary/90 active:bg-primary/80"
                 disabled={!isFormValid || isScheduling}
@@ -279,7 +279,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
               <div className="flex items-start gap-2">
                 <Bell className="w-4 h-4 text-blue-600 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm text-foreground">
+                  <p className="text-sm text-gray-900">
                     <strong>Notifications:</strong> You'll receive a confirmation email with the Google Meet meeting link.
                   </p>
                 </div>
@@ -288,7 +288,7 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
                 <div className="flex items-start gap-2">
                   <MessageCircle className="w-4 h-4 text-green-600 mt-0.5" />
                   <div className="flex-1">
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-gray-900">
                       <strong>WhatsApp Reminders:</strong> You'll get reminders {reminderTimes.length > 0 ? reminderTimes.map(t => {
                         if (t === "24h") return "24 hours";
                         if (t === "1h") return "1 hour";

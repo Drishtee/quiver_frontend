@@ -104,7 +104,7 @@ export const VoiceButton: React.FC<VoiceButtonProps> = ({
   // Variant classes
   const variantClasses = {
     default: 'bg-white border-2 border-gray-200 hover:border-primary hover:bg-gray-50',
-    floating: 'bg-gradient-to-br from-primary to-secondary text-white shadow-lg hover:shadow-xl',
+    floating: 'bg-accent text-white shadow-lg hover:shadow-xl',
     inline: 'bg-gray-100 hover:bg-gray-200'
   };
 
@@ -135,7 +135,7 @@ export const VoiceButton: React.FC<VoiceButtonProps> = ({
           relative rounded-full flex items-center justify-center transition-all duration-200
           ${sizeClasses[size]}
           ${isActive
-            ? 'bg-gradient-to-br from-primary to-secondary text-white shadow-lg scale-110'
+            ? 'bg-accent text-white shadow-lg scale-110'
             : variantClasses[variant]
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}

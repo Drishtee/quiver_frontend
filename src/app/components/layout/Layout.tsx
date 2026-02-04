@@ -44,7 +44,7 @@ export function Layout({
   const shouldShowFooter = showFooter;
 
   return (
-    <div className={cn("min-h-screen flex flex-col bg-background", className)}>
+    <div className={cn("min-h-screen flex flex-col bg-white", className)}>
       {showHeader && (
         <Header
           showLanguageSelector={showLanguageSelector}

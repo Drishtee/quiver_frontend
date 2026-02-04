@@ -645,9 +645,9 @@ export default function App() {
   // Render success screen
   if (currentScreen === "success") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center px-6">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
         <div className="max-w-lg w-full text-center space-y-8">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+          <div className="w-24 h-24 mx-auto rounded-full bg-accent flex items-center justify-center shadow-lg">
             <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
@@ -671,7 +671,7 @@ export default function App() {
           <div className="space-y-4 pt-4">
             <button
               onClick={handleGoToDashboard}
-              className="w-full h-14 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-display font-bold text-lg hover:from-secondary hover:to-primary transition-all shadow-lg"
+              className="w-full h-14 bg-accent text-white rounded-xl font-display font-bold text-lg hover:bg-accent/90 transition-all shadow-lg"
             >
               डैशबोर्ड पर जाएं | Go to Dashboard
             </button>
@@ -744,7 +744,10 @@ export default function App() {
         />
       )}
       {currentScreen === "profile" && (
-        <ProfileCreation onContinue={handleProfileContinue} />
+        <ProfileCreation
+          onContinue={handleProfileContinue}
+          onBack={() => setCurrentScreen("consent")}
+        />
       )}
       {currentScreen === "industry" && (
         <IndustrySelection onContinue={handleEnterpriseContinue} />

@@ -83,7 +83,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
       scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
       in_progress: 'bg-green-100 text-green-700 border-green-200',
       completed: 'bg-gray-100 text-gray-700 border-gray-200',
-      cancelled: 'bg-amber-100 text-amber-700 border-amber-200'
+      cancelled: 'bg-red-100 text-red-700 border-red-200'
     };
 
     const icons = {
@@ -137,8 +137,8 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
   if (error) {
     return (
       <div className="text-center py-12 space-y-4">
-        <AlertCircle className="w-12 h-12 text-amber-500 mx-auto" />
-        <p className="text-amber-600">{error}</p>
+        <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+        <p className="text-red-600">{error}</p>
         <Button onClick={loadMeetings} variant="outline">
           Try Again
         </Button>
@@ -151,8 +151,8 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
       <div className="text-center py-12 space-y-4">
         <Calendar className="w-12 h-12 text-gray-400 mx-auto" />
         <div>
-          <h3 className="text-lg font-semibold text-foreground">No meetings scheduled</h3>
-          <p className="text-muted-foreground">Schedule your first meeting to get started</p>
+          <h3 className="text-lg font-semibold text-gray-900">No meetings scheduled</h3>
+          <p className="text-gray-500">Schedule your first meeting to get started</p>
         </div>
       </div>
     );
@@ -163,33 +163,33 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
       {meetings.map((meeting) => (
         <div
           key={meeting.id}
-          className="bg-white rounded-xl border border-border shadow-sm p-6 hover:shadow-md transition-shadow"
+          className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow"
         >
           <div className="flex items-start justify-between gap-4">
             {/* Meeting Info */}
             <div className="flex-1 space-y-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-foreground text-lg">{meeting.title || meeting.meeting_type}</h3>
+                  <h3 className="font-semibold text-gray-900 text-lg">{meeting.title || meeting.meeting_type}</h3>
                   {getStatusBadge(meeting.status)}
                 </div>
               </div>
 
               {/* Mentor Info */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
                   <span className="text-white font-semibold">
                     {meeting.mentor_name.charAt(0)}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">{meeting.mentor_name}</p>
-                  <p className="text-xs text-muted-foreground">Quiver Mentor</p>
+                  <p className="text-sm font-medium text-gray-900">{meeting.mentor_name}</p>
+                  <p className="text-xs text-gray-500">Quiver Mentor</p>
                 </div>
               </div>
 
               {/* Date and Time */}
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
                   <span>{formatDate(meeting.date)}</span>
@@ -214,7 +214,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
               {meeting.status === 'scheduled' && isUpcoming(meeting.date, meeting.time) && (
                 <Button
                   onClick={() => onJoinMeeting?.(meeting.id)}
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-accent hover:bg-accent/90"
                   size="sm"
                 >
                   <Video className="w-4 h-4 mr-2" />
@@ -238,7 +238,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
                   onClick={() => handleCancelMeeting(meeting.id)}
                   variant="outline"
                   size="sm"
-                  className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
                   Cancel
                 </Button>

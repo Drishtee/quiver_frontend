@@ -180,7 +180,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
     return (
       <button
         onClick={toggleExpanded}
-        className={`fixed bottom-6 right-6 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-50 flex items-center justify-center ${className}`}
+        className={`fixed bottom-6 right-6 w-16 h-16 rounded-full bg-accent text-white shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-50 flex items-center justify-center ${className}`}
       >
         <MessageCircle className="w-7 h-7" />
       </button>
@@ -195,7 +195,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
           onClick={() => setIsMinimized(false)}
           className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg hover:shadow-xl transition-all"
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
             <MessageCircle className="w-4 h-4 text-white" />
           </div>
           <span className="font-medium text-gray-700">AI Assistant</span>
@@ -216,7 +216,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
       `}
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary px-4 py-3 flex items-center justify-between">
+      <div className="bg-accent px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Avatar Head */}
           <div className="relative">

@@ -71,7 +71,7 @@ export const VideoExplainer: React.FC<VideoExplainerProps> = ({
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <button className={`flex items-center gap-3 px-6 py-3 bg-white hover:bg-gray-50 rounded-xl border-2 border-primary/20 hover:border-primary transition-all shadow-lg ${className}`}>
+          <button className={`flex items-center gap-3 px-6 py-3 bg-white hover:bg-gray-50 rounded-xl border-2 border-gray-200 hover:border-accent transition-all shadow-lg ${className}`}>
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <Play className="w-6 h-6 text-primary ml-0.5" />
             </div>
@@ -98,7 +98,7 @@ export const VideoExplainer: React.FC<VideoExplainerProps> = ({
 
   // Default card variant
   return (
-    <div className={`bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-primary/10 ${className}`}>
+    <div className={`bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200 ${className}`}>
       <div className="relative aspect-video">
         {isPlaying ? (
           <>

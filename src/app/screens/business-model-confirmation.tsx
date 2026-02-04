@@ -56,16 +56,16 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-white pb-20">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center mr-3">
+          <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center mr-3">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
             <span className="text-xl font-display font-bold text-primary">Welcome to Quiver</span>
-            <p className="text-sm text-muted-foreground">Quiver में आपका स्वागत है</p>
+            <p className="text-sm text-gray-500">Quiver में आपका स्वागत है</p>
           </div>
         </div>
       </header>
@@ -75,8 +75,8 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
         <div className="space-y-8">
           {/* Hero Section */}
           <div className="text-center space-y-4">
-            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary/20 to-blue-100 rounded-full flex items-center justify-center">
-              <Target className="w-10 h-10 text-primary" />
+            <div className="w-20 h-20 mx-auto bg-accent/10 rounded-full flex items-center justify-center">
+              <Target className="w-10 h-10 text-accent" />
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
               Understanding Quiver's Business Model
@@ -98,14 +98,14 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
                   key={index}
                   className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex gap-4"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-6 h-6 text-accent" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">
                       {point.titleEn}
                     </h3>
-                    <p className="text-sm text-primary font-medium mb-1">
+                    <p className="text-sm text-accent font-medium mb-1">
                       {point.titleHi}
                     </p>
                     <p className="text-sm text-gray-600">{point.descEn}</p>
@@ -117,16 +117,16 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
           </div>
 
           {/* Important Note */}
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
             <div className="flex gap-3">
-              <Shield className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+              <Shield className="w-6 h-6 text-gray-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-amber-800">Important Note | महत्वपूर्ण सूचना</h3>
-                <p className="text-sm text-amber-700 mt-2">
+                <h3 className="font-semibold text-gray-800">Important Note | महत्वपूर्ण सूचना</h3>
+                <p className="text-sm text-gray-700 mt-2">
                   By proceeding, you acknowledge that Quiver's partnership model involves equity participation.
                   Our team will explain the specific terms during your onboarding consultation.
                 </p>
-                <p className="text-sm text-amber-600 mt-2">
+                <p className="text-sm text-gray-600 mt-2">
                   आगे बढ़ने से, आप स्वीकार करते हैं कि Quiver की साझेदारी मॉडल में इक्विटी भागीदारी शामिल है।
                   हमारी टीम आपकी ऑनबोर्डिंग परामर्श के दौरान विशिष्ट शर्तों की व्याख्या करेगी।
                 </p>
@@ -135,9 +135,9 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
           </div>
 
           {/* Confirmation Checkboxes */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 shadow-lg p-6 space-y-5">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-5">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-primary" />
+              <CheckCircle2 className="w-5 h-5 text-accent" />
               Please Confirm | कृपया पुष्टि करें
             </h3>
 
@@ -149,7 +149,7 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
                   className="mt-1"
                 />
                 <div className="flex-1">
-                  <p className="text-gray-900 group-hover:text-primary transition-colors">
+                  <p className="text-gray-900 group-hover:text-accent transition-colors">
                     I have read and understood Quiver's business model
                   </p>
                   <p className="text-sm text-gray-500">
@@ -165,7 +165,7 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
                   className="mt-1"
                 />
                 <div className="flex-1">
-                  <p className="text-gray-900 group-hover:text-primary transition-colors">
+                  <p className="text-gray-900 group-hover:text-accent transition-colors">
                     I am interested in partnering with Quiver and want to proceed with onboarding
                   </p>
                   <p className="text-sm text-gray-500">
@@ -178,7 +178,7 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
 
           {/* Continue Button */}
           <Button
-            className="w-full h-14 bg-primary hover:bg-primary/90 text-lg font-semibold rounded-xl transition-all disabled:opacity-50"
+            className="w-full h-14 bg-accent hover:bg-accent/90 text-lg font-semibold rounded-xl transition-all disabled:opacity-50"
             disabled={!isValid}
             onClick={onContinue}
           >

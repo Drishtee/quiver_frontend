@@ -178,10 +178,10 @@ STRICT LANGUAGE POLICY:
 CRITICAL RULES - FOLLOW STRICTLY:
 1. NEVER assume or guess information the user did not explicitly say
 2. NEVER auto-fill fields based on partial or unclear audio
-3. ALWAYS repeat back what you heard and ask for confirmation before saving ANY field
+3. ALWAYS repeat back what you heard and ask for confirmation before saving fields
 4. If audio is unclear or you're not 100% certain, ASK the user to repeat
-5. Ask ONE question at a time and wait for a CLEAR response
-6. Only call update_form_field AFTER the user confirms the information is correct
+5. EXTRACT ALL INFORMATION the user provides in a single response - if they give multiple details, capture them all at once
+6. Only call update functions AFTER the user confirms the information is correct
 
 CONVERSATION GUIDE:
 - If user asks "What is Quiver?" explain the partnership model
@@ -189,11 +189,18 @@ CONVERSATION GUIDE:
 - If user seems confused, patiently explain that Quiver will become their business partner
 - Help with form filling ONLY when the user is ready and asks for help
 
+EFFICIENT FORM FILLING:
+- When the user provides MULTIPLE pieces of information (e.g., "My name is Raj, I'm 25 years old, from Mumbai"), use batch_update_fields to save ALL values at once
+- Use update_form_field only when user provides a SINGLE piece of information
+- Always prefer batch_update_fields when you have 2 or more fields to update
+- List back ALL the information you captured and ask for confirmation once
+
 When helping with forms:
-1. Ask ONE question at a time and wait for a clear response
-2. When you hear an answer, repeat it back: "I heard [value], is that correct?"
-3. Only save the field AFTER user confirms with "yes", "हाँ", "correct", etc.
-4. Be patient, supportive, and encouraging
+1. Listen for ALL information the user provides in their response
+2. When you hear answers, repeat them ALL back: "I heard your name is [name], age is [age], and you're from [city]. Is that correct?"
+3. Only save the fields AFTER user confirms with "yes", "हाँ", "correct", etc.
+4. Use batch_update_fields to save multiple fields in one call
+5. Be patient, supportive, and encouraging
 
 Current form section: ${state.currentScreen || 'general'}
 ${fieldsList ? `Fields available on this screen:\n${fieldsList}` : ''}
@@ -303,7 +310,7 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
               {
                 type: 'function',
                 name: 'update_form_field',
-                description: 'Update a form field with the extracted value from user speech',
+                description: 'Update a SINGLE form field with the extracted value from user speech. Use this only when user provides ONE piece of information.',
                 parameters: {
                   type: 'object',
                   properties: {
@@ -317,6 +324,35 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
                     }
                   },
                   required: ['field', 'value']
+                }
+              },
+              {
+                type: 'function',
+                name: 'batch_update_fields',
+                description: 'Update MULTIPLE form fields at once. Use this when user provides 2 or more pieces of information in a single response. This is the PREFERRED method for efficiency.',
+                parameters: {
+                  type: 'object',
+                  properties: {
+                    fields: {
+                      type: 'array',
+                      description: 'Array of field-value pairs to update',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          field: {
+                            type: 'string',
+                            description: 'The field key to update (e.g., fullName, email, gender, age, district, state, etc.)'
+                          },
+                          value: {
+                            type: 'string',
+                            description: 'The extracted value for the field'
+                          }
+                        },
+                        required: ['field', 'value']
+                      }
+                    }
+                  },
+                  required: ['fields']
                 }
               },
               {
@@ -439,6 +475,19 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
             handleFieldUpdate(args.field, args.value);
           } catch (e) {
             console.error('Failed to parse function call', e);
+          }
+        } else if (message.name === 'batch_update_fields') {
+          try {
+            const args = JSON.parse(message.arguments);
+            if (args.fields && Array.isArray(args.fields)) {
+              // Process all fields at once
+              args.fields.forEach((fieldData: { field: string; value: string }) => {
+                handleFieldUpdate(fieldData.field, fieldData.value);
+              });
+              console.log(`Batch updated ${args.fields.length} fields:`, args.fields.map((f: any) => f.field).join(', '));
+            }
+          } catch (e) {
+            console.error('Failed to parse batch update function call', e);
           }
         } else if (message.name === 'confirm_all_fields') {
           confirmAllFields();
