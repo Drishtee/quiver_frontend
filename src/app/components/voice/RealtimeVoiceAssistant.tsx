@@ -15,13 +15,9 @@ import {
   MessageSquare,
   Maximize2,
   Minimize2,
-  Download,
-  Trash2,
   AudioLines,
   Phone,
   PhoneOff,
-  ChevronDown,
-  ChevronUp,
   Edit3,
   Save
 } from 'lucide-react';
@@ -34,7 +30,6 @@ interface RealtimeVoiceAssistantProps {
 export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistantProps) {
   const { currentLanguage } = useLanguage();
   const [textInput, setTextInput] = useState('');
-  const [showRecordings, setShowRecordings] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -412,57 +407,6 @@ export function RealtimeVoiceAssistant({ currentScreen }: RealtimeVoiceAssistant
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Recordings section */}
-      {voice.audioRecordings.length > 0 && (
-        <div className="border-t border-gray-200 flex-shrink-0">
-          <button
-            onClick={() => setShowRecordings(!showRecordings)}
-            className="w-full px-4 py-2 flex items-center justify-between hover:bg-gray-50 transition-colors"
-          >
-            <span className="text-xs font-medium text-gray-700 flex items-center gap-2">
-              <AudioLines className="w-4 h-4" />
-              {texts.recordings} ({voice.audioRecordings.length})
-            </span>
-            {showRecordings ? (
-              <ChevronUp className="w-4 h-4 text-gray-500" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-gray-500" />
-            )}
-          </button>
-          {showRecordings && (
-            <div className="px-4 pb-3 space-y-2 max-h-[100px] overflow-y-auto">
-              {voice.audioRecordings.map((recording) => (
-                <div
-                  key={recording.id}
-                  className="flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2 text-xs"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{recording.transcript || 'Recording'}</p>
-                    <p className="text-gray-500">
-                      {recording.duration.toFixed(1)}s - {recording.timestamp.toLocaleTimeString()}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 ml-2">
-                    <button
-                      onClick={() => voice.downloadRecording(recording.id)}
-                      className="p-1 text-blue-600 hover:bg-blue-100 rounded"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <button
-                onClick={voice.clearRecordings}
-                className="w-full text-xs text-amber-600 hover:text-amber-700 py-1"
-              >
-                {texts.delete} All
-              </button>
-            </div>
-          )}
         </div>
       )}
 

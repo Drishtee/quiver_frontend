@@ -16,12 +16,9 @@ import {
   AlertCircle,
   Maximize2,
   Minimize2,
-  Download,
   AudioLines,
   Phone,
   PhoneOff,
-  ChevronDown,
-  ChevronUp,
   Edit3,
   Sparkles,
   MessageCircle
@@ -35,7 +32,6 @@ interface QuiverAIAssistantProps {
 export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
   const { currentLanguage } = useLanguage();
   const [textInput, setTextInput] = useState('');
-  const [showRecordings, setShowRecordings] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -450,55 +446,6 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Recordings section */}
-      {voice.audioRecordings.length > 0 && (
-        <div className="border-t border-gray-100 flex-shrink-0">
-          <button
-            onClick={() => setShowRecordings(!showRecordings)}
-            className="w-full px-4 py-2.5 flex items-center justify-between hover:bg-gray-50 transition-colors"
-          >
-            <span className="text-xs font-medium text-gray-600 flex items-center gap-2">
-              <AudioLines className="w-4 h-4" />
-              {texts.recordings} ({voice.audioRecordings.length})
-            </span>
-            {showRecordings ? (
-              <ChevronUp className="w-4 h-4 text-gray-400" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            )}
-          </button>
-          {showRecordings && (
-            <div className="px-4 pb-3 space-y-2 max-h-[100px] overflow-y-auto">
-              {voice.audioRecordings.map((recording) => (
-                <div
-                  key={recording.id}
-                  className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 text-xs"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-700 truncate">{recording.transcript || 'Recording'}</p>
-                    <p className="text-gray-400">
-                      {recording.duration.toFixed(1)}s - {recording.timestamp.toLocaleTimeString()}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => voice.downloadRecording(recording.id)}
-                    className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-              <button
-                onClick={voice.clearRecordings}
-                className="w-full text-xs text-amber-500 hover:text-amber-600 py-1 font-medium"
-              >
-                {texts.delete} All
-              </button>
-            </div>
-          )}
         </div>
       )}
 

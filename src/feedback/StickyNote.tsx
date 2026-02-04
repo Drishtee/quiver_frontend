@@ -6,10 +6,10 @@ import type { FeedbackNote } from './types';
 interface Props {
   note: FeedbackNote;
   onDelete: (id: string) => void;
-  canDelete: boolean;
+  canDelete?: boolean;
 }
 
-export function StickyNote({ note, onDelete, canDelete }: Props) {
+export function StickyNote({ note, onDelete, canDelete = true }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   // Portal into document.body with position:fixed so notes
