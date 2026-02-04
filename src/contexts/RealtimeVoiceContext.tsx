@@ -563,26 +563,27 @@ Keep responses concise and conversational.`;
       console.error('Failed to persist recording:', err);
     }
 
-    // Upload to Azure if session exists
+    // Upload to backend if session exists
     if (currentSessionId) {
       try {
-        await uploadAudio(currentSessionId, wavBlob, {
+        console.log(`[AudioUpload] Uploading recording ${recording.id} for session ${currentSessionId}, screen=${currentScreen}, duration=${duration.toFixed(1)}s`);
+        const result = await uploadAudio(currentSessionId, wavBlob, {
           transcript,
           duration_seconds: duration,
           screen: currentScreen || undefined,
           recorded_at: recordedAt
         });
-        console.log('Audio uploaded to Azure successfully');
+        console.log(`[AudioUpload] Success! record_id=${result.audio_record_id}`, result.azure_error ? `(Azure warning: ${result.azure_error})` : '');
 
         // Mark as uploaded in IndexedDB
         try {
           await audioStorage.markAsUploaded(recording.id);
         } catch (_) { /* non-critical */ }
       } catch (err) {
-        console.error('Failed to upload audio to Azure:', err);
+        console.error(`[AudioUpload] FAILED to upload recording ${recording.id}:`, err);
       }
     } else {
-      console.warn('No sessionId available - audio saved locally, will sync when session is created');
+      console.warn('[AudioUpload] No sessionId available - audio saved locally only, will sync when session is created');
     }
 
     setState(prev => ({
@@ -835,26 +836,33 @@ Keep responses concise and conversational.`;
     const syncPendingUploads = async () => {
       try {
         const pending = await audioStorage.getPendingUploads();
+        console.log(`[AudioSync] Found ${pending.length} pending recordings in IndexedDB`);
         if (pending.length === 0) return;
 
-        console.log(`Syncing ${pending.length} pending audio recordings to Azure...`);
+        console.log(`[AudioSync] Syncing ${pending.length} pending audio recordings to backend...`);
 
+        let successCount = 0;
+        let failCount = 0;
         for (const rec of pending) {
           try {
-            await uploadAudio(onboarding.sessionId!, rec.blob, {
+            console.log(`[AudioSync] Uploading ${rec.id}: session=${onboarding.sessionId}, screen=${rec.screen}, duration=${rec.duration}s`);
+            const result = await uploadAudio(onboarding.sessionId!, rec.blob, {
               transcript: rec.transcript,
               duration_seconds: rec.duration,
               screen: rec.screen,
               recorded_at: rec.timestamp
             });
             await audioStorage.markAsUploaded(rec.id);
-            console.log(`Synced recording ${rec.id} to Azure`);
+            successCount++;
+            console.log(`[AudioSync] Synced ${rec.id} -> record_id=${result.audio_record_id}`);
           } catch (err) {
-            console.error(`Failed to sync recording ${rec.id}:`, err);
+            failCount++;
+            console.error(`[AudioSync] FAILED to sync ${rec.id}:`, err);
           }
         }
+        console.log(`[AudioSync] Complete: ${successCount} uploaded, ${failCount} failed`);
       } catch (err) {
-        console.error('Failed to sync pending uploads:', err);
+        console.error('[AudioSync] Failed to read pending uploads from IndexedDB:', err);
       }
     };
 

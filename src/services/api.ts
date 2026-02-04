@@ -569,8 +569,9 @@ export interface AudioUploadMetadata {
 export interface AudioUploadResponse {
   success: boolean;
   audio_record_id: number;
-  audio_url: string;
-  blob_name: string;
+  audio_url: string | null;
+  blob_name: string | null;
+  azure_error?: string | null;
 }
 
 export interface AudioRecord {

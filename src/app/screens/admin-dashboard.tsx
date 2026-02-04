@@ -401,6 +401,12 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
   const [audioViewMode, setAudioViewMode] = useState<"table" | "grouped">("table");
   const [entrepreneurFilter, setEntrepreneurFilter] = useState("all");
   const [expandedTranscript, setExpandedTranscript] = useState<number | null>(null);
+  const [audioDiagnostics, setAudioDiagnostics] = useState<{
+    azure_configured?: boolean;
+    total_records_in_db?: number;
+    total_sessions?: number;
+    user_tenant?: string | null;
+  } | null>(null);
 
   // Meetings state
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -532,6 +538,12 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
       if (response.ok) {
         const data = await response.json();
         setAudioRecordings(data.audio_records || []);
+        if (data.diagnostics) {
+          setAudioDiagnostics(data.diagnostics);
+        }
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Audio records fetch failed:', response.status, errorData);
       }
     } catch (error) {
       console.error('Failed to fetch audio recordings:', error);
@@ -654,6 +666,11 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
       audioElement?.pause();
       setPlayingId(null);
     } else {
+      // Check if audio URL is valid (not a placeholder from failed Azure upload)
+      if (!recording.audio_url || recording.audio_url.startsWith('upload_failed://')) {
+        console.warn('Audio file not available (Azure upload failed for this recording)');
+        return;
+      }
       audioElement?.pause();
       const audio = new Audio(recording.audio_url);
       audio.onended = () => setPlayingId(null);
@@ -1370,6 +1387,27 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
                   <RefreshCw className={`w-4 h-4 mr-2 ${loadingAudio ? 'animate-spin' : ''}`} />
                   Refresh
                 </Button>
+                {audioRecordings.some(r => r.audio_url?.startsWith('upload_failed://')) && (
+                  <Button
+                    variant="outline"
+                    className="text-red-600 border-red-200 hover:bg-red-50"
+                    onClick={async () => {
+                      if (!confirm('Remove recordings with failed audio uploads? (Transcripts will be lost)')) return;
+                      try {
+                        await fetch(`${API_URL}/onboarding/admin/audio-records/cleanup/`, {
+                          method: 'DELETE',
+                          headers: getAuthHeaders()
+                        });
+                        fetchAudioRecordings();
+                      } catch (e) {
+                        console.error('Cleanup failed:', e);
+                      }
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Clean Failed
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -1383,7 +1421,20 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
               <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
                 <FileAudio className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                 <p className="text-lg font-medium text-gray-900 mb-2">No recordings found</p>
-                <p className="text-gray-500">Voice recordings will appear here</p>
+                <p className="text-gray-500 mb-4">Voice recordings will appear here when entrepreneurs use the AI assistant</p>
+                {audioDiagnostics && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg text-left max-w-md mx-auto">
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Diagnostics</p>
+                    <div className="space-y-1 text-xs text-gray-500">
+                      <p>Records in DB: <span className="font-mono font-bold text-gray-700">{audioDiagnostics.total_records_in_db ?? 'N/A'}</span></p>
+                      <p>Total sessions: <span className="font-mono font-bold text-gray-700">{audioDiagnostics.total_sessions ?? 'N/A'}</span></p>
+                      <p>Azure configured: <span className={`font-mono font-bold ${audioDiagnostics.azure_configured ? 'text-green-600' : 'text-red-600'}`}>{audioDiagnostics.azure_configured ? 'Yes' : 'No'}</span></p>
+                      {!audioDiagnostics.azure_configured && (
+                        <p className="text-amber-600 mt-2">Azure storage is not configured. Set AZURE_STORAGE_SAS_TOKEN environment variable on the backend.</p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : audioViewMode === "table" ? (
               /* Table View */
@@ -1405,20 +1456,26 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
                       {filteredRecordings.map((rec) => (
                         <TableRow key={rec.id} className="hover:bg-gray-50">
                           <TableCell>
-                            <button
-                              onClick={() => handlePlayPause(rec)}
-                              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                                playingId === rec.id
-                                  ? 'bg-primary text-white'
-                                  : 'bg-gray-100 hover:bg-primary/10 text-gray-600 hover:text-primary'
-                              }`}
-                            >
-                              {playingId === rec.id ? (
-                                <Pause className="w-4 h-4" />
-                              ) : (
-                                <Play className="w-4 h-4 ml-0.5" />
-                              )}
-                            </button>
+                            {rec.audio_url && !rec.audio_url.startsWith('upload_failed://') ? (
+                              <button
+                                onClick={() => handlePlayPause(rec)}
+                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                                  playingId === rec.id
+                                    ? 'bg-primary text-white'
+                                    : 'bg-gray-100 hover:bg-primary/10 text-gray-600 hover:text-primary'
+                                }`}
+                              >
+                                {playingId === rec.id ? (
+                                  <Pause className="w-4 h-4" />
+                                ) : (
+                                  <Play className="w-4 h-4 ml-0.5" />
+                                )}
+                              </button>
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center" title="Audio file unavailable">
+                                <FileAudio className="w-4 h-4 text-gray-300" />
+                              </div>
+                            )}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
