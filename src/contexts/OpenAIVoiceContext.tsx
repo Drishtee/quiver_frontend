@@ -131,10 +131,22 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
   // Ref to track mute state in callbacks
   const isMutedRef = useRef(false);
 
-  // Keep ref in sync with state
+  // Refs to avoid stale closures in WebSocket callbacks
+  const sessionIdRef = useRef<string | null>(onboarding.sessionId);
+  const currentScreenRef = useRef<ScreenType | null>(state.currentScreen);
+
+  // Keep refs in sync with state
   useEffect(() => {
     isMutedRef.current = state.isMuted;
   }, [state.isMuted]);
+
+  useEffect(() => {
+    sessionIdRef.current = onboarding.sessionId;
+  }, [onboarding.sessionId]);
+
+  useEffect(() => {
+    currentScreenRef.current = state.currentScreen;
+  }, [state.currentScreen]);
 
   // Get system prompt based on current screen and language
   const getSystemPrompt = useCallback(() => {
@@ -619,8 +631,13 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
   }, []);
 
   // Save current recording
+  // Uses refs (sessionIdRef, currentScreenRef) to avoid stale closure in handleRealtimeMessage
   const saveCurrentRecording = useCallback(async (transcript: string) => {
     if (recordingChunksRef.current.length === 0 || !recordingStartTimeRef.current) return;
+
+    // Read latest values from refs (not from closure which may be stale)
+    const currentSessionId = sessionIdRef.current;
+    const currentScreen = currentScreenRef.current;
 
     const totalLength = recordingChunksRef.current.reduce((acc, chunk) => acc + chunk.length, 0);
     const combined = new Float32Array(totalLength);
@@ -633,6 +650,7 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
     // Convert to WAV blob
     const wavBlob = float32ToWav(combined, 24000);
     const duration = (Date.now() - recordingStartTimeRef.current.getTime()) / 1000;
+    const recordedAt = recordingStartTimeRef.current.toISOString();
 
     const recording: AudioRecording = {
       id: `rec_${Date.now()}`,
@@ -646,26 +664,33 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
     try {
       await audioStorage.saveRecording({
         ...recording,
-        sessionId: onboarding.sessionId || undefined,
-        screen: state.currentScreen || undefined
+        sessionId: currentSessionId || undefined,
+        screen: currentScreen || undefined
       });
     } catch (err) {
       console.error('Failed to persist recording:', err);
     }
 
     // Upload to Azure if session exists
-    if (onboarding.sessionId) {
+    if (currentSessionId) {
       try {
-        await uploadAudio(onboarding.sessionId, wavBlob, {
+        await uploadAudio(currentSessionId, wavBlob, {
           transcript,
           duration_seconds: duration,
-          screen: state.currentScreen || undefined,
-          recorded_at: recordingStartTimeRef.current.toISOString()
+          screen: currentScreen || undefined,
+          recorded_at: recordedAt
         });
         console.log('Audio uploaded to Azure successfully');
+
+        // Mark as uploaded in IndexedDB
+        try {
+          await audioStorage.markAsUploaded(recording.id);
+        } catch (_) { /* non-critical */ }
       } catch (err) {
         console.error('Failed to upload audio to Azure:', err);
       }
+    } else {
+      console.warn('No sessionId available - audio saved locally, will sync when session is created');
     }
 
     setState(prev => ({
@@ -675,7 +700,7 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
 
     recordingChunksRef.current = [];
     recordingStartTimeRef.current = null;
-  }, [onboarding.sessionId, state.currentScreen]);
+  }, []); // No dependencies needed - uses refs for latest values
 
   // Play audio from queue
   const playNextAudio = useCallback(async () => {
@@ -948,6 +973,39 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
 
     loadPersistedRecordings();
   }, []);
+
+  // Sync pending uploads when sessionId becomes available
+  useEffect(() => {
+    if (!onboarding.sessionId) return;
+
+    const syncPendingUploads = async () => {
+      try {
+        const pending = await audioStorage.getPendingUploads();
+        if (pending.length === 0) return;
+
+        console.log(`Syncing ${pending.length} pending audio recordings to Azure...`);
+
+        for (const rec of pending) {
+          try {
+            await uploadAudio(onboarding.sessionId!, rec.blob, {
+              transcript: rec.transcript,
+              duration_seconds: rec.duration,
+              screen: rec.screen,
+              recorded_at: rec.timestamp
+            });
+            await audioStorage.markAsUploaded(rec.id);
+            console.log(`Synced recording ${rec.id} to Azure`);
+          } catch (err) {
+            console.error(`Failed to sync recording ${rec.id}:`, err);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to sync pending uploads:', err);
+      }
+    };
+
+    syncPendingUploads();
+  }, [onboarding.sessionId]);
 
   // Cleanup on unmount
   useEffect(() => {

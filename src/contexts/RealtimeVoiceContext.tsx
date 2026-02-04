@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { useOnboarding } from './OnboardingContext';
 import { useLanguage } from '../i18n/LanguageContext';
-import { getVoiceAgentToken, getVoiceAgentConfig, bulkUpdateFields } from '../services/api';
+import { getVoiceAgentToken, getVoiceAgentConfig, bulkUpdateFields, uploadAudio } from '../services/api';
 import { audioStorage } from '../services/audioStorage';
 import type { ScreenType } from '../config/formFieldMappings';
 import { getFieldsForScreen, findFieldByAlias, findOptionByAlias } from '../config/formFieldMappings';
@@ -122,6 +122,18 @@ export const RealtimeVoiceProvider: React.FC<RealtimeVoiceProviderProps> = ({ ch
   const isPlayingRef = useRef(false);
   const recordingChunksRef = useRef<Float32Array[]>([]);
   const recordingStartTimeRef = useRef<Date | null>(null);
+
+  // Refs to avoid stale closures in WebSocket callbacks
+  const sessionIdRef = useRef<string | null>(onboarding.sessionId);
+  const currentScreenRef = useRef<ScreenType | null>(state.currentScreen);
+
+  useEffect(() => {
+    sessionIdRef.current = onboarding.sessionId;
+  }, [onboarding.sessionId]);
+
+  useEffect(() => {
+    currentScreenRef.current = state.currentScreen;
+  }, [state.currentScreen]);
 
   // Get system prompt based on current screen and language
   const getSystemPrompt = useCallback(() => {
@@ -511,8 +523,13 @@ Keep responses concise and conversational.`;
   }, []);
 
   // Save current recording
+  // Uses refs (sessionIdRef, currentScreenRef) to avoid stale closure in WebSocket callbacks
   const saveCurrentRecording = useCallback(async (transcript: string) => {
     if (recordingChunksRef.current.length === 0 || !recordingStartTimeRef.current) return;
+
+    // Read latest values from refs (not from closure which may be stale)
+    const currentSessionId = sessionIdRef.current;
+    const currentScreen = currentScreenRef.current;
 
     const totalLength = recordingChunksRef.current.reduce((acc, chunk) => acc + chunk.length, 0);
     const combined = new Float32Array(totalLength);
@@ -525,6 +542,7 @@ Keep responses concise and conversational.`;
     // Convert to WAV blob
     const wavBlob = float32ToWav(combined, 24000);
     const duration = (Date.now() - recordingStartTimeRef.current.getTime()) / 1000;
+    const recordedAt = recordingStartTimeRef.current.toISOString();
 
     const recording: AudioRecording = {
       id: `rec_${Date.now()}`,
@@ -538,11 +556,33 @@ Keep responses concise and conversational.`;
     try {
       await audioStorage.saveRecording({
         ...recording,
-        sessionId: onboarding.sessionId || undefined,
-        screen: state.currentScreen || undefined
+        sessionId: currentSessionId || undefined,
+        screen: currentScreen || undefined
       });
     } catch (err) {
       console.error('Failed to persist recording:', err);
+    }
+
+    // Upload to Azure if session exists
+    if (currentSessionId) {
+      try {
+        await uploadAudio(currentSessionId, wavBlob, {
+          transcript,
+          duration_seconds: duration,
+          screen: currentScreen || undefined,
+          recorded_at: recordedAt
+        });
+        console.log('Audio uploaded to Azure successfully');
+
+        // Mark as uploaded in IndexedDB
+        try {
+          await audioStorage.markAsUploaded(recording.id);
+        } catch (_) { /* non-critical */ }
+      } catch (err) {
+        console.error('Failed to upload audio to Azure:', err);
+      }
+    } else {
+      console.warn('No sessionId available - audio saved locally, will sync when session is created');
     }
 
     setState(prev => ({
@@ -552,7 +592,7 @@ Keep responses concise and conversational.`;
 
     recordingChunksRef.current = [];
     recordingStartTimeRef.current = null;
-  }, [onboarding.sessionId, state.currentScreen]);
+  }, []); // No dependencies needed - uses refs for latest values
 
   // Play audio from queue
   const playNextAudio = useCallback(async () => {
@@ -787,6 +827,39 @@ Keep responses concise and conversational.`;
 
     loadPersistedRecordings();
   }, []);
+
+  // Sync pending uploads when sessionId becomes available
+  useEffect(() => {
+    if (!onboarding.sessionId) return;
+
+    const syncPendingUploads = async () => {
+      try {
+        const pending = await audioStorage.getPendingUploads();
+        if (pending.length === 0) return;
+
+        console.log(`Syncing ${pending.length} pending audio recordings to Azure...`);
+
+        for (const rec of pending) {
+          try {
+            await uploadAudio(onboarding.sessionId!, rec.blob, {
+              transcript: rec.transcript,
+              duration_seconds: rec.duration,
+              screen: rec.screen,
+              recorded_at: rec.timestamp
+            });
+            await audioStorage.markAsUploaded(rec.id);
+            console.log(`Synced recording ${rec.id} to Azure`);
+          } catch (err) {
+            console.error(`Failed to sync recording ${rec.id}:`, err);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to sync pending uploads:', err);
+      }
+    };
+
+    syncPendingUploads();
+  }, [onboarding.sessionId]);
 
   // Cleanup on unmount
   useEffect(() => {
