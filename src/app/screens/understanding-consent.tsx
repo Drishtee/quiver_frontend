@@ -76,9 +76,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-accent rounded-lg flex items-center justify-center mr-2 md:mr-3">
-              <Handshake className="w-4 h-4 md:w-5 md:h-5 text-white" />
-            </div>
+            <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
             <span className="text-lg md:text-xl font-display font-bold text-primary">Quiver</span>
           </div>
           <LanguageSelector variant="compact" />

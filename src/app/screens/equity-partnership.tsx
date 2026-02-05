@@ -70,10 +70,8 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
       <nav className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-5 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center mr-3">
-              <Handshake className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-display font-bold text-accent">साझेदारी की सोच | Partnership Orientation</span>
+            <img src="/logo.jpg" alt="Quiver" className="w-10 h-10 rounded-lg object-cover mr-3" />
+            <span className="text-xl font-display font-bold text-primary">Quiver</span>
           </div>
           <button
             onClick={() => setShowHindi(!showHindi)}
@@ -87,8 +85,8 @@ export function EquityPartnership({ onContinue }: EquityPartnershipProps) {
       {/* Main Content */}
       <main className="max-w-3xl mx-auto px-6 py-8">
         <div className="space-y-8">
-          {/* Progress */}
-          <ProgressIndicator current={8} total={9} />
+          {/* Progress - Sticky */}
+          <ProgressIndicator current={8} total={9} sticky={true} />
 
           <div className="text-center space-y-2">
             <h2 className="text-2xl font-display font-bold text-gray-900">

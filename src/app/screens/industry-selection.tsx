@@ -161,18 +161,16 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-accent rounded-lg flex items-center justify-center mr-2 md:mr-3">
-            <Building2 className="w-4 h-4 md:w-5 md:h-5 text-white" />
-          </div>
-          <span className="text-base md:text-xl font-display font-bold text-primary truncate">व्यवसाय की जानकारी | Enterprise Details</span>
+          <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
+          <span className="text-base md:text-xl font-display font-bold text-primary truncate">Quiver</span>
         </div>
       </header>
 
       {/* Main Content - Mobile-first */}
       <main className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-8">
         <div className="space-y-6 md:space-y-8">
-          {/* Progress */}
-          <ProgressIndicator current={3} total={9} />
+          {/* Progress - Sticky */}
+          <ProgressIndicator current={3} total={9} sticky={true} />
 
           <div className="text-center space-y-1 md:space-y-2">
             <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">

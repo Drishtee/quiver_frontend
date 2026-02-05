@@ -173,9 +173,7 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
               </button>
             )}
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-accent rounded-lg flex items-center justify-center mr-2 md:mr-3">
-              <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
-            </div>
+            <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
             <span className="text-base md:text-xl font-display font-bold text-primary truncate">Quiver</span>
           </div>
           <LanguageSelector variant="compact" />
@@ -200,8 +198,8 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
             <span className="w-6 h-6 rounded-full bg-gray-100 text-gray-400 font-semibold text-xs flex items-center justify-center">3</span>
           </div>
 
-          {/* Progress Bar */}
-          <ProgressIndicator current={2} total={9} />
+          {/* Progress Bar - Sticky */}
+          <ProgressIndicator current={2} total={9} sticky={true} />
 
           {/* Section Header - Single heading with supportive text */}
           <div className="text-center space-y-2">

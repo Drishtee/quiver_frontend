@@ -43,16 +43,17 @@ export function DocumentUpload({ onContinue }: DocumentUploadProps) {
     <div className="min-h-screen bg-white pb-24 md:pb-20 mobile-full-screen">
       {/* Header - Mobile-first */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-5 sticky top-0 z-50">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-base md:text-lg font-semibold text-gray-900">Upload Documents</h1>
+        <div className="max-w-md mx-auto flex items-center">
+          <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
+          <span className="text-base md:text-xl font-display font-bold text-primary">Quiver</span>
         </div>
       </header>
 
       {/* Main Content - Mobile-first */}
       <main className="max-w-md mx-auto px-4 py-6 md:px-6 md:py-12">
         <div className="space-y-6 md:space-y-8">
-          {/* Progress */}
-          <ProgressIndicator current={5} total={6} />
+          {/* Progress - Sticky */}
+          <ProgressIndicator current={5} total={6} sticky={true} />
 
           <div className="space-y-2 md:space-y-3">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-900">

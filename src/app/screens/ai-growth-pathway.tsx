@@ -181,7 +181,8 @@ export const AIGrowthPathway: React.FC<AIGrowthPathwayProps> = ({
               <ArrowLeft className="w-5 h-5" />
             </button>
           )}
-          <div className="flex-1 text-center">
+          <div className="flex-1 flex items-center justify-center gap-2">
+            <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 rounded-lg object-cover" />
             <h1 className="text-xl font-bold text-gray-900">{t('growthPathway.title')}</h1>
           </div>
           <div className="flex items-center gap-2">
