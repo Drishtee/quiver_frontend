@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   PhoneOff,
   ExternalLink,
@@ -6,7 +6,8 @@ import {
   CheckCircle2,
   Calendar,
   Video,
-  Loader2
+  Loader2,
+  Clock
 } from "lucide-react";
 import { getMeetLink } from "../../services/api";
 import type { MeetLinkResponse } from "../../types/api";
@@ -17,28 +18,91 @@ interface GoogleMeetMeetingProps {
   onEndCall: () => void;
 }
 
+function useCountdown(targetDate: string | undefined) {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    if (!targetDate) return;
+
+    const update = () => {
+      const now = new Date().getTime();
+      const target = new Date(targetDate).getTime();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        setTimeLeft("Starting now...");
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (hours > 0) {
+        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      } else if (minutes > 0) {
+        setTimeLeft(`${minutes}m ${seconds}s`);
+      } else {
+        setTimeLeft(`${seconds}s`);
+      }
+    };
+
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  return timeLeft;
+}
+
 export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: GoogleMeetMeetingProps) {
   const [meetData, setMeetData] = useState<MeetLinkResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    fetchMeetLink();
-  }, [meetingId]);
+  const countdown = useCountdown(meetData?.can_join === false ? meetData.start_time : undefined);
 
-  const fetchMeetLink = async () => {
+  const fetchMeetLink = useCallback(async () => {
     try {
-      setIsLoading(true);
       setError(null);
       const data = await getMeetLink(meetingId);
       setMeetData(data);
+
+      // Stop polling once user can join
+      if (data.can_join && pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to get meeting link');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [meetingId]);
+
+  useEffect(() => {
+    fetchMeetLink();
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
+  }, [fetchMeetLink]);
+
+  // Start polling when in waiting room
+  useEffect(() => {
+    if (meetData && !meetData.can_join && !pollIntervalRef.current) {
+      pollIntervalRef.current = setInterval(fetchMeetLink, 30000);
+    }
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
+    };
+  }, [meetData?.can_join, fetchMeetLink]);
 
   const handleCopyLink = async () => {
     if (meetData?.meet_link) {
@@ -99,6 +163,49 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
     );
   }
 
+  // Waiting room: user cannot join yet
+  if (meetData && !meetData.can_join) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="max-w-md w-full mx-auto px-6">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center space-y-6">
+            <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
+              <Clock className="w-8 h-8 text-accent" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-gray-900">
+                {meetingTitle}
+              </h2>
+              <p className="text-gray-500">{meetData.message}</p>
+            </div>
+
+            {meetData.start_time && countdown && (
+              <div className="space-y-1">
+                <p className="text-sm text-gray-500">Meeting starts in</p>
+                <p className="text-3xl font-bold text-accent">{countdown}</p>
+                <p className="text-xs text-gray-400">
+                  {new Date(meetData.start_time).toLocaleString()}
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Checking automatically...</span>
+            </div>
+
+            <button
+              onClick={onEndCall}
+              className="w-full border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] px-4 inline-flex items-center justify-center"
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -147,7 +254,7 @@ export function GoogleMeetMeeting({ meetingId, meetingTitle, onEndCall }: Google
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900">Recording</p>
-                      <p className="text-sm text-amber-600">This meeting is being recorded</p>
+                      <p className="text-sm text-amber-600">Recording enabled - please start recording when the meeting begins</p>
                     </div>
                   </div>
                 )}

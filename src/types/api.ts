@@ -333,10 +333,14 @@ export interface GetRemindersResponse {
 
 // Google Meet link response (NEW)
 export interface MeetLinkResponse {
-  meet_link: string; // Direct Google Meet URL
-  calendar_link: string | null; // Google Calendar event link
-  recording_enabled: boolean;
-  status: 'created' | 'active' | 'ended' | 'error';
+  can_join: boolean;
+  meet_link?: string; // Direct Google Meet URL
+  calendar_link?: string | null; // Google Calendar event link
+  recording_enabled?: boolean;
+  status?: 'created' | 'active' | 'ended' | 'error';
+  start_time?: string; // ISO datetime
+  end_time?: string; // ISO datetime
+  message?: string; // Shown when can_join is false
 }
 
 // ============================================
