@@ -3,28 +3,29 @@ import { Button } from "./ui/button";
 import {
   Calendar,
   Clock,
-  User,
   Video,
   MessageCircle,
-  MoreVertical,
   CheckCircle2,
   XCircle,
   AlertCircle,
   Loader2
 } from "lucide-react";
-import { getMeetings, cancelMeeting, sendWhatsAppReminder } from "../../services/api";
+import { listMeetings, cancelMeeting, sendWhatsAppReminder } from "../../services/api";
 
 interface Meeting {
   id: string;
   title: string;
-  mentor_name: string;
-  mentor_avatar?: string;
-  date: string;
-  time: string;
+  start_time: string;
+  end_time: string;
   status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   meeting_type: string;
-  whatsapp_enabled: boolean;
-  twilio_room_name?: string;
+  participant_count: number;
+  is_recurring: boolean;
+  google_meet_room?: {
+    meet_link: string;
+    calendar_link: string;
+    status: string;
+  };
 }
 
 interface MeetingsListProps {
@@ -35,8 +36,6 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedMeeting, setSelectedMeeting] = useState<string | null>(null);
-
   useEffect(() => {
     loadMeetings();
   }, []);
@@ -44,7 +43,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
   const loadMeetings = async () => {
     try {
       setLoading(true);
-      const data = await getMeetings();
+      const data = await listMeetings();
       setMeetings(data.meetings || []);
       setError(null);
     } catch (err) {
@@ -108,8 +107,8 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
     );
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+  const formatDate = (isoStr: string) => {
+    const date = new Date(isoStr);
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
@@ -118,12 +117,21 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
     });
   };
 
-  const isUpcoming = (dateStr: string, timeStr: string) => {
-    const meetingDateTime = new Date(`${dateStr} ${timeStr}`);
+  const formatTime = (isoStr: string) => {
+    const date = new Date(isoStr);
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const isJoinable = (startTime: string) => {
+    const meetingStart = new Date(startTime);
     const now = new Date();
-    const timeDiff = meetingDateTime.getTime() - now.getTime();
-    // Meeting is upcoming if it's within 15 minutes
-    return timeDiff > 0 && timeDiff < 15 * 60 * 1000;
+    const timeDiff = meetingStart.getTime() - now.getTime();
+    // Meeting is joinable from 15 minutes before start until start
+    return timeDiff > -60 * 60 * 1000 && timeDiff < 15 * 60 * 1000;
   };
 
   if (loading) {
@@ -178,12 +186,10 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
               {/* Mentor Info */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-                  <span className="text-white font-semibold">
-                    {meeting.mentor_name.charAt(0)}
-                  </span>
+                  <span className="text-white font-semibold">Q</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{meeting.mentor_name}</p>
+                  <p className="text-sm font-medium text-gray-900">Quiver Team</p>
                   <p className="text-xs text-gray-500">Quiver Mentor</p>
                 </div>
               </div>
@@ -192,28 +198,30 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
-                  <span>{formatDate(meeting.date)}</span>
+                  <span>{formatDate(meeting.start_time)}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  <span>{meeting.time}</span>
+                  <span>{formatTime(meeting.start_time)} – {formatTime(meeting.end_time)}</span>
                 </div>
               </div>
 
-              {/* WhatsApp Indicator */}
-              {meeting.whatsapp_enabled && (
-                <div className="flex items-center gap-2 text-xs text-green-600 bg-green-50 px-3 py-1.5 rounded-lg border border-green-100 w-fit">
-                  <MessageCircle className="w-3 h-3" />
-                  <span>WhatsApp reminders enabled</span>
+              {/* Google Meet Link */}
+              {meeting.google_meet_room?.meet_link && (
+                <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 w-fit">
+                  <Video className="w-3 h-3" />
+                  <a href={meeting.google_meet_room.meet_link} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                    Google Meet link
+                  </a>
                 </div>
               )}
             </div>
 
             {/* Actions */}
             <div className="flex flex-col gap-2">
-              {meeting.status === 'scheduled' && isUpcoming(meeting.date, meeting.time) && (
+              {meeting.status === 'scheduled' && isJoinable(meeting.start_time) && meeting.google_meet_room?.meet_link && (
                 <Button
-                  onClick={() => onJoinMeeting?.(meeting.id)}
+                  onClick={() => window.open(meeting.google_meet_room!.meet_link, '_blank')}
                   className="bg-accent hover:bg-accent/90"
                   size="sm"
                 >
@@ -222,7 +230,7 @@ export function MeetingsList({ onJoinMeeting }: MeetingsListProps) {
                 </Button>
               )}
 
-              {meeting.status === 'scheduled' && meeting.whatsapp_enabled && (
+              {meeting.status === 'scheduled' && (
                 <Button
                   onClick={() => handleSendReminder(meeting.id)}
                   variant="outline"

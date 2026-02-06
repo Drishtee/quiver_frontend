@@ -402,7 +402,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin, onSignu
                 <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.stayOwner.title')}</h4>
-              <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.stayOwner.description')}</p>
+              <p className="text-xs text-gray-600 text-center">{t('landing.equity..stayOwner.description')}</p>
             </div>
             <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
               <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">

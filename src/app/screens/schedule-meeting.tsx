@@ -23,9 +23,10 @@ export interface MeetingDetails {
 interface ScheduleMeetingProps {
   onBack: () => void;
   onSchedule: (meetingDetails: MeetingDetails) => void;
+  userEmail?: string;
 }
 
-export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
+export function ScheduleMeeting({ onBack, onSchedule, userEmail }: ScheduleMeetingProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [notes, setNotes] = useState("");
@@ -33,10 +34,21 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
   const [reminderTimes, setReminderTimes] = useState<string[]>(["24h", "1h"]);
   const [isScheduling, setIsScheduling] = useState(false);
 
-  const timeSlots = [
+  const isDev = import.meta.env.DEV;
+
+  const businessHoursSlots = [
     "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
     "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
   ];
+
+  const allDaySlots = [
+    "12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM",
+    "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
+    "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
+    "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"
+  ];
+
+  const timeSlots = isDev ? allDaySlots : businessHoursSlots;
 
   const handleSchedule = async () => {
     if (selectedDate && selectedTime) {
@@ -50,15 +62,16 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
         if (isPM && hours !== 12) hours += 12;
         if (!isPM && hours === 12) hours = 0;
 
-        // Create start_time ISO string
+        // Create start_time as LOCAL ISO string (no UTC conversion)
+        // Backend expects local time + timezone field to do the conversion
         const startDate = new Date(selectedDate);
         startDate.setHours(hours, minutes, 0, 0);
-        const start_time = startDate.toISOString();
+        const pad = (n: number) => String(n).padStart(2, '0');
+        const start_time = `${startDate.getFullYear()}-${pad(startDate.getMonth() + 1)}-${pad(startDate.getDate())}T${pad(hours)}:${pad(minutes)}:00`;
 
         // End time is 1 hour later
-        const endDate = new Date(startDate);
-        endDate.setHours(endDate.getHours() + 1);
-        const end_time = endDate.toISOString();
+        const endHours = hours + 1;
+        const end_time = `${startDate.getFullYear()}-${pad(startDate.getMonth() + 1)}-${pad(startDate.getDate())}T${pad(endHours)}:${pad(minutes)}:00`;
 
         // Schedule meeting via API - always with Quiver Team
         const response = await createMeeting({
@@ -139,7 +152,12 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
                 mode="single"
                 selected={selectedDate}
                 onSelect={setSelectedDate}
-                disabled={(date) => date < new Date()}
+                disabled={(date) => {
+                  if (isDev) return false;
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  return date < today;
+                }}
                 className="rounded-md border-0 w-full"
               />
             </div>

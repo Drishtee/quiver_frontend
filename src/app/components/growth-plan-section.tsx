@@ -58,9 +58,9 @@ function VisionCard({
   const whatWeDoForYou = t(`growthPlan.stages.${stageKey}.whatWeDoForYou`, { returnObjects: true }) as string[];
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col overflow-hidden">
       {/* Stage Header */}
-      <div className={`bg-gradient-to-br ${gradient} p-6 sm:p-8 text-white relative overflow-hidden min-h-[200px]`}>
+      <div className={`bg-gradient-to-br ${gradient} p-6 sm:p-8 text-white relative overflow-hidden min-h-[200px] flex-shrink-0`}>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -87,7 +87,7 @@ function VisionCard({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 p-5 sm:p-6 space-y-5 overflow-y-auto">
+      <div className="flex-1 min-h-0 p-5 sm:p-6 space-y-5 overflow-y-auto">
         <div>
           <p className="text-gray-600 leading-relaxed">
             {t(`growthPlan.stages.${stageKey}.description`)}
@@ -347,7 +347,7 @@ export function GrowthPlanSection({
         </div>
 
         {/* Vision Card Content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <VisionCard
             stageIndex={activeSlide}
             isActive={activeSlide === currentStage - 1}
