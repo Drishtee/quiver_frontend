@@ -17,6 +17,7 @@ import {
   User,
   Handshake
 } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import '../screens/landing.css';
 
 interface IndustrySelectionProps {
@@ -196,6 +197,15 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           </div>
 
           {/* Sector Selection */}
+          {/* TODO: Replace Lucide icons (UtensilsCrossed, Tractor, Beef, Shirt, Wrench, MoreHorizontal)
+               with custom GFX-ONBD-008 illustrations for each sector card.
+               See GRAPHIC_DESIGN_SPEC.md for per-sector illustration specs:
+               - Food Processing: GFX-ONBD-008-food
+               - Agriculture: GFX-ONBD-008-agri
+               - Livestock/Dairy: GFX-ONBD-008-livestock
+               - Textile/Handicraft: GFX-ONBD-008-textile
+               - Services: GFX-ONBD-008-services
+               - Other: GFX-ONBD-008-other */}
           <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-4">
             <label className="text-sm font-medium text-gray-900">
               व्यवसाय क्षेत्र | Sector <span className="text-red-500">*</span>

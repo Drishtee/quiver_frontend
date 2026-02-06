@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ProgressIndicator } from "../components/progress-indicator";
 import { Upload, FileText, CheckCircle2, XCircle } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 
 interface DocumentUploadProps {
   onContinue: () => void;
@@ -34,9 +35,9 @@ export function DocumentUpload({ onContinue }: DocumentUploadProps) {
   };
 
   const documentTypes = [
-    { id: "pan", name: "PAN Card", description: "For identity verification" },
-    { id: "aadhaar", name: "Aadhaar Card", description: "For address proof" },
-    { id: "business", name: "Business Proof", description: "Registration or license" }
+    { id: "pan", name: "PAN Card", description: "For identity verification", gfx: "GFX-ONBD-015A" },
+    { id: "aadhaar", name: "Aadhaar Card", description: "For address proof", gfx: "GFX-ONBD-015B" },
+    { id: "business", name: "Business Proof", description: "Registration or license", gfx: "GFX-ONBD-015C" }
   ];
 
   return (
@@ -54,6 +55,15 @@ export function DocumentUpload({ onContinue }: DocumentUploadProps) {
         <div className="space-y-6 md:space-y-8">
           {/* Progress - Sticky */}
           <ProgressIndicator current={5} total={6} sticky={true} />
+
+          {/* GFX-ONBD-014: Document Upload Hero Banner */}
+          {/* TODO: Replace with phone-camera → digitize → secure-folder illustration — see GRAPHIC_DESIGN_SPEC.md */}
+          {/* <img src="/illustrations/onboarding/gfx-onbd-014-upload-hero.svg" alt="" className="w-full h-[120px] object-contain" /> */}
+          <IllustrationPlaceholder
+            id="GFX-ONBD-014"
+            label="Document digitization flow — phone camera to digital to secure vault"
+            height="120px"
+          />
 
           <div className="space-y-2 md:space-y-3">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-900">
@@ -73,6 +83,8 @@ export function DocumentUpload({ onContinue }: DocumentUploadProps) {
               >
                 <div className="space-y-3 md:space-y-4">
                   <div className="flex items-start gap-3">
+                    {/* TODO: Replace generic FileText with document-specific illustrations — see GFX-ONBD-015 in GRAPHIC_DESIGN_SPEC.md */}
+                    {/* <img src={`/illustrations/onboarding/${doc.gfx.toLowerCase()}.svg`} alt="" className="w-12 h-12" /> */}
                     <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
                       <FileText className="w-5 h-5 text-accent" />
                     </div>

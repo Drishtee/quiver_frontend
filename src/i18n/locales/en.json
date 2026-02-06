@@ -52,6 +52,32 @@
     "errorInvalidPhone": "Please enter a valid 10-digit phone number",
     "errorInvalidOtp": "Please enter a valid 6-digit OTP"
   },
+  "signup": {
+    "title": "Sign Up for Quiver",
+    "subtitle": "Start your business growth journey",
+    "phoneLabel": "Mobile Number",
+    "phonePlaceholder": "Enter your 10-digit number",
+    "sendOtp": "Send OTP",
+    "sendingOtp": "Sending OTP...",
+    "otpSent": "Enter the OTP sent to +91 {{phone}}",
+    "otpLabel": "Enter OTP",
+    "otpPlaceholder": "6-digit OTP",
+    "verifySignup": "Sign Up",
+    "verifying": "Verifying...",
+    "resendOtp": "Resend OTP",
+    "changeNumber": "Change phone number",
+    "hasAccount": "Already have an account?",
+    "login": "Login here",
+    "consent": "I agree to the Terms of Service and Privacy Policy. I consent to receive communications via SMS and WhatsApp.",
+    "trustLine": "Your data is safe and secure with us",
+    "errorInvalidPhone": "Please enter a valid 10-digit phone number",
+    "errorInvalidOtp": "Please enter a valid 6-digit OTP",
+    "welcome": {
+      "title": "Welcome to Quiver!",
+      "subtitle": "Your account has been created",
+      "startJourney": "Start Your Journey"
+    }
+  },
   "landing": {
     "nav": {
       "login": "Login",
@@ -177,8 +203,8 @@
       }
     },
     "howItWorks": {
-      "title": "How Quiver Decides What You Need",
-      "subtitle": "Simple steps. You're always in control.",
+      "title": "How Quiver Works",
+      "subtitle": "",
       "step1": {
         "title": "1. You Tell Us About Your Business",
         "description": "Use voice or answer simple questions in your language. No complicated forms."
@@ -406,7 +432,8 @@
       "yes": "Yes",
       "maybe": "Maybe",
       "no": "No"
-    }
+    },
+    "continue": "Continue"
   },
   "review": {
     "title": "Review & Submit",
@@ -584,6 +611,133 @@
     "estimatedGrowth": "Estimated Growth Potential",
     "downloadPdf": "Download as PDF",
     "listenAudio": "Listen to Explanation"
+  },
+  "growthPlan": {
+    "title": "Your Growth Vision",
+    "poweredBy": "Powered by Quiver AI",
+    "withQuiver": "with Quiver",
+    "journeyProgress": "Journey Progress",
+    "youreAt": "You're at {{stage}}",
+    "seeWhatQuiverCanDo": "See What Quiver Can Do For You",
+    "discoverJourney": "Discover your personalized growth journey",
+    "whatWeDo": "What Quiver Does For You",
+    "forBusiness": "For {{name}}",
+    "yourBusiness": "your business",
+    "startThisStage": "Start This Stage",
+    "stageCompleted": "Stage Completed",
+    "goToCurrentStage": "Go to Current Stage",
+    "stages": {
+      "stage1": {
+        "stage": "Stage 1",
+        "headline": "We Learn Your Story",
+        "subheadline": "Every great business starts with understanding",
+        "description": "Share your journey with us. Our AI-powered platform analyzes your business, identifies opportunities, and creates a personalized roadmap for your success.",
+        "whatWeDoForYou": [
+          "Deep-dive into your business model",
+          "AI analysis of growth opportunities",
+          "Identify your unique strengths",
+          "Map out your funding eligibility"
+        ],
+        "aiInsight": "We'll analyze your {{sector}} to find the best growth opportunities.",
+        "outcome": {
+          "metric": "100%",
+          "description": "Clarity on your growth potential"
+        },
+        "testimonial": {
+          "quote": "Quiver understood my business better than I did. They saw opportunities I never knew existed.",
+          "name": "Priya Sharma",
+          "business": "Organic Foods Co."
+        }
+      },
+      "stage2": {
+        "stage": "Stage 2",
+        "headline": "Your Personal Growth Advisor",
+        "subheadline": "Expert guidance, tailored for you",
+        "description": "Connect 1-on-1 with industry experts who understand your challenges. Get actionable strategies, not generic advice. Your success is our mission.",
+        "whatWeDoForYou": [
+          "Match you with industry-specific mentors",
+          "Create your custom growth blueprint",
+          "Set achievable milestones",
+          "Provide ongoing strategic support"
+        ],
+        "aiInsight": "Connect with advisors who specialize in {{sector}}.",
+        "outcome": {
+          "metric": "3x",
+          "description": "Faster path to funding readiness"
+        },
+        "testimonial": {
+          "quote": "My advisor helped me see the bigger picture. Within months, I had a clear plan and the confidence to execute it.",
+          "name": "Rajesh Kumar",
+          "business": "Kumar Textiles"
+        }
+      },
+      "stage3": {
+        "stage": "Stage 3",
+        "headline": "We Handle the Paperwork",
+        "subheadline": "You focus on business, we handle the rest",
+        "description": "Loan applications, registrations, compliance documents - we prepare everything. Our team ensures your documentation is investor-ready and error-free.",
+        "whatWeDoForYou": [
+          "Complete loan & grant applications",
+          "Business registration support",
+          "Financial statement preparation",
+          "Compliance documentation"
+        ],
+        "aiInsight": "Get all your {{sector}} documentation prepared professionally.",
+        "outcome": {
+          "metric": "90%",
+          "description": "Reduction in paperwork stress"
+        },
+        "testimonial": {
+          "quote": "I used to dread paperwork. Quiver made it effortless. My loan application was approved in record time.",
+          "name": "Meera Devi",
+          "business": "Handloom Creations"
+        }
+      },
+      "stage4": {
+        "stage": "Stage 4",
+        "headline": "Unlock Funding Opportunities",
+        "subheadline": "The capital your dreams deserve",
+        "description": "Access our network of banks, NBFCs, government schemes, and investors. We match you with the right funding sources and guide you through the entire process.",
+        "whatWeDoForYou": [
+          "Connect with 50+ funding partners",
+          "Government scheme applications",
+          "Bank loan facilitation",
+          "Investor introductions"
+        ],
+        "aiInsight": "Access funding schemes perfect for {{sector}} like yours.",
+        "outcome": {
+          "metric": "₹10L+",
+          "description": "Average funding secured"
+        },
+        "testimonial": {
+          "quote": "I thought funding was impossible for small businesses like mine. Quiver connected me with a scheme I never knew existed. I got ₹15 lakhs!",
+          "name": "Arjun Singh",
+          "business": "Singh Dairy Farm"
+        }
+      },
+      "stage5": {
+        "stage": "Stage 5",
+        "headline": "Scale to New Heights",
+        "subheadline": "From local success to market leader",
+        "description": "With funding secured, it's time to grow. We provide ongoing support, market linkages, and strategic guidance to help you scale sustainably.",
+        "whatWeDoForYou": [
+          "Market expansion strategies",
+          "Operational excellence training",
+          "B2B & retail connections",
+          "Continuous mentorship"
+        ],
+        "aiInsight": "Scale {{sector}} to reach new markets and customers.",
+        "outcome": {
+          "metric": "2-5x",
+          "description": "Revenue growth in 12 months"
+        },
+        "testimonial": {
+          "quote": "From a small workshop to supplying major retailers - Quiver was with me every step. My revenue tripled in one year.",
+          "name": "Lakshmi Narayanan",
+          "business": "Spice Exports Ltd."
+        }
+      }
+    }
   },
   "resume": {
     "title": "Welcome Back!",

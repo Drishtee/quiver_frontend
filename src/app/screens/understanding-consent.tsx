@@ -5,6 +5,7 @@ import { Checkbox } from "../components/ui/checkbox";
 import { AIAssistant } from "../components/ai-assistant";
 import { Check, Globe, Handshake, TrendingUp, Users, Shield, Clock, Mic, FileText } from "lucide-react";
 import { LanguageSelector } from "../components/language-selector";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import '../screens/landing.css';
@@ -102,6 +103,13 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
             </h1>
             <p className="text-base md:text-lg text-gray-600">{t('consent.subtitle')}</p>
           </div>
+
+          {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+          <IllustrationPlaceholder
+            id="GFX-ONBD-001"
+            label="Partnership hero — entrepreneur, bridge, Quiver team, benefit icons"
+            height="200px"
+          />
 
           {/* Description - Clean typography without container */}
           <div className="space-y-4 md:space-y-6">
@@ -318,6 +326,9 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
           </div>
 
           {/* Fill Forms - Textual divider below consent, not in a container */}
+          {/* TODO: Replace with final illustrations — see GRAPHIC_DESIGN_SPEC.md
+               GFX-ONBD-002A: Form-fill path illustration (person typing on device)
+               GFX-ONBD-002B: Voice-path illustration (person speaking with AI waveforms) */}
           {allConsentsGiven && (
             <div className="pt-6 md:pt-8">
               <p className="text-center text-sm md:text-base text-gray-600 font-medium mb-4">

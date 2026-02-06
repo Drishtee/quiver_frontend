@@ -15,6 +15,7 @@ import {
   Shield,
   Send
 } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import '../screens/landing.css';
 
 interface ReviewSubmitProps {
@@ -74,6 +75,14 @@ export function ReviewSubmit({
             <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full bg-accent flex items-center justify-center mb-3 md:mb-4">
               <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
+            {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+            <IllustrationPlaceholder
+              id="GFX-ONBD-017"
+              label="Completed application folder being sealed with section icons orbiting"
+              width="160px"
+              height="160px"
+              className="mx-auto"
+            />
             <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">
               Section I: अंतिम पुष्टि
             </h2>

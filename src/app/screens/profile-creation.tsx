@@ -8,6 +8,7 @@ import { AIAssistant } from "../components/ai-assistant";
 import { ProgressIndicator } from "../components/progress-indicator";
 import { LanguageSelector } from "../components/language-selector";
 import { User, ArrowLeft, ChevronRight } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import { useLanguage } from "../../i18n/LanguageContext";
 import '../screens/landing.css';
@@ -200,6 +201,13 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
 
           {/* Progress Bar - Sticky */}
           <ProgressIndicator current={2} total={9} sticky={true} />
+
+          {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+          <IllustrationPlaceholder
+            id="GFX-ONBD-006"
+            label="Profile silhouette being filled with color — profile coming alive"
+            height="120px"
+          />
 
           {/* Section Header - Single heading with supportive text */}
           <div className="text-center space-y-2">

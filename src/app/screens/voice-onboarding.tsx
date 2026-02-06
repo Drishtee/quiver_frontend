@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, Mic, MicOff, Volume2, VolumeX, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { getVoiceAgentToken, getVoiceAgentConfig, submitVoiceAgentData } from "../../services/api";
 
 interface VoiceOnboardingProps {
@@ -622,6 +623,14 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
           <div className="space-y-6">
             {/* Connection Status */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+              {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+              <IllustrationPlaceholder
+                id="GFX-VOICE-001"
+                label="Friendly AI voice assistant avatar with headphones and waveforms"
+                width="120px"
+                height="120px"
+                className="mx-auto"
+              />
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-900">Voice Assistant</h3>
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${

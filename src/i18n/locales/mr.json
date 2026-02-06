@@ -32,6 +32,52 @@
     "mr": "मराठी",
     "selectLanguage": "भाषा निवडा"
   },
+  "login": {
+    "title": "Quiver मध्ये लॉगिन करा",
+    "subtitle": "पुढे जाण्यासाठी तुमचा फोन नंबर टाका",
+    "phoneLabel": "मोबाइल नंबर",
+    "phonePlaceholder": "तुमचा १० अंकी नंबर टाका",
+    "sendOtp": "OTP पाठवा",
+    "sendingOtp": "OTP पाठवत आहे...",
+    "otpSent": "+91 {{phone}} वर पाठवलेला OTP टाका",
+    "otpLabel": "OTP टाका",
+    "otpPlaceholder": "६ अंकी OTP",
+    "verifyLogin": "लॉगिन करा",
+    "verifying": "सत्यापित होत आहे...",
+    "resendOtp": "OTP पुन्हा पाठवा",
+    "changeNumber": "फोन नंबर बदला",
+    "noAccount": "खाते नाही?",
+    "signUp": "येथे साइन अप करा",
+    "trustLine": "तुमचा डेटा आमच्याकडे सुरक्षित आहे",
+    "errorInvalidPhone": "कृपया वैध १० अंकी फोन नंबर टाका",
+    "errorInvalidOtp": "कृपया वैध ६ अंकी OTP टाका"
+  },
+  "signup": {
+    "title": "Quiver मध्ये साइन अप करा",
+    "subtitle": "तुमचा व्यवसाय विकास प्रवास सुरू करा",
+    "phoneLabel": "मोबाइल नंबर",
+    "phonePlaceholder": "तुमचा १० अंकी नंबर टाका",
+    "sendOtp": "OTP पाठवा",
+    "sendingOtp": "OTP पाठवत आहे...",
+    "otpSent": "+91 {{phone}} वर पाठवलेला OTP टाका",
+    "otpLabel": "OTP टाका",
+    "otpPlaceholder": "६ अंकी OTP",
+    "verifySignup": "साइन अप करा",
+    "verifying": "सत्यापित होत आहे...",
+    "resendOtp": "OTP पुन्हा पाठवा",
+    "changeNumber": "फोन नंबर बदला",
+    "hasAccount": "आधीच खाते आहे?",
+    "login": "येथे लॉगिन करा",
+    "consent": "मी सेवा अटी आणि गोपनीयता धोरणाशी सहमत आहे. मी SMS आणि WhatsApp द्वारे संवाद प्राप्त करण्यास सहमती देतो.",
+    "trustLine": "तुमचा डेटा आमच्याकडे सुरक्षित आहे",
+    "errorInvalidPhone": "कृपया वैध १० अंकी फोन नंबर टाका",
+    "errorInvalidOtp": "कृपया वैध ६ अंकी OTP टाका",
+    "welcome": {
+      "title": "Quiver मध्ये तुमचे स्वागत!",
+      "subtitle": "तुमचे खाते तयार झाले आहे",
+      "startJourney": "तुमचा प्रवास सुरू करा"
+    }
+  },
   "landing": {
     "nav": {
       "login": "लॉगिन",

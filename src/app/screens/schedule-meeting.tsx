@@ -4,6 +4,7 @@ import { Calendar } from "../components/ui/calendar";
 import { Textarea } from "../components/ui/textarea";
 import { Checkbox } from "../components/ui/checkbox";
 import { ArrowLeft, Clock, User, Video, Calendar as CalendarIcon, MessageCircle, Bell } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { createMeeting } from "../../services/api";
 
 export interface MeetingDetails {
@@ -119,6 +120,13 @@ export function ScheduleMeeting({ onBack, onSchedule }: ScheduleMeetingProps) {
 
       {/* Main Content - Mobile-first */}
       <main className="max-w-4xl mx-auto px-4 py-6 md:px-6 md:py-12">
+        {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+        <IllustrationPlaceholder
+          id="GFX-MEET-001"
+          label="Scheduling flow — calendar, clock, video call connected by dotted line"
+          height="100px"
+        />
+
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
           {/* Calendar Section - Mobile-first */}
           <div className="space-y-4 md:space-y-6">

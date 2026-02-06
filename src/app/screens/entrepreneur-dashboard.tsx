@@ -519,6 +519,11 @@ export function EntrepreneurDashboard({
                     <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
                       <CalendarIcon className="w-7 h-7 text-accent" />
                     </div>
+                    <img
+                      src="/GFX-DASH-001.png"
+                      alt="Schedule your first meeting"
+                      className="w-[200px] h-[160px] object-contain mx-auto"
+                    />
                     <h4 className="font-semibold text-gray-900 mb-1">{t('dashboard.overview.noMeetings')}</h4>
                     <p className="text-sm text-gray-500 mb-4">{t('dashboard.overview.scheduleFirst')}</p>
                     <Button onClick={onScheduleMeeting} className="bg-accent hover:bg-accent/90 rounded-xl">
@@ -745,6 +750,7 @@ export function EntrepreneurDashboard({
             </div>
 
             {/* Growth Plan CTA */}
+            {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md (GFX-DASH-003) */}
             <button
               onClick={() => setShowGrowthPlan(true)}
               className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-5 text-left hover:shadow-lg transition-shadow"

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../components/ui/input-otp";
 import { ArrowLeft } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import "./landing.css";
 
 interface OTPVerificationProps {
@@ -58,9 +59,17 @@ export function OTPVerification({ phone, onVerify, onBack, onResend, error, load
       {/* Main Content */}
       <main className="max-w-md mx-auto px-5 py-8">
         <div className="space-y-6">
-          {/* Logo + Heading */}
+          {/* GFX-AUTH-005: OTP Phone Illustration */}
+          {/* TODO: Replace logo with phone/SMS illustration — see GRAPHIC_DESIGN_SPEC.md */}
+          {/* <img src="/illustrations/auth/gfx-auth-005-otp-phone.svg" alt="" className="w-[200px] h-[200px] mx-auto" /> */}
           <div className="text-center space-y-3">
-            <img src="/logo.jpg" alt="Quiver" className="w-16 h-16 object-contain mx-auto" />
+            <IllustrationPlaceholder
+              id="GFX-AUTH-005"
+              label="Phone receiving OTP message illustration"
+              width="200px"
+              height="200px"
+              className="mx-auto"
+            />
             <h1 className="text-xl font-display font-bold text-gray-900">
               {t('otp.title')}
             </h1>

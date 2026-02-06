@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Landing } from "./screens/landing";
 import { Login } from "./screens/login";
+import { Signup } from "./screens/signup";
 import { OTPVerification } from "./screens/otp-verification";
 import { BusinessModelConfirmation } from "./screens/business-model-confirmation";
 import { UnderstandingConsent } from "./screens/understanding-consent";
@@ -34,6 +35,7 @@ import { onboardingStorage } from "../utils/storage";
 type Screen =
   | "landing"
   | "login"
+  | "signup"
   | "otp"
   | "business-model"
   | "consent"
@@ -59,6 +61,7 @@ const getInitialScreen = (): Screen => {
   if (path === '/admin') return 'admin';
   if (path === '/dashboard') return 'dashboard';
   if (path === '/login') return 'login';
+  if (path === '/signup') return 'signup';
   return 'landing';
 };
 
@@ -131,6 +134,7 @@ export default function App() {
       'admin': '/admin',
       'dashboard': '/dashboard',
       'login': '/login',
+      'signup': '/signup',
       'schedule': '/schedule'
     };
     const path = screenToPath[currentScreen];
@@ -180,6 +184,13 @@ export default function App() {
       return;
     }
 
+    // Handle /signup route
+    if (path === '/signup') {
+      // Screen already set to 'signup' by getInitialScreen
+      setInitialRouteHandled(true);
+      return;
+    }
+
     // Default behavior for root path or other paths
     if (accessToken) {
       setIsAuthenticated(true);
@@ -211,6 +222,8 @@ export default function App() {
         setCurrentScreen('dashboard');
       } else if (path === '/login') {
         setCurrentScreen('login');
+      } else if (path === '/signup') {
+        setCurrentScreen('signup');
       } else if (path === '/') {
         setCurrentScreen('landing');
       }
@@ -524,6 +537,32 @@ export default function App() {
     setCurrentScreen("login");
   };
 
+  const handleShowSignup = () => {
+    setCurrentScreen("signup");
+  };
+
+  const handleSignup = async (data: { phone: string; otp: string; response: VerifyOTPResponse }) => {
+    // After successful signup, same flow as login
+    setIsAuthenticated(true);
+    setPhone(data.phone);
+
+    try {
+      const startResponse = await startOnboarding();
+      setSessionId(startResponse.session_id);
+      onboarding.setSessionId(startResponse.session_id);
+
+      // Save phone number for future checks
+      onboardingStorage.setPhone(data.phone);
+      onboardingStorage.setSessionId(startResponse.session_id);
+
+      // New user - start with consent screen
+      setCurrentScreen("consent");
+    } catch (err) {
+      console.error('Failed to start onboarding:', err);
+      setError('Failed to start onboarding. Please try again.');
+    }
+  };
+
   const handleLogin = async (data: { phone: string; otp: string; response: VerifyOTPResponse }) => {
     // After successful login, user data is already in localStorage from verifyOTP
     setIsAuthenticated(true);
@@ -647,11 +686,11 @@ export default function App() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
         <div className="max-w-lg w-full text-center space-y-8">
-          <div className="w-24 h-24 mx-auto rounded-full bg-accent flex items-center justify-center shadow-lg">
-            <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
+          <img
+            src="/GFX-ONBD-019.png"
+            alt="Application submitted successfully"
+            className="w-48 h-48 mx-auto object-contain"
+          />
           <div className="space-y-4">
             <h1 className="text-3xl font-display font-bold text-gray-900">
               Quiver में आपका स्वागत है!
@@ -674,12 +713,6 @@ export default function App() {
               className="w-full h-14 bg-accent text-white rounded-xl font-display font-bold text-lg hover:bg-accent/90 transition-all shadow-lg"
             >
               डैशबोर्ड पर जाएं | Go to Dashboard
-            </button>
-            <button
-              onClick={() => setCurrentScreen("admin")}
-              className="w-full h-12 border-2 border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
-            >
-              View Admin Dashboard
             </button>
           </div>
         </div>
@@ -713,13 +746,21 @@ export default function App() {
         <Landing
           onGetStarted={handleGetStarted}
           onLogin={handleShowLogin}
+          onSignup={handleShowSignup}
         />
       )}
       {currentScreen === "login" && (
         <Login
           onLogin={handleLogin}
           onBack={handleBackToLanding}
-          onSwitchToSignup={handleBackToLanding}
+          onSwitchToSignup={handleShowSignup}
+        />
+      )}
+      {currentScreen === "signup" && (
+        <Signup
+          onSignup={handleSignup}
+          onBack={handleBackToLanding}
+          onSwitchToLogin={handleShowLogin}
         />
       )}
       {currentScreen === "otp" && (

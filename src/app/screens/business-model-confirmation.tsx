@@ -12,6 +12,7 @@ import {
   Target,
   Shield
 } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 
 interface BusinessModelConfirmationProps {
   onContinue: () => void;
@@ -78,6 +79,14 @@ export function BusinessModelConfirmation({ onContinue, onBack }: BusinessModelC
             <div className="w-20 h-20 mx-auto bg-accent/10 rounded-full flex items-center justify-center">
               <Target className="w-10 h-10 text-accent" />
             </div>
+            {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+            <IllustrationPlaceholder
+              id="GFX-ONBD-004"
+              label="Target with business-arrow and orbiting partnership icons"
+              width="140px"
+              height="140px"
+              className="mx-auto"
+            />
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
               Understanding Quiver's Business Model
             </h1>

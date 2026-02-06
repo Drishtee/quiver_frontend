@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { IllustrationPlaceholder } from "../IllustrationPlaceholder";
 
 export function Footer() {
   const { t } = useTranslation();
@@ -6,6 +7,14 @@ export function Footer() {
 
   return (
     <footer className="border-t border-gray-200 bg-gray-50">
+      {/* GFX-GLOB-004: Footer Decorative Strip — Indian cityscape/village skyline */}
+      {/* TODO: Replace with illustrated skyline strip — see GRAPHIC_DESIGN_SPEC.md */}
+      {/* <img src="/illustrations/global/gfx-glob-004-footer-strip.svg" alt="" className="w-full h-[60px] opacity-15" /> */}
+      <IllustrationPlaceholder
+        id="GFX-GLOB-004"
+        label="Indian cityscape/village skyline decorative strip"
+        height="60px"
+      />
       <div className="container max-w-screen-xl mx-auto px-4 py-4 md:py-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Copyright - Full width on mobile, left on desktop */}

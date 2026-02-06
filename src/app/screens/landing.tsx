@@ -11,13 +11,9 @@ import {
   ShieldCheck,
   Handshake,
   TrendingUp,
-  IndianRupee,
-  HeartHandshake,
-  BookOpen,
-  Smartphone,
-  MessageCircle,
   ChevronRight,
 } from 'lucide-react';
+
 
 /* YouTube Shorts — vertical (9:16) format */
 const SOCIAL_PROOF_VIDEOS = [
@@ -32,15 +28,26 @@ const SOCIAL_PROOF_VIDEOS = [
 interface LandingProps {
   onGetStarted: (phoneNumber: string) => void;
   onLogin: () => void;
+  onSignup?: () => void;
 }
 
-export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
+export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin, onSignup }) => {
   const { t } = useTranslation();
   const [showPhoneInput, setShowPhoneInput] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const voice = useOpenAIVoice();
+
+  // Use dedicated signup page if available, otherwise fall back to inline form
+  const handleSignupClick = () => {
+    if (onSignup) {
+      onSignup();
+    } else {
+      setShowPhoneInput(true);
+      heroRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   /* Video carousel state */
   const videoScrollRef = useRef<HTMLDivElement>(null);
@@ -158,10 +165,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           </button>
           {/* Desktop-only nav CTA */}
           <button
-            onClick={() => {
-              setShowPhoneInput(true);
-              heroRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={handleSignupClick}
             className="hidden lg:flex bg-accent text-white font-bold py-2 px-4 rounded-lg text-sm items-center"
           >
             {t('landing.nav.startGrowing')}
@@ -222,7 +226,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
                   {t('landing.avatar.title')}
                 </button>
                 <button
-                  onClick={() => setShowPhoneInput(true)}
+                  onClick={handleSignupClick}
                   className="inline-flex items-center justify-center gap-2 bg-white/90 backdrop-blur-sm text-gray-800 font-bold py-3 px-5 lg:py-3.5 lg:px-7 rounded-xl border-2 border-accent/30 shadow-sm hover:border-accent hover:text-accent active:scale-[0.98] transition-all min-h-[48px] text-sm lg:text-base"
                 >
                   {t('landing.nav.startGrowing')}
@@ -242,7 +246,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           </h2>
           <p className="text-xs lg:text-sm opacity-80 mb-5">{t('landing.stats.subtitle')}</p>
 
-          <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto mb-5">
+          <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
             <div>
               <div className="text-xl lg:text-2xl font-bold">1000+</div>
               <p className="text-xs opacity-80">{t('landing.stats.businesses')}</p>
@@ -256,16 +260,6 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
               <p className="text-xs opacity-80">{t('landing.stats.states')}</p>
             </div>
           </div>
-
-          <button
-            onClick={() => {
-              setShowPhoneInput(true);
-              heroRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="bg-accent text-white font-bold py-3 px-6 rounded-xl min-h-[48px] shadow-lg active:scale-[0.98] transition-all text-sm"
-          >
-            {t('landing.nav.startGrowing')}
-          </button>
         </div>
       </section>
 
@@ -338,10 +332,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           {/* Social proof CTA */}
           <div className="text-center mt-5 px-5">
             <button
-              onClick={() => {
-                setShowPhoneInput(true);
-                heroRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={handleSignupClick}
               className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
             >
               {t('landing.socialProof.cta')}
@@ -429,60 +420,11 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             </div>
           </div>
 
-          {/* Equity section CTA */}
-          <div className="text-center mt-6">
-            <button
-              onClick={handleVoiceStart}
-              className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
-            >
-              <MessageCircle className="w-4 h-4" />
-              {t('landing.equity.cta')}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================== WHAT QUIVER DOES ======================== */}
-      <section id="what-quiver-does" className="px-5 py-8 lg:py-10 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1 text-center">
-            {t('landing.whatQuiverDoes.title')}
-          </h2>
-          <p className="text-sm text-gray-600 mb-5 text-center max-w-lg mx-auto">
-            {t('landing.whatQuiverDoes.subtitle')}
-          </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-            {[
-              { key: 'funding', Icon: IndianRupee },
-              { key: 'mentorship', Icon: HeartHandshake },
-              { key: 'education', Icon: BookOpen },
-              { key: 'tools', Icon: Smartphone },
-            ].map(({ key, Icon }) => (
-              <div key={key} className="bg-gray-50 p-3.5 lg:p-4 rounded-xl border border-gray-100 flex flex-col">
-                <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-2">
-                  <Icon className="w-5 h-5 lg:w-5 lg:h-5 text-accent" />
-                </div>
-                <h3 className="text-sm lg:text-base font-bold text-gray-900 mb-1">
-                  {t(`landing.whatQuiverDoes.${key}.title`)}
-                </h3>
-                <p className="text-xs lg:text-sm text-gray-600 leading-snug flex-1">
-                  {t(`landing.whatQuiverDoes.${key}.description`)}
-                </p>
-                <button
-                  onClick={handleVoiceStart}
-                  className="mt-2.5 text-xs font-semibold text-accent hover:text-emerald-700 transition-colors text-left flex items-center gap-1"
-                >
-                  {t('landing.whatQuiverDoes.learnMore')}
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
       {/* ======================== HOW IT WORKS — 4 steps ======================== */}
-      <section id="how-it-works" className="px-5 py-8 lg:py-10 bg-gray-50">
+      <section id="how-it-works" className="px-5 py-8 lg:py-10 bg-white">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1 text-center">
             {t('landing.howItWorks.title')}
@@ -491,24 +433,69 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
             {t('landing.howItWorks.subtitle')}
           </p>
 
-          {/* Mobile: vertical timeline | Desktop: horizontal 4-col */}
-          <div className="relative space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-4 max-w-3xl mx-auto">
-            {/* Mobile connecting line */}
-            <div className="absolute left-[15px] top-4 bottom-4 w-0.5 bg-accent/20 lg:hidden" />
+          {/* Journey path — vertical on mobile, horizontal on desktop */}
 
+          {/* ── Desktop: horizontal journey ── */}
+          <div className="hidden lg:flex items-start justify-center max-w-4xl mx-auto">
             {(['step1', 'step2', 'step3', 'step4'] as const).map((key, i) => (
-              <div key={key} className="flex items-start gap-3 relative lg:flex-col lg:items-center lg:text-center">
-                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm shadow-sm z-10">
-                  {i + 1}
-                </div>
-                <div className="bg-white rounded-xl p-3 lg:p-4 flex-1 lg:w-full border border-gray-100">
-                  <h3 className="font-bold text-gray-900 text-sm">
+              <div key={key} className="flex items-start">
+                {/* Step card */}
+                <div className="flex flex-col items-center text-center w-[200px]">
+                  <img
+                    src={`/GFX-LAND-001${String.fromCharCode(65+i)}.png`}
+                    alt={t(`landing.howItWorks.${key}.title`)}
+                    className="w-[150px] h-[150px] rounded-full object-cover"
+                  />
+                  <h3 className="font-bold text-gray-900 text-sm mt-3">
                     {t(`landing.howItWorks.${key}.title`)}
                   </h3>
-                  <p className="text-xs lg:text-sm text-gray-600 mt-0.5">
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
                     {t(`landing.howItWorks.${key}.description`)}
                   </p>
                 </div>
+                {/* Arrow between steps */}
+                {i < 3 && (
+                  <div className="flex items-center pt-[65px] px-1">
+                    <svg width="36" height="20" viewBox="0 0 36 20" fill="none" className="text-accent/50">
+                      <path d="M0 10h28m0 0l-7-7m7 7l-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* ── Mobile: full-width vertical journey ── */}
+          <div className="lg:hidden space-y-0">
+            {(['step1', 'step2', 'step3', 'step4'] as const).map((key, i) => (
+              <div key={key}>
+                {/* Step card — illustration hero, text below */}
+                <div className="p-5 text-center">
+                  <img
+                    src={`/GFX-LAND-001${String.fromCharCode(65+i)}.png`}
+                    alt={t(`landing.howItWorks.${key}.title`)}
+                    className="w-[140px] h-[140px] rounded-full object-cover mx-auto"
+                  />
+                  <h3 className="font-bold text-gray-900 text-base mt-3">
+                    {t(`landing.howItWorks.${key}.title`)}
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1 leading-relaxed max-w-[280px] mx-auto">
+                    {t(`landing.howItWorks.${key}.description`)}
+                  </p>
+                </div>
+
+                {/* Bold downward arrow connector */}
+                {i < 3 && (
+                  <div className="flex flex-col items-center py-2">
+                    <div className="w-0.5 h-4 bg-accent/30" />
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 3v12m0 0l-5-5m5 5l5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent" />
+                      </svg>
+                    </div>
+                    <div className="w-0.5 h-4 bg-accent/30" />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -520,15 +507,50 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
           {/* How it works CTA */}
           <div className="text-center mt-5">
             <button
-              onClick={() => {
-                setShowPhoneInput(true);
-                heroRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={handleSignupClick}
               className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl shadow-sm active:scale-[0.98] transition-all text-sm min-h-[48px]"
             >
               {t('landing.howItWorks.cta')}
               <ChevronRight className="w-4 h-4" />
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================== WHAT QUIVER DOES ======================== */}
+      <section id="what-quiver-does" className="px-5 py-8 lg:py-10 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-lg lg:text-2xl font-display font-bold text-gray-900 mb-1 text-center">
+            {t('landing.whatQuiverDoes.title')}
+          </h2>
+          <p className="text-sm text-gray-600 mb-5 text-center max-w-lg mx-auto">
+            {t('landing.whatQuiverDoes.subtitle')}
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            {[
+              { key: 'funding', gfx: 'GFX-LAND-002A' },
+              { key: 'mentorship', gfx: 'GFX-LAND-002B' },
+              { key: 'education', gfx: 'GFX-LAND-002C' },
+              { key: 'tools', gfx: 'GFX-LAND-002D' },
+            ].map(({ key, gfx }) => (
+              <button
+                key={key}
+                onClick={handleSignupClick}
+                className="bg-white p-4 lg:p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center text-center hover:border-accent/40 hover:shadow-md active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <img
+                  src={`/${gfx}.png`}
+                  alt={t(`landing.whatQuiverDoes.${key}.title`)}
+                  className="w-14 h-14 lg:w-16 lg:h-16 rounded-lg object-contain mb-2"
+                />
+                <h3 className="text-sm lg:text-base font-bold text-gray-900 mb-1">
+                  {t(`landing.whatQuiverDoes.${key}.title`)}
+                </h3>
+                <p className="text-xs lg:text-sm text-gray-600 leading-snug">
+                  {t(`landing.whatQuiverDoes.${key}.description`)}
+                </p>
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -546,10 +568,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
 
           <div className="flex flex-col sm:flex-row gap-3 max-w-sm sm:max-w-md mx-auto mb-5">
             <button
-              onClick={() => {
-                setShowPhoneInput(true);
-                heroRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={handleSignupClick}
               className="flex-1 bg-accent hover:bg-accent/90 text-white font-bold py-3.5 px-6 rounded-xl min-h-[48px] shadow-lg active:scale-[0.98] transition-all text-sm lg:text-base"
             >
               {t('landing.nav.startGrowing')}
@@ -573,31 +592,22 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin }) => {
         </div>
       </section>
 
-      {/* ======================== TRUST SIGNALS ======================== */}
-      <section className="px-5 py-6 lg:py-8 bg-gray-50">
-        <div className="max-w-5xl mx-auto text-center">
-          <h3 className="text-xs lg:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
-            {t('landing.trust.title')}
-          </h3>
-          <div className="flex flex-wrap justify-center gap-3 lg:gap-6 text-xs lg:text-sm text-gray-600">
-            <span>{t('landing.trust.retail')}</span>
-            <span className="text-gray-300">|</span>
-            <span>{t('landing.trust.restaurants')}</span>
-            <span className="text-gray-300">|</span>
-            <span>{t('landing.trust.logistics')}</span>
-            <span className="text-gray-300">|</span>
-            <span>{t('landing.trust.services')}</span>
-          </div>
-        </div>
-      </section>
-
       {/* ======================== FOOTER — mobile: minimal ======================== */}
       <footer className="lg:hidden px-5 py-6 bg-gray-900 text-gray-400 text-center text-sm">
-        <div className="flex items-center justify-center gap-2 mb-2">
+        <div className="flex items-center justify-center gap-2 mb-3">
           <img src="/logo.jpg" alt="Quiver" className="w-6 h-6 object-contain bg-white rounded p-0.5" />
           <span className="font-display font-bold text-white">Quiver</span>
         </div>
-        <p className="mb-1 text-xs">{t('landing.footer.tagline')}</p>
+        <p className="mb-3 text-xs">{t('landing.footer.tagline')}</p>
+        <div className="flex flex-wrap justify-center gap-2 text-[10px] text-gray-500 mb-3">
+          <span>{t('landing.trust.retail')}</span>
+          <span className="text-gray-700">·</span>
+          <span>{t('landing.trust.restaurants')}</span>
+          <span className="text-gray-700">·</span>
+          <span>{t('landing.trust.logistics')}</span>
+          <span className="text-gray-700">·</span>
+          <span>{t('landing.trust.services')}</span>
+        </div>
         <p className="text-xs">&copy; 2025 Quiver. {t('landing.footer.copyright')}</p>
       </footer>
 

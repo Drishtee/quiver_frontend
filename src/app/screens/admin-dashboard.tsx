@@ -43,6 +43,7 @@ import {
   Shield,
   LogOut
 } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { sendOTP, verifyOTP, logout } from "../../services/api";
 
 // API Base URL
@@ -206,6 +207,14 @@ function AdminLogin({ onLoginSuccess }: { onLoginSuccess: () => void }) {
           <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
             <Shield className="w-10 h-10 text-primary" />
           </div>
+          {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+          <IllustrationPlaceholder
+            id="GFX-ADMIN-001"
+            label="Admin control room with multiple dashboard screens"
+            width="400px"
+            height="400px"
+            className="hidden lg:block mx-auto"
+          />
           <h1 className="text-2xl font-bold text-gray-900">Quiver Admin</h1>
           <p className="text-gray-500 mt-2">Enter your credentials to access the dashboard</p>
         </div>
@@ -837,6 +846,7 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
             <X className="w-8 h-8 text-red-500" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
+          {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md (GFX-ADMIN-002: Access denied / locked gate illustration) */}
           <p className="text-gray-600 mb-6">{authError}</p>
           <p className="text-sm text-gray-500 mb-4">
             To grant admin access, run this command in Django shell:

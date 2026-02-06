@@ -1,4 +1,5 @@
 import { PlayCircle, Volume2, ArrowRight } from "lucide-react";
+import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 
 interface GrowthPathwayProps {
   industry: string;
@@ -70,11 +71,25 @@ export function GrowthPathway({ industry, onContinue }: GrowthPathwayProps) {
           {/* Pathway Roadmap */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
             <h3 className="font-semibold text-gray-900 mb-6">Growth Roadmap</h3>
+
+            {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
+            <IllustrationPlaceholder
+              id="GFX-GROW-001"
+              label="Growth roadmap step illustrations — Assessment, Planning, Implementation, Growth, Scale"
+              height="80px"
+            />
+
             <div className="relative">
               {/* Timeline line */}
               <div className="absolute top-6 left-6 right-6 h-0.5 bg-gradient-to-r from-primary to-accent" />
-              
+
               {/* Steps */}
+              {/* TODO: Replace each step's numbered circle with custom illustrations — see GRAPHIC_DESIGN_SPEC.md
+                   GFX-GROW-001A: Assessment step illustration
+                   GFX-GROW-001B: Planning step illustration
+                   GFX-GROW-001C: Implementation step illustration
+                   GFX-GROW-001D: Growth step illustration
+                   GFX-GROW-001E: Scale step illustration */}
               <div className="flex justify-between relative">
                 {pathwaySteps.map((step, index) => (
                   <div key={index} className="flex flex-col items-center gap-2 flex-1">

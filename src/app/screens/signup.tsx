@@ -1,29 +1,36 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Shield } from "lucide-react";
+import { Checkbox } from "../components/ui/checkbox";
 import { LanguageSelector } from "../components/language-selector";
-import { verifyOTP } from "../../services/api";
+import { sendOTP, verifyOTP } from "../../services/api";
 import "./landing.css";
 
 import type { VerifyOTPResponse } from "../../types/api";
 
-interface LoginProps {
-  onLogin: (data: { phone: string; otp: string; response: VerifyOTPResponse }) => void;
+interface SignupProps {
+  onSignup: (data: { phone: string; otp: string; response: VerifyOTPResponse }) => void;
   onBack: () => void;
-  onSwitchToSignup: () => void;
+  onSwitchToLogin: () => void;
 }
 
-export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
+export function Signup({ onSignup, onBack, onSwitchToLogin }: SignupProps) {
   const { t } = useTranslation();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consentGiven, setConsentGiven] = useState(false);
 
   const handlePhoneSubmit = async () => {
     if (phone.length !== 10) {
-      setError(t('login.errorInvalidPhone'));
+      setError(t('signup.errorInvalidPhone'));
+      return;
+    }
+
+    if (!consentGiven) {
+      setError(t('consent.pleaseAgreeAll'));
       return;
     }
 
@@ -31,7 +38,6 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
     setError(null);
 
     try {
-      const { sendOTP } = await import("../../services/api");
       await sendOTP(phone);
       setStep('otp');
     } catch (err) {
@@ -43,7 +49,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
 
   const handleOTPSubmit = async () => {
     if (otp.length !== 6) {
-      setError(t('login.errorInvalidOtp'));
+      setError(t('signup.errorInvalidOtp'));
       return;
     }
 
@@ -52,7 +58,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
 
     try {
       const response = await verifyOTP(phone, otp);
-      onLogin({ phone, otp, response });
+      onSignup({ phone, otp, response });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to verify OTP");
     } finally {
@@ -86,12 +92,12 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
           <div className="text-center mb-8">
             <img src="/logo.jpg" alt="Quiver" className="w-14 h-14 rounded-xl object-cover mx-auto" />
             <h1 className="text-2xl font-display font-bold text-gray-900 mt-4">
-              {t('login.title')}
+              {t('signup.title')}
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               {step === 'otp'
-                ? t('login.otpSent', { phone })
-                : t('login.subtitle')
+                ? t('signup.otpSent', { phone })
+                : t('signup.subtitle')
               }
             </p>
           </div>
@@ -110,7 +116,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
               <div className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-sm text-gray-900 font-medium">
-                    {t('login.phoneLabel')}
+                    {t('signup.phoneLabel')}
                   </label>
                   <div className="flex gap-2">
                     <div className="w-16 h-12 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-200">
@@ -119,7 +125,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
                     <input
                       type="tel"
                       inputMode="numeric"
-                      placeholder={t('login.phonePlaceholder')}
+                      placeholder={t('signup.phonePlaceholder')}
                       value={phone}
                       onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                       className="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none text-base"
@@ -130,18 +136,34 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
                   </div>
                 </div>
 
+                {/* Consent */}
+                <div className="flex items-start gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                  <Checkbox
+                    id="signup-consent"
+                    checked={consentGiven}
+                    onCheckedChange={(checked) => setConsentGiven(checked === true)}
+                    className="mt-1"
+                  />
+                  <label
+                    htmlFor="signup-consent"
+                    className="text-sm text-gray-700 cursor-pointer leading-relaxed"
+                  >
+                    {t('signup.consent')}
+                  </label>
+                </div>
+
                 <button
                   className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-xl min-h-[48px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  disabled={!phone || phone.length !== 10 || isLoading}
+                  disabled={!phone || phone.length !== 10 || !consentGiven || isLoading}
                   onClick={handlePhoneSubmit}
                 >
                   {isLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      {t('login.sendingOtp')}
+                      {t('signup.sendingOtp')}
                     </>
                   ) : (
-                    t('login.sendOtp')
+                    t('signup.sendOtp')
                   )}
                 </button>
               </div>
@@ -149,12 +171,12 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
               <div className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-sm text-gray-900 font-medium">
-                    {t('login.otpLabel')}
+                    {t('signup.otpLabel')}
                   </label>
                   <input
                     type="tel"
                     inputMode="numeric"
-                    placeholder={t('login.otpPlaceholder')}
+                    placeholder={t('signup.otpPlaceholder')}
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none text-base text-center tracking-[0.3em] font-semibold"
@@ -171,7 +193,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
                     className="text-sm text-accent font-medium hover:underline min-h-[48px]"
                     disabled={isLoading}
                   >
-                    {t('login.resendOtp')}
+                    {t('signup.resendOtp')}
                   </button>
                 </div>
 
@@ -183,10 +205,10 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
                   {isLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      {t('login.verifying')}
+                      {t('signup.verifying')}
                     </>
                   ) : (
-                    t('login.verifyLogin')
+                    t('signup.verifySignup')
                   )}
                 </button>
 
@@ -196,21 +218,21 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
                   className="w-full text-sm text-gray-500 hover:text-gray-900 font-medium min-h-[48px]"
                   disabled={isLoading}
                 >
-                  {t('login.changeNumber')}
+                  {t('signup.changeNumber')}
                 </button>
               </div>
             )}
           </div>
 
-          {/* Switch to Signup */}
+          {/* Switch to Login */}
           <div className="text-center mt-6">
             <p className="text-sm text-gray-600">
-              {t('login.noAccount')}{" "}
+              {t('signup.hasAccount')}{" "}
               <button
-                onClick={onSwitchToSignup}
+                onClick={onSwitchToLogin}
                 className="text-accent font-bold hover:underline"
               >
-                {t('login.signUp')}
+                {t('signup.login')}
               </button>
             </p>
           </div>
@@ -219,7 +241,7 @@ export function Login({ onLogin, onBack, onSwitchToSignup }: LoginProps) {
           <div className="flex items-center justify-center gap-2 mt-6">
             <Shield className="w-4 h-4 text-gray-400" />
             <p className="text-xs text-gray-500">
-              {t('login.trustLine')}
+              {t('signup.trustLine')}
             </p>
           </div>
         </div>

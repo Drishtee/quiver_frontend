@@ -25,6 +25,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
+import { IllustrationPlaceholder } from '../components/IllustrationPlaceholder';
 import '../screens/landing.css';
 
 interface BusinessQuestionnaireProps {
@@ -217,6 +218,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {/* Section D: Product, Market & Dependency */}
           {currentSection === 'D' && (
             <div className="space-y-4 md:space-y-6">
+              {/* GFX-ONBD-010A: Product & Market section header illustration */}
+              {/* TODO: Replace with marketplace bird's-eye illustration — see GRAPHIC_DESIGN_SPEC.md */}
+              {/* <img src="/illustrations/onboarding/gfx-onbd-010a-product-market.svg" alt="" className="w-full h-[100px] object-contain" /> */}
+              <IllustrationPlaceholder
+                id="GFX-ONBD-010A"
+                label="Product & Market — marketplace scene with customers and analysis"
+                height="100px"
+              />
               {/* Product Description */}
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
@@ -437,6 +446,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {/* Section E: Financial Snapshot */}
           {currentSection === 'E' && (
             <div className="space-y-4 md:space-y-6">
+              {/* GFX-ONBD-010B: Financial Health section header illustration */}
+              {/* TODO: Replace with rupee/budget visualization — see GRAPHIC_DESIGN_SPEC.md */}
+              {/* <img src="/illustrations/onboarding/gfx-onbd-010b-financial.svg" alt="" className="w-full h-[100px] object-contain" /> */}
+              <IllustrationPlaceholder
+                id="GFX-ONBD-010B"
+                label="Financial Health — rupee symbol with savings, revenue, expenses branches"
+                height="100px"
+              />
               {/* Monthly Revenue */}
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
@@ -687,6 +704,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {/* Section F: Assets & Compliance */}
           {currentSection === 'F' && (
             <div className="space-y-4 md:space-y-6">
+              {/* GFX-ONBD-010C: Assets & Setup section header illustration */}
+              {/* TODO: Replace with workspace/equipment illustration — see GRAPHIC_DESIGN_SPEC.md */}
+              {/* <img src="/illustrations/onboarding/gfx-onbd-010c-assets.svg" alt="" className="w-full h-[100px] object-contain" /> */}
+              <IllustrationPlaceholder
+                id="GFX-ONBD-010C"
+                label="Assets & Setup — workspace with equipment, inventory, checklist"
+                height="100px"
+              />
               {/* Key Assets */}
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
@@ -813,6 +838,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
           {/* Section G: Time & Growth Intent */}
           {currentSection === 'G' && (
             <div className="space-y-4 md:space-y-6">
+              {/* GFX-ONBD-010D: Growth Goals section header illustration */}
+              {/* TODO: Replace with mountain/summit illustration — see GRAPHIC_DESIGN_SPEC.md */}
+              {/* <img src="/illustrations/onboarding/gfx-onbd-010d-growth-goals.svg" alt="" className="w-full h-[100px] object-contain" /> */}
+              <IllustrationPlaceholder
+                id="GFX-ONBD-010D"
+                label="Growth Goals — person at mountain base, winding path to glowing summit"
+                height="100px"
+              />
               {/* Hours per Day */}
               <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">

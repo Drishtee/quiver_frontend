@@ -32,6 +32,52 @@
     "mr": "মাৰাঠী",
     "selectLanguage": "ভাষা বাছনি কৰক"
   },
+  "login": {
+    "title": "Quiver-ত লগইন কৰক",
+    "subtitle": "আগবাঢ়িবলৈ আপোনাৰ ফোন নম্বৰ দিয়ক",
+    "phoneLabel": "মোবাইল নম্বৰ",
+    "phonePlaceholder": "আপোনাৰ ১০ সংখ্যাৰ নম্বৰ দিয়ক",
+    "sendOtp": "OTP পঠাওক",
+    "sendingOtp": "OTP পঠোৱা হৈছে...",
+    "otpSent": "+91 {{phone}}-লৈ পঠোৱা OTP দিয়ক",
+    "otpLabel": "OTP দিয়ক",
+    "otpPlaceholder": "৬ সংখ্যাৰ OTP",
+    "verifyLogin": "লগইন কৰক",
+    "verifying": "প্ৰমাণিত হৈ আছে...",
+    "resendOtp": "OTP পুনৰ পঠাওক",
+    "changeNumber": "ফোন নম্বৰ সলনি কৰক",
+    "noAccount": "একাউণ্ট নাই?",
+    "signUp": "ইয়াত চাইন আপ কৰক",
+    "trustLine": "আপোনাৰ তথ্য আমাৰ ওচৰত সুৰক্ষিত",
+    "errorInvalidPhone": "অনুগ্ৰহ কৰি এটা বৈধ ১০ সংখ্যাৰ ফোন নম্বৰ দিয়ক",
+    "errorInvalidOtp": "অনুগ্ৰহ কৰি এটা বৈধ ৬ সংখ্যাৰ OTP দিয়ক"
+  },
+  "signup": {
+    "title": "Quiver-ত চাইন আপ কৰক",
+    "subtitle": "আপোনাৰ ব্যৱসায় বিকাশ যাত্ৰা আৰম্ভ কৰক",
+    "phoneLabel": "মোবাইল নম্বৰ",
+    "phonePlaceholder": "আপোনাৰ ১০ সংখ্যাৰ নম্বৰ দিয়ক",
+    "sendOtp": "OTP পঠাওক",
+    "sendingOtp": "OTP পঠোৱা হৈছে...",
+    "otpSent": "+91 {{phone}}-লৈ পঠোৱা OTP দিয়ক",
+    "otpLabel": "OTP দিয়ক",
+    "otpPlaceholder": "৬ সংখ্যাৰ OTP",
+    "verifySignup": "চাইন আপ কৰক",
+    "verifying": "প্ৰমাণিত হৈ আছে...",
+    "resendOtp": "OTP পুনৰ পঠাওক",
+    "changeNumber": "ফোন নম্বৰ সলনি কৰক",
+    "hasAccount": "ইতিমধ্যে একাউণ্ট আছে?",
+    "login": "ইয়াত লগইন কৰক",
+    "consent": "মই সেৱাৰ চৰ্ত আৰু গোপনীয়তা নীতিৰ সৈতে সন্মত। মই SMS আৰু WhatsApp-ৰ জৰিয়তে যোগাযোগ লাভ কৰিবলৈ সন্মতি দিছোঁ।",
+    "trustLine": "আপোনাৰ তথ্য আমাৰ ওচৰত সুৰক্ষিত",
+    "errorInvalidPhone": "অনুগ্ৰহ কৰি এটা বৈধ ১০ সংখ্যাৰ ফোন নম্বৰ দিয়ক",
+    "errorInvalidOtp": "অনুগ্ৰহ কৰি এটা বৈধ ৬ সংখ্যাৰ OTP দিয়ক",
+    "welcome": {
+      "title": "Quiver-লৈ স্বাগতম!",
+      "subtitle": "আপোনাৰ একাউণ্ট সৃষ্টি হৈছে",
+      "startJourney": "আপোনাৰ যাত্ৰা আৰম্ভ কৰক"
+    }
+  },
   "landing": {
     "nav": {
       "login": "লগইন",
