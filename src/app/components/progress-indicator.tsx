@@ -40,8 +40,8 @@ export function ProgressIndicator({
 
   if (sticky) {
     return (
-      <div className="sticky top-[52px] md:top-[60px] z-[9] bg-white py-3 px-4 md:px-6 -mx-4 md:-mx-6 border-b border-gray-100 shadow-sm">
-        <div className="max-w-2xl mx-auto">
+      <div className="sticky top-[52px] md:top-[60px] z-[9] bg-white py-2 md:py-3 px-4 md:px-6 -mx-4 md:-mx-6 border-b border-gray-100 shadow-sm">
+        <div className="max-w-3xl mx-auto">
           {content}
         </div>
       </div>

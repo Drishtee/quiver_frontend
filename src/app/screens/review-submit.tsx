@@ -13,7 +13,8 @@ import {
   Handshake,
   CheckCircle2,
   Shield,
-  Send
+  Send,
+  ArrowLeft
 } from "lucide-react";
 import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import '../screens/landing.css';
@@ -26,6 +27,7 @@ interface ReviewSubmitProps {
   onEdit: (section: string) => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
+  onBack?: () => void;
 }
 
 export function ReviewSubmit({
@@ -35,7 +37,8 @@ export function ReviewSubmit({
   equityAnswer,
   onEdit,
   onSubmit,
-  isSubmitting = false
+  isSubmitting = false,
+  onBack
 }: ReviewSubmitProps) {
   const [declaration, setDeclaration] = useState(false);
 
@@ -60,6 +63,15 @@ export function ReviewSubmit({
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="mr-2 md:mr-3 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Back"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
+            </button>
+          )}
           <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
           <span className="text-base md:text-xl font-display font-bold text-primary">Quiver</span>
         </div>
@@ -90,22 +102,22 @@ export function ReviewSubmit({
           </div>
 
           {/* Profile Summary */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <div className="flex items-center gap-3">
-                <User className="w-6 h-6 text-accent" />
-                <h3 className="font-display font-bold text-gray-900">उद्यमी की जानकारी | Entrepreneur Profile</h3>
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg overflow-hidden">
+            <div className="p-3 md:p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <User className="w-5 h-5 md:w-6 md:h-6 text-accent flex-shrink-0" />
+                <h3 className="font-display font-bold text-gray-900 text-sm md:text-base truncate">उद्यमी की जानकारी | Entrepreneur Profile</h3>
               </div>
               <button
                 onClick={() => onEdit("profile")}
-                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium flex-shrink-0"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
               </button>
             </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="p-4 md:p-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1">नाम | Name</p>
                   <p className="font-medium text-gray-900">{profileData?.fullName || '-'}</p>
@@ -135,22 +147,22 @@ export function ReviewSubmit({
           </div>
 
           {/* Enterprise Summary */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <div className="flex items-center gap-3">
-                <Building2 className="w-6 h-6 text-accent" />
-                <h3 className="font-display font-bold text-gray-900">व्यवसाय की जानकारी | Enterprise Details</h3>
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg overflow-hidden">
+            <div className="p-3 md:p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <Building2 className="w-5 h-5 md:w-6 md:h-6 text-accent flex-shrink-0" />
+                <h3 className="font-display font-bold text-gray-900 text-sm md:text-base truncate">व्यवसाय की जानकारी | Enterprise Details</h3>
               </div>
               <button
                 onClick={() => onEdit("enterprise")}
-                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium flex-shrink-0"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
               </button>
             </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="p-4 md:p-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1">व्यवसाय का नाम | Business Name</p>
                   <p className="font-medium text-gray-900">{enterpriseData?.businessName || '-'}</p>
@@ -176,22 +188,22 @@ export function ReviewSubmit({
           </div>
 
           {/* Financial Summary */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <div className="flex items-center gap-3">
-                <IndianRupee className="w-6 h-6 text-accent" />
-                <h3 className="font-display font-bold text-gray-900">वित्तीय स्थिति | Financial Snapshot</h3>
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg overflow-hidden">
+            <div className="p-3 md:p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <IndianRupee className="w-5 h-5 md:w-6 md:h-6 text-accent flex-shrink-0" />
+                <h3 className="font-display font-bold text-gray-900 text-sm md:text-base truncate">वित्तीय स्थिति | Financial Snapshot</h3>
               </div>
               <button
                 onClick={() => onEdit("questionnaire")}
-                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium flex-shrink-0"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
               </button>
             </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="p-4 md:p-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1">मासिक बिक्री | Monthly Revenue</p>
                   <p className="font-medium text-gray-900">₹{businessAnswers?.monthlyRevenue || '-'}</p>
@@ -209,22 +221,22 @@ export function ReviewSubmit({
           </div>
 
           {/* Growth Intent Summary */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <div className="flex items-center gap-3">
-                <Target className="w-6 h-6 text-accent" />
-                <h3 className="font-display font-bold text-gray-900">विकास की सोच | Growth Intent</h3>
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg overflow-hidden">
+            <div className="p-3 md:p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <Target className="w-5 h-5 md:w-6 md:h-6 text-accent flex-shrink-0" />
+                <h3 className="font-display font-bold text-gray-900 text-sm md:text-base truncate">विकास की सोच | Growth Intent</h3>
               </div>
               <button
                 onClick={() => onEdit("questionnaire")}
-                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium flex-shrink-0"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
               </button>
             </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 md:p-6">
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1">प्राथमिकता | Priority</p>
                   <p className="font-medium text-gray-900">{formatValue(businessAnswers?.priority)}</p>
@@ -242,21 +254,21 @@ export function ReviewSubmit({
           </div>
 
           {/* Partnership Orientation Summary */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <div className="flex items-center gap-3">
-                <Handshake className="w-6 h-6 text-accent" />
-                <h3 className="font-display font-bold text-gray-900">साझेदारी की सोच | Partnership Orientation</h3>
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg overflow-hidden">
+            <div className="p-3 md:p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <Handshake className="w-5 h-5 md:w-6 md:h-6 text-accent flex-shrink-0" />
+                <h3 className="font-display font-bold text-gray-900 text-sm md:text-base truncate">साझेदारी की सोच | Partnership Orientation</h3>
               </div>
               <button
                 onClick={() => onEdit("equity")}
-                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium"
+                className="text-sm text-accent hover:underline flex items-center gap-1 font-medium flex-shrink-0"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
               </button>
             </div>
-            <div className="p-6">
+            <div className="p-4 md:p-6">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                   equityAnswer === 'yes' ? 'bg-green-100' : equityAnswer === 'maybe' ? 'bg-yellow-100' : 'bg-amber-100'
@@ -276,8 +288,8 @@ export function ReviewSubmit({
           </div>
 
           {/* Declaration */}
-          <div className="bg-accent rounded-2xl p-1">
-            <div className="bg-white rounded-xl p-6 space-y-6">
+          <div className="bg-accent rounded-xl md:rounded-2xl p-1">
+            <div className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 space-y-4 md:space-y-6">
               <div className="flex items-start gap-3">
                 <Shield className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
                 <div>

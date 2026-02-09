@@ -148,11 +148,19 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
     onboarding.setField(key, value);
   };
 
+  const [customDistrict, setCustomDistrict] = useState('');
+
   const handleSubmit = () => {
-    onContinue(formData);
+    // If "other" is selected, use the custom district value
+    const finalData = {
+      ...formData,
+      district: formData.district === 'other' ? customDistrict.trim() : formData.district,
+    };
+    onContinue(finalData);
   };
 
-  const isValid = formData.fullName && formData.gender && formData.age && formData.education && formData.state && formData.district;
+  const isValid = formData.fullName && formData.gender && formData.age && formData.education && formData.state
+    && (formData.district === 'other' ? customDistrict.trim().length > 0 : !!formData.district);
 
   // Get districts for selected state
   const getDistrictsForState = (stateKey: string): string[] => {
@@ -243,7 +251,7 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
               <RadioGroup
                 value={formData.gender}
                 onValueChange={(value) => updateField('gender', value)}
-                className="flex flex-wrap gap-6 md:gap-8"
+                className="flex flex-wrap gap-4 md:gap-8"
               >
                 {genderOptions.map((option) => (
                   <label
@@ -312,7 +320,7 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
               <label className="text-base font-medium text-gray-900">
                 {currentLanguage === 'hi' ? 'राज्य' : t('profile.state')} <span className="text-red-500">*</span>
               </label>
-              <Select value={formData.state} onValueChange={(value) => { updateField('state', value); updateField('district', ''); }}>
+              <Select value={formData.state} onValueChange={(value) => { updateField('state', value); updateField('district', ''); setCustomDistrict(''); }}>
                 <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-xl text-base">
                   <SelectValue placeholder={currentLanguage === 'hi' ? 'राज्य चुनें' : t('profile.statePlaceholder')} />
                 </SelectTrigger>
@@ -326,14 +334,17 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
               </Select>
             </div>
 
-            {/* District - Dropdown selector */}
+            {/* District - Dropdown selector with "Other" option */}
             <div className="space-y-2">
               <label className="text-base font-medium text-gray-900">
                 {currentLanguage === 'hi' ? 'जिला' : t('profile.district')} <span className="text-red-500">*</span>
               </label>
               <Select
                 value={formData.district}
-                onValueChange={(value) => updateField('district', value)}
+                onValueChange={(value) => {
+                  updateField('district', value);
+                  if (value !== 'other') setCustomDistrict('');
+                }}
                 disabled={!formData.state}
               >
                 <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-xl text-base disabled:opacity-50">
@@ -349,8 +360,21 @@ export function ProfileCreation({ onContinue, onBack }: ProfileCreationProps) {
                       {district}
                     </SelectItem>
                   ))}
+                  <SelectItem value="other">
+                    {currentLanguage === 'hi' ? 'अन्य (टाइप करें)' : 'Other (Type your district)'}
+                  </SelectItem>
                 </SelectContent>
               </Select>
+              {formData.district === 'other' && (
+                <Input
+                  type="text"
+                  placeholder={currentLanguage === 'hi' ? 'अपना जिला टाइप करें' : 'Type your district name'}
+                  value={customDistrict}
+                  onChange={(e) => setCustomDistrict(e.target.value)}
+                  className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:border-accent focus:ring-accent/20 text-base"
+                  autoFocus
+                />
+              )}
             </div>
 
             {/* Email (Optional) */}

@@ -41,6 +41,7 @@ interface EntrepreneurDashboardProps {
   onJoinMeeting: (meetingId: string) => void;
   onLogout: () => void;
   onViewGrowthPlan?: () => void;
+  onUploadDocuments?: () => void;
 }
 
 interface Meeting {
@@ -107,19 +108,19 @@ function StatCard({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-md hover:border-gray-200 transition-all">
+    <div className="bg-white rounded-xl md:rounded-2xl border border-gray-100 p-3 md:p-4 hover:shadow-md hover:border-gray-200 transition-all">
       <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-gray-500 mb-1">{label}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <div className="min-w-0">
+          <p className="text-xs md:text-sm text-gray-500 mb-0.5 md:mb-1 truncate">{label}</p>
+          <p className="text-xl md:text-2xl font-bold text-gray-900">{value}</p>
           {trend && (
             <p className={`text-xs mt-1 ${trend.value >= 0 ? "text-emerald-600" : "text-red-600"}`}>
               {trend.value >= 0 ? "+" : ""}{trend.value}% {trend.label}
             </p>
           )}
         </div>
-        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${colorClasses[color]} flex items-center justify-center flex-shrink-0`}>
-          <Icon className="w-5 h-5 text-white" />
+        <div className={`w-9 h-9 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br ${colorClasses[color]} flex items-center justify-center flex-shrink-0`}>
+          <Icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
         </div>
       </div>
     </div>
@@ -235,7 +236,8 @@ export function EntrepreneurDashboard({
   onScheduleMeeting,
   onJoinMeeting,
   onLogout,
-  onViewGrowthPlan
+  onViewGrowthPlan,
+  onUploadDocuments
 }: EntrepreneurDashboardProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("overview");
@@ -396,10 +398,10 @@ export function EntrepreneurDashboard({
         <div className="mb-6">
           <div className="flex items-center justify-between mb-1">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                 {greeting}, {firstName}
               </h2>
-              <p className="text-gray-500 mt-1">{businessName}</p>
+              <p className="text-sm md:text-base text-gray-500 mt-0.5 md:mt-1 truncate">{businessName}</p>
             </div>
             <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-xl">
               <TrendingUp className="w-5 h-5 text-accent" />
@@ -465,7 +467,7 @@ export function EntrepreneurDashboard({
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             {/* Stats Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
               <StatCard
                 label={t('dashboard.overview.upcomingMeetings')}
                 value={upcomingMeetings.length}
@@ -555,7 +557,7 @@ export function EntrepreneurDashboard({
                     icon={FileText}
                     label="Upload Documents"
                     description="Submit required business documents"
-                    onClick={() => {}}
+                    onClick={() => onUploadDocuments?.()}
                   />
                 </div>
               </div>
@@ -677,11 +679,11 @@ export function EntrepreneurDashboard({
             </div>
 
             {/* Progress Overview */}
-            <div className="bg-gradient-to-br from-accent to-accent/80 rounded-2xl p-6 text-white relative overflow-hidden">
+            <div className="bg-gradient-to-br from-accent to-accent/80 rounded-xl md:rounded-2xl p-4 md:p-6 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10 flex items-center gap-5">
-                <div className="relative">
-                  <svg width={80} height={80} className="transform -rotate-90">
+              <div className="relative z-10 flex items-center gap-4 md:gap-5">
+                <div className="relative flex-shrink-0">
+                  <svg width={64} height={64} className="md:w-[80px] md:h-[80px] transform -rotate-90">
                     <circle cx={40} cy={40} r={34} fill="none" stroke="currentColor" strokeWidth={6} className="text-white/20" />
                     <circle
                       cx={40} cy={40} r={34} fill="none" stroke="currentColor" strokeWidth={6}
@@ -692,11 +694,11 @@ export function EntrepreneurDashboard({
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xl font-bold">{progressPercent}%</span>
+                    <span className="text-base md:text-xl font-bold">{progressPercent}%</span>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold">{t('dashboard.progress.overallProgress')}</h3>
+                <div className="min-w-0">
+                  <h3 className="text-base md:text-xl font-bold">{t('dashboard.progress.overallProgress')}</h3>
                   <p className="text-white/80">{t('dashboard.progress.milestonesCompleted', { completed: completedMilestones, total: milestones.length })}</p>
                 </div>
               </div>
@@ -753,15 +755,15 @@ export function EntrepreneurDashboard({
             {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md (GFX-DASH-003) */}
             <button
               onClick={() => setShowGrowthPlan(true)}
-              className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-5 text-left hover:shadow-lg transition-shadow"
+              className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl md:rounded-2xl p-4 md:p-5 text-left hover:shadow-lg transition-shadow"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-lg">{t('dashboard.progress.aiGrowthPlan')}</h3>
-                  <p className="text-white/70 text-sm">{t('dashboard.progress.personalizedRec')}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-base md:text-lg">{t('dashboard.progress.aiGrowthPlan')}</h3>
+                  <p className="text-white/70 text-xs md:text-sm truncate">{t('dashboard.progress.personalizedRec')}</p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-white/60" />
               </div>
@@ -793,12 +795,12 @@ export function EntrepreneurDashboard({
                 {/* Profile Header */}
                 <div className="bg-gradient-to-br from-accent to-accent/80 rounded-2xl p-6 text-white">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-xl md:text-2xl flex-shrink-0">
                       {userName.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-xl font-bold truncate">{userName}</h3>
-                      <p className="text-white/80 truncate">{businessName}</p>
+                      <h3 className="text-lg md:text-xl font-bold truncate">{userName}</h3>
+                      <p className="text-white/80 text-sm md:text-base truncate">{businessName}</p>
                       <div className="flex items-center gap-3 mt-1 text-sm text-white/70">
                         <span className="flex items-center gap-1">
                           <Phone className="w-3.5 h-3.5" />

@@ -1,234 +1,292 @@
 // AI Growth Pathway generation service
+// Calls backend endpoint which proxies to OpenAI
 
 import { makeAuthenticatedRequest } from './api';
 
-export interface PathwayResource {
-  id: string;
-  title: string;
-  titleHi: string;
-  type: 'video' | 'article' | 'tool' | 'template';
-  url?: string;
+// ============================================
+// TYPES
+// ============================================
+
+export interface GrowthOverviewRow {
+  year: string;
+  mainGoal: string;
+  revenueTarget: string;
+  whatYouBuild: string;
+  whereYouSell: string;
+  teamSize: string;
 }
 
-export interface PathwayStep {
-  id: string;
-  order: number;
-  title: string;
-  titleHi: string;
-  titleAs: string;
-  description: string;
-  descriptionHi: string;
-  descriptionAs: string;
-  duration: string;
-  resources: PathwayResource[];
-  milestones: string[];
-  milestonesHi: string[];
+export interface GrowthDetailRow {
+  timeline: string;
+  monthlyRevenue: string;
+  monthlyProfit: string;
+  customersPerMonth: string;
+  workers: string;
+  keyActions: string;
+  salesArea: string;
 }
 
-export interface GrowthPathway {
-  id: string;
-  industry: string;
-  generatedAt: Date;
-  steps: PathwayStep[];
-  recommendations: string[];
-  recommendationsHi: string[];
-  estimatedGrowth: string;
-  estimatedGrowthHi: string;
-  personalizedInsights: string[];
-  personalizedInsightsHi: string[];
+export interface CapitalBreakdown {
+  item: string;
+  amount: string;
+  timeline: string;
 }
 
-export interface GeneratePathwayRequest {
-  sessionId: string;
-  industry: string;
-  businessData: {
-    businessName?: string;
-    yearStarted?: string;
-    monthlyRevenue?: string;
-    employeeCount?: string;
-    currentChallenges?: string[];
-    goals?: string[];
+export interface QuiverSupport {
+  mentorship: string[];
+  growthCapital: {
+    totalAmount: string;
+    breakdown: CapitalBreakdown[];
   };
+  marketAccess: string[];
 }
 
-/**
- * Generate AI-powered growth pathway
- */
+export interface KeyChangesYear {
+  year: string;
+  priorities: string[];
+}
+
+export interface AIGrowthPathwayData {
+  businessSummary: string;
+  overview: GrowthOverviewRow[];
+  detailed: GrowthDetailRow[];
+  quiverSupport: QuiverSupport;
+  keyChanges: KeyChangesYear[];
+  closingNote: string;
+}
+
+// Business data collected from onboarding forms
+export interface BusinessDataPayload {
+  // Profile (Section B)
+  state?: string;
+  district?: string;
+  // Enterprise (Section C)
+  businessName?: string;
+  sector?: string;
+  yearStarted?: string;
+  // Product/Market (Section D)
+  productDescription?: string;
+  primaryCustomers?: string;
+  salesGeography?: string;
+  avgCustomers?: string;
+  salesChannel?: string;
+  salesConcentration?: string;
+  businessIndependence?: string;
+  // Financial (Section E)
+  monthlyRevenue?: string;
+  monthlyExpenses?: string;
+  currentStatus?: string;
+  salesTrend?: string;
+  paidWorkers?: string;
+  familyWorkers?: string;
+  paymentFrequency?: string;
+  digitalTransactions?: string;
+  recordsType?: string;
+  // Assets (Section F)
+  keyAssets?: string;
+  workspaceType?: string;
+  registrations?: string;
+  // Growth Intent (Section G)
+  hoursPerDay?: string;
+  openToChange?: string;
+  priority?: string;
+  quiverSupport?: string | string[];
+  investmentAmount?: string;
+  fundingUse?: string;
+}
+
+// ============================================
+// API CALL
+// ============================================
+
 export const generateGrowthPathway = async (
-  request: GeneratePathwayRequest
-): Promise<GrowthPathway> => {
+  businessData: BusinessDataPayload
+): Promise<AIGrowthPathwayData> => {
   try {
-    const response = await makeAuthenticatedRequest('/ai/growth-pathway/', {
+    const response = await makeAuthenticatedRequest<{
+      success: boolean;
+      pathway: AIGrowthPathwayData;
+    }>('/onboarding/ai-growth-pathway/', {
       method: 'POST',
-      body: JSON.stringify(request)
+      body: JSON.stringify({ businessData })
     });
-    return {
-      ...response,
-      generatedAt: new Date(response.generatedAt)
-    };
+
+    if (response.success && response.pathway) {
+      return response.pathway;
+    }
+    throw new Error('Invalid response from server');
   } catch (error) {
-    console.error('Error generating growth pathway:', error);
-    // Return mock data for development
-    return generateMockPathway(request.industry);
+    console.error('Backend AI pathway failed, using fallback:', error);
+    return generateFallbackPathway(businessData);
   }
 };
 
-/**
- * Get saved growth pathway for user
- */
-export const getSavedPathway = async (sessionId: string): Promise<GrowthPathway | null> => {
-  try {
-    const response = await makeAuthenticatedRequest(`/ai/growth-pathway/${sessionId}/`);
-    if (response) {
-      return {
-        ...response,
-        generatedAt: new Date(response.generatedAt)
-      };
-    }
-    return null;
-  } catch (error) {
-    console.error('Error fetching saved pathway:', error);
-    return null;
-  }
-};
+// ============================================
+// FALLBACK (when backend is unavailable)
+// ============================================
 
-/**
- * Generate mock pathway for development/fallback
- */
-const generateMockPathway = (industry: string): GrowthPathway => {
-  const industrySteps: Record<string, PathwayStep[]> = {
-    'Food Processing': [
-      {
-        id: '1',
-        order: 1,
-        title: 'Business Foundation Setup',
-        titleHi: 'व्यवसाय की नींव स्थापित करें',
-        titleAs: 'ব্যৱসায়ৰ ভেটি স্থাপন কৰক',
-        description: 'Register your business, get FSSAI license, and set up basic accounting',
-        descriptionHi: 'अपना व्यवसाय पंजीकृत करें, FSSAI लाइसेंस प्राप्त करें, और बुनियादी लेखांकन स्थापित करें',
-        descriptionAs: 'আপোনাৰ ব্যৱসায় পঞ্জীয়ন কৰক, FSSAI অনুজ্ঞাপত্ৰ লওক, আৰু মৌলিক হিচাপ স্থাপন কৰক',
-        duration: '2-4 weeks',
-        resources: [
-          { id: 'r1', title: 'FSSAI Registration Guide', titleHi: 'FSSAI पंजीकरण गाइड', type: 'article' },
-          { id: 'r2', title: 'Basic Bookkeeping Template', titleHi: 'बुनियादी बहीखाता टेम्पलेट', type: 'template' }
-        ],
-        milestones: ['Business registered', 'FSSAI license obtained', 'Accounting system set up'],
-        milestonesHi: ['व्यवसाय पंजीकृत', 'FSSAI लाइसेंस प्राप्त', 'लेखांकन प्रणाली स्थापित']
-      },
-      {
-        id: '2',
-        order: 2,
-        title: 'Product Standardization',
-        titleHi: 'उत्पाद मानकीकरण',
-        titleAs: 'সামগ্ৰীৰ মানককৰণ',
-        description: 'Standardize recipes, packaging, and quality control processes',
-        descriptionHi: 'रेसिपी, पैकेजिंग और गुणवत्ता नियंत्रण प्रक्रियाओं को मानकीकृत करें',
-        descriptionAs: 'ৰেচিপি, পেকেজিং আৰু গুণগত নিয়ন্ত্ৰণ প্ৰক্ৰিয়াসমূহ মানককৃত কৰক',
-        duration: '3-6 weeks',
-        resources: [
-          { id: 'r3', title: 'Recipe Standardization Video', titleHi: 'रेसिपी मानकीकरण वीडियो', type: 'video' },
-          { id: 'r4', title: 'Quality Control Checklist', titleHi: 'गुणवत्ता नियंत्रण चेकलिस्ट', type: 'template' }
-        ],
-        milestones: ['Standard recipes documented', 'Packaging designed', 'QC process established'],
-        milestonesHi: ['मानक रेसिपी प्रलेखित', 'पैकेजिंग डिज़ाइन', 'QC प्रक्रिया स्थापित']
-      },
-      {
-        id: '3',
-        order: 3,
-        title: 'Market Expansion',
-        titleHi: 'बाज़ार विस्तार',
-        titleAs: 'বজাৰ সম্প্ৰসাৰণ',
-        description: 'Expand to nearby markets, connect with retailers, and explore online channels',
-        descriptionHi: 'पास के बाज़ारों में विस्तार करें, खुदरा विक्रेताओं से जुड़ें, और ऑनलाइन चैनल एक्सप्लोर करें',
-        descriptionAs: 'ওচৰৰ বজাৰলৈ সম্প্ৰসাৰণ কৰক, খুচুৰা বিক্ৰেতাসকলৰ সৈতে সংযোগ কৰক, আৰু অনলাইন চেনেল অন্বেষণ কৰক',
-        duration: '4-8 weeks',
-        resources: [
-          { id: 'r5', title: 'Retailer Pitch Deck', titleHi: 'रिटेलर पिच डेक', type: 'template' },
-          { id: 'r6', title: 'Online Selling Guide', titleHi: 'ऑनलाइन बिक्री गाइड', type: 'article' }
-        ],
-        milestones: ['5+ new retail partnerships', 'Online presence established', 'Sales increased by 30%'],
-        milestonesHi: ['5+ नई खुदरा साझेदारी', 'ऑनलाइन उपस्थिति स्थापित', 'बिक्री में 30% वृद्धि']
-      }
-    ]
-  };
-
-  // Default steps for other industries
-  const defaultSteps: PathwayStep[] = [
-    {
-      id: '1',
-      order: 1,
-      title: 'Business Assessment & Planning',
-      titleHi: 'व्यवसाय मूल्यांकन और योजना',
-      titleAs: 'ব্যৱসায় মূল্যায়ন আৰু পৰিকল্পনা',
-      description: 'Comprehensive assessment of current business state and strategic planning',
-      descriptionHi: 'वर्तमान व्यवसाय स्थिति का व्यापक मूल्यांकन और रणनीतिक योजना',
-      descriptionAs: 'বৰ্তমান ব্যৱসায়ৰ অৱস্থাৰ বিস্তৃত মূল্যায়ন আৰু কৌশলগত পৰিকল্পনা',
-      duration: '2-3 weeks',
-      resources: [],
-      milestones: ['Business assessment completed', 'Growth plan created'],
-      milestonesHi: ['व्यवसाय मूल्यांकन पूर्ण', 'विकास योजना बनाई गई']
-    },
-    {
-      id: '2',
-      order: 2,
-      title: 'Operational Improvements',
-      titleHi: 'परिचालन सुधार',
-      titleAs: 'পৰিচালনাগত উন্নতি',
-      description: 'Implement systems and processes to improve operational efficiency',
-      descriptionHi: 'परिचालन दक्षता में सुधार के लिए सिस्टम और प्रक्रियाओं को लागू करें',
-      descriptionAs: 'পৰিচালনাগত দক্ষতা উন্নত কৰিবলৈ ব্যৱস্থা আৰু প্ৰক্ৰিয়া প্ৰয়োগ কৰক',
-      duration: '4-6 weeks',
-      resources: [],
-      milestones: ['Systems implemented', 'Efficiency improved'],
-      milestonesHi: ['सिस्टम लागू', 'दक्षता में सुधार']
-    },
-    {
-      id: '3',
-      order: 3,
-      title: 'Growth & Scaling',
-      titleHi: 'विकास और विस्तार',
-      titleAs: 'বিকাশ আৰু স্কেলিং',
-      description: 'Scale the business through market expansion and revenue optimization',
-      descriptionHi: 'बाज़ार विस्तार और राजस्व अनुकूलन के माध्यम से व्यवसाय को बड़ा करें',
-      descriptionAs: 'বজাৰ সম্প্ৰসাৰণ আৰু ৰাজহ অপ্টিমাইজেশ্বনৰ জৰিয়তে ব্যৱসায় স্কেল কৰক',
-      duration: '6-12 weeks',
-      resources: [],
-      milestones: ['Revenue increased', 'Market expanded'],
-      milestonesHi: ['राजस्व में वृद्धि', 'बाज़ार विस्तारित']
-    }
-  ];
-
-  const steps = industrySteps[industry] || defaultSteps;
+const generateFallbackPathway = (data: BusinessDataPayload): AIGrowthPathwayData => {
+  const revenue = data.monthlyRevenue || '60,000';
+  const product = data.productDescription || 'products';
+  const sector = data.sector || 'General Business';
+  const state = data.state || 'India';
+  const investment = data.investmentAmount || '5,00,000';
 
   return {
-    id: `pathway-${Date.now()}`,
-    industry,
-    generatedAt: new Date(),
-    steps,
-    recommendations: [
-      'Focus on quality consistency before scaling',
-      'Build strong customer relationships',
-      'Maintain proper financial records'
+    businessSummary: `A ${sector} business based in ${state}, currently earning ₹${revenue}/month from ${product}. The business shows potential for growth with proper systems and market expansion.`,
+    overview: [
+      {
+        year: 'Year 1',
+        mainGoal: 'Formalize & Grow Production',
+        revenueTarget: '₹1.5L/month',
+        whatYouBuild: 'Legal business, better equipment, small team',
+        whereYouSell: 'Block to District level',
+        teamSize: '4-5 people'
+      },
+      {
+        year: 'Year 2',
+        mainGoal: 'Expand Market & Products',
+        revenueTarget: '₹4L/month',
+        whatYouBuild: 'Own workspace, multiple products, bigger area',
+        whereYouSell: '3-4 districts + online',
+        teamSize: '10-12 people'
+      },
+      {
+        year: 'Year 3',
+        mainGoal: 'Professional Business at Scale',
+        revenueTarget: '₹8L+/month',
+        whatYouBuild: 'Factory setup, strong brand, can run without you',
+        whereYouSell: '8+ districts + retail chains',
+        teamSize: '15-20 people'
+      }
     ],
-    recommendationsHi: [
-      'विस्तार से पहले गुणवत्ता स्थिरता पर ध्यान दें',
-      'मज़बूत ग्राहक संबंध बनाएं',
-      'उचित वित्तीय रिकॉर्ड बनाए रखें'
+    detailed: [
+      {
+        timeline: 'Current State',
+        monthlyRevenue: `₹${revenue}`,
+        monthlyProfit: '₹20,000',
+        customersPerMonth: data.avgCustomers || '100',
+        workers: 'Family only',
+        keyActions: 'Home-based, no registration, manual operations',
+        salesArea: data.salesGeography || 'Block level'
+      },
+      {
+        timeline: 'Year 1 (Months 1-3)',
+        monthlyRevenue: '₹75,000',
+        monthlyProfit: '₹30,000',
+        customersPerMonth: '120',
+        workers: 'Family only',
+        keyActions: 'Get FSSAI & Udyam registration, start UPI, maintain basic records',
+        salesArea: 'Block level'
+      },
+      {
+        timeline: 'Year 1 (Months 4-6)',
+        monthlyRevenue: '₹1,00,000',
+        monthlyProfit: '₹40,000',
+        customersPerMonth: '200',
+        workers: 'Family + 2 hired',
+        keyActions: `Buy better equipment with ₹${investment} funding, hire 2 workers, improve quality`,
+        salesArea: 'Block level'
+      },
+      {
+        timeline: 'Year 1 (Months 7-12)',
+        monthlyRevenue: '₹1,50,000',
+        monthlyProfit: '₹60,000',
+        customersPerMonth: '300',
+        workers: '4-5 people',
+        keyActions: 'Get branded packaging, sell to more retailers in district, add new products',
+        salesArea: 'District level'
+      },
+      {
+        timeline: 'Year 2 (Months 13-18)',
+        monthlyRevenue: '₹2,50,000',
+        monthlyProfit: '₹1,00,000',
+        customersPerMonth: '500',
+        workers: '6-8 people',
+        keyActions: 'Get separate workspace, add 3-4 new products, reach more districts',
+        salesArea: '2-3 districts'
+      },
+      {
+        timeline: 'Year 2 (Months 19-24)',
+        monthlyRevenue: '₹4,00,000',
+        monthlyProfit: '₹1,60,000',
+        customersPerMonth: '800',
+        workers: '10-12 people',
+        keyActions: 'Start online delivery, supply to bigger buyers, get working capital loan',
+        salesArea: '3-4 districts'
+      },
+      {
+        timeline: 'Year 3 (Months 25-30)',
+        monthlyRevenue: '₹6,00,000',
+        monthlyProfit: '₹2,40,000',
+        customersPerMonth: '1,200',
+        workers: '12-15 people',
+        keyActions: 'Open semi-automatic setup, hire manager so business runs without you',
+        salesArea: '5-6 districts'
+      },
+      {
+        timeline: 'Year 3 (Months 31-36)',
+        monthlyRevenue: '₹8,00,000+',
+        monthlyProfit: '₹3,20,000+',
+        customersPerMonth: '1,600+',
+        workers: '15-20 people',
+        keyActions: 'Sell in retail chains, cover 5-8 districts, explore franchising',
+        salesArea: '8+ districts'
+      }
     ],
-    estimatedGrowth: '40-60% revenue growth in 12 months',
-    estimatedGrowthHi: '12 महीनों में 40-60% राजस्व वृद्धि',
-    personalizedInsights: [
-      'Your business shows strong potential for regional expansion',
-      'Consider partnering with local retailers for faster growth'
+    quiverSupport: {
+      mentorship: [
+        'Getting registrations done quickly (FSSAI, Udyam)',
+        'Finding right equipment suppliers and negotiating prices',
+        'Building retail network and getting bigger orders',
+        'Managing workers and money properly'
+      ],
+      growthCapital: {
+        totalAmount: `₹${investment}`,
+        breakdown: [
+          { item: 'New equipment (machines, packaging)', amount: '₹3,00,000', timeline: 'Months 1-6' },
+          { item: 'Registration, branding, working capital', amount: '₹2,00,000', timeline: 'Months 1-6' }
+        ]
+      },
+      marketAccess: [
+        'Connections to district-level retailers and wholesalers',
+        'Introduction to institutional buyers (canteens, offices)',
+        'Support to list products in retail chains by Year 3'
+      ]
+    },
+    keyChanges: [
+      {
+        year: 'Year 1',
+        priorities: [
+          'Start maintaining daily sales records (simple notebook or phone app)',
+          'Accept UPI payments to track money better and attract more customers',
+          'Train family members so business can run for 7 days without you',
+          'Get required licenses - mandatory to sell legally'
+        ]
+      },
+      {
+        year: 'Year 2',
+        priorities: [
+          'Move production out of home to separate workspace',
+          'Add 3-4 new products to sell more to same retailers',
+          'Hire supervisor to manage daily operations',
+          'Build relationships with bigger buyers'
+        ]
+      },
+      {
+        year: 'Year 3',
+        priorities: [
+          'Set up proper production unit with better machines',
+          'Hire professional manager - business must run without you',
+          'Create strong brand that people recognize',
+          'Expand to metro cities or online platforms'
+        ]
+      }
     ],
-    personalizedInsightsHi: [
-      'आपके व्यवसाय में क्षेत्रीय विस्तार की मज़बूत संभावना है',
-      'तेज़ विकास के लिए स्थानीय खुदरा विक्रेताओं के साथ साझेदारी पर विचार करें'
-    ]
+    closingNote: `This pathway takes your business from informal home operation to a professional ${sector.toLowerCase()} company creating 15-20 jobs while growing profits significantly over 3 years.`
   };
 };
 
 export default {
-  generateGrowthPathway,
-  getSavedPathway
+  generateGrowthPathway
 };

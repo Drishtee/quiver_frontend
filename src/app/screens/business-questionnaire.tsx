@@ -23,13 +23,15 @@ import {
   FileText,
   Briefcase,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ArrowLeft
 } from "lucide-react";
 import { IllustrationPlaceholder } from '../components/IllustrationPlaceholder';
 import '../screens/landing.css';
 
 interface BusinessQuestionnaireProps {
   onContinue: (answers: Record<string, string | string[]>) => void;
+  onBack?: () => void;
 }
 
 type Section = 'D' | 'E' | 'F' | 'G';
@@ -45,7 +47,7 @@ const QUESTIONNAIRE_KEYS = [
   'currentSection_questionnaire'
 ];
 
-export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps) {
+export function BusinessQuestionnaire({ onContinue, onBack }: BusinessQuestionnaireProps) {
   const onboarding = useOnboarding();
   const [currentSection, setCurrentSection] = useState<Section>('D');
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
@@ -170,13 +172,22 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
       <header className="bg-white/80 backdrop-blur-sm shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center min-w-0">
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="mr-2 md:mr-3 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
+                aria-label="Back"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+              </button>
+            )}
             <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3 flex-shrink-0" />
             <span className="text-base md:text-xl font-display font-bold text-primary truncate">Quiver</span>
           </div>
           {autoSaved && (
             <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full flex-shrink-0">
               <Save className="w-3 h-3" />
-              <span className="hidden xs:inline">Auto-saved</span>
+              <span className="hidden sm:inline">Auto-saved</span>
             </div>
           )}
         </div>
@@ -227,7 +238,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                 height="100px"
               />
               {/* Product Description */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -246,7 +257,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Primary Customers */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <Users className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -277,7 +288,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -286,7 +297,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Sales Geography */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <MapPin className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -316,7 +327,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -325,7 +336,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Avg Customers per Month */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>हर महीने कितने ग्राहक आते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">How many customers per month?</span>
@@ -340,7 +351,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Sales Channel */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>आप कैसे बेचते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">How do you sell? <span className="text-red-500">*</span></span>
@@ -367,7 +378,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -376,7 +387,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Dependency Questions */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-5 md:space-y-6">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-5 md:space-y-6">
                 <div className="space-y-3 md:space-y-4">
                   <label className="text-sm font-medium text-gray-900">
                     <span>क्या आपकी ज़्यादातर बिक्री 1-2 बड़े ग्राहकों से होती है?</span>
@@ -434,7 +445,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                           )}
                         </div>
                         <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                        <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                        <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                       </label>
                     ))}
                   </div>
@@ -455,7 +466,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                 height="100px"
               />
               {/* Monthly Revenue */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -473,7 +484,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Monthly Expenses */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
@@ -491,7 +502,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Current Status */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>अभी व्यवसाय की स्थिति क्या है?</span>
                   <span className="block text-xs text-gray-500 font-normal">Current business status <span className="text-red-500">*</span></span>
@@ -519,14 +530,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Sales Trend */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -555,14 +566,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Workers */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <Users className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -595,7 +606,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Payment Frequency */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>कर्मचारियों को कैसे पैसे देते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">How do you pay workers?</span>
@@ -621,14 +632,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Bank/UPI Transactions */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>क्या आप UPI/बैंक से लेन-देन करते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">Do you use UPI/Bank for transactions?</span>
@@ -654,14 +665,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Records */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <FileText className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -691,7 +702,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -713,7 +724,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                 height="100px"
               />
               {/* Key Assets */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <Building className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -732,7 +743,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Workspace Type */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>आप कहाँ से काम करते हैं?</span>
                   <span className="block text-xs text-gray-500 font-normal">Where do you work from? <span className="text-red-500">*</span></span>
@@ -758,14 +769,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Registrations */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>क्या आपके पास कोई पंजीकरण है?</span>
                   <span className="block text-xs text-gray-500 font-normal">Do you have any registrations?</span>
@@ -792,7 +803,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -801,7 +812,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Income Decision Control */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>क्या कमाई पर आपका फ़ैसला चलता है?</span>
                   <span className="block text-xs text-gray-500 font-normal">Do you decide how to use business income?</span>
@@ -827,7 +838,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
@@ -847,7 +858,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                 height="100px"
               />
               {/* Hours per Day */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <Clock className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -876,14 +887,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Open to Change */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -912,14 +923,14 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         )}
                       </div>
                       <span className="text-xs md:text-sm font-medium text-gray-900">{option.labelHi}</span>
-                      <span className="text-[10px] md:text-xs text-gray-500">| {option.labelEn}</span>
+                      <span className="text-[11px] md:text-xs text-gray-500">| {option.labelEn}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Priority */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <Target className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -950,7 +961,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -959,7 +970,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Quiver Support */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>Quiver से आपको क्या मदद चाहिए?</span>
                   <span className="block text-xs text-gray-500 font-normal">What help do you need from Quiver? <span className="text-red-500">*</span></span>
@@ -986,7 +997,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                         />
                         <div className="min-w-0">
                           <span className="text-xs md:text-sm font-medium text-gray-900 block truncate">{option.labelHi}</span>
-                          <span className="text-[10px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
+                          <span className="text-[11px] md:text-xs text-gray-500 block truncate">{option.labelEn}</span>
                         </div>
                       </label>
                     );
@@ -995,7 +1006,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Investment Amount */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="flex items-start gap-2 text-sm font-medium text-gray-900">
                   <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-accent mt-0.5 flex-shrink-0" />
                   <div>
@@ -1013,7 +1024,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
               </div>
 
               {/* Funding Use */}
-              <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-md md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
                 <label className="text-sm font-medium text-gray-900">
                   <span>पैसों का इस्तेमाल किसमें करेंगे?</span>
                   <span className="block text-xs text-gray-500 font-normal">How will you use the funding?</span>
@@ -1040,7 +1051,7 @@ export function BusinessQuestionnaire({ onContinue }: BusinessQuestionnaireProps
                   onClick={handleBack}
                 >
                   <ChevronLeft className="w-5 h-5 mr-1 md:mr-2" />
-                  <span className="hidden xs:inline">पीछे |</span> Back
+                  <span className="hidden sm:inline">पीछे |</span> Back
                 </Button>
               )}
               <Button

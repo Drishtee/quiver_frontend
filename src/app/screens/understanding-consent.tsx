@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
 import { AIAssistant } from "../components/ai-assistant";
-import { Check, Globe, Handshake, TrendingUp, Users, Shield, Clock, Mic, FileText } from "lucide-react";
+import { Check, Globe, Handshake, TrendingUp, Users, Shield, Clock, Mic, FileText, ArrowLeft } from "lucide-react";
 import { LanguageSelector } from "../components/language-selector";
 import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -13,6 +13,7 @@ import '../screens/landing.css';
 interface UnderstandingConsentProps {
   onContinue: () => void;
   onVoiceOnboarding?: () => void;
+  onBack?: () => void;
 }
 
 interface ConsentItem {
@@ -21,7 +22,7 @@ interface ConsentItem {
   timestamp: string | null;
 }
 
-export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: UnderstandingConsentProps) {
+export function UnderstandingConsent({ onContinue, onVoiceOnboarding, onBack }: UnderstandingConsentProps) {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
   const { recordConsent } = useOnboarding();
@@ -77,6 +78,15 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="mr-2 md:mr-3 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Back"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+              </button>
+            )}
             <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
             <span className="text-lg md:text-xl font-display font-bold text-primary">Quiver</span>
           </div>
@@ -88,7 +98,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
       <main className="max-w-3xl mx-auto px-4 py-5 md:px-6 md:py-8">
         <div className="space-y-5 md:space-y-8">
           {/* Language Selection Card - Compact on mobile */}
-          <div className="bg-white rounded-xl md:rounded-2xl border-2 border-gray-200 shadow-lg p-4 md:p-6">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6">
             <h3 className="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
               <Globe className="w-4 h-4 md:w-5 md:h-5 text-accent" />
               {t('consent.selectLanguage')}
@@ -172,7 +182,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
           </div>
 
           {/* Consent Section - Clean, prominent layout */}
-          <div className="bg-white rounded-xl md:rounded-2xl border-2 border-accent/30 shadow-lg p-4 md:p-8 space-y-5 md:space-y-6 mt-8">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-accent/30 md:border-2 shadow-sm md:shadow-lg p-4 md:p-8 space-y-5 md:space-y-6 mt-6 md:mt-8">
             {/* Consent Header - Complete sentence, no hanging words */}
             <div className="space-y-2">
               <h3 className="text-lg md:text-xl font-display font-bold text-gray-900">
@@ -217,7 +227,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                       {t('consent.consent1')}
                     </span>
                     {getConsent('journey')?.timestamp && (
-                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-[10px] md:text-xs text-accent">
+                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-xs text-accent">
                         <Clock className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         <span>{t('consent.agreedAt')}: {formatTimestamp(getConsent('journey')?.timestamp || null)}</span>
                       </div>
@@ -246,7 +256,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                       {t('consent.consent2')}
                     </span>
                     {getConsent('notGrant')?.timestamp && (
-                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-[10px] md:text-xs text-accent">
+                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-xs text-accent">
                         <Clock className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         <span>{t('consent.agreedAt')}: {formatTimestamp(getConsent('notGrant')?.timestamp || null)}</span>
                       </div>
@@ -275,7 +285,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                       {t('consent.consent4')}
                     </span>
                     {getConsent('equityUnderstanding')?.timestamp && (
-                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-[10px] md:text-xs text-accent">
+                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-xs text-accent">
                         <Clock className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         <span>{t('consent.agreedAt')}: {formatTimestamp(getConsent('equityUnderstanding')?.timestamp || null)}</span>
                       </div>
@@ -304,7 +314,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                       {t('consent.consent3')}
                     </span>
                     {getConsent('dataProcessing')?.timestamp && (
-                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-[10px] md:text-xs text-accent">
+                      <div className="flex items-center gap-1 mt-1.5 md:mt-2 text-xs text-accent">
                         <Clock className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         <span>{t('consent.agreedAt')}: {formatTimestamp(getConsent('dataProcessing')?.timestamp || null)}</span>
                       </div>
@@ -379,7 +389,7 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding }: Understa
                         </p>
                       </div>
                     </div>
-                    <span className="absolute -top-2 -right-2 text-[10px] md:text-xs bg-accent text-white px-2 py-1 rounded-full font-medium">
+                    <span className="absolute -top-2 -right-2 text-xs bg-accent text-white px-2 py-1 rounded-full font-medium">
                       {t('consent.recommended', 'Best')}
                     </span>
                   </button>

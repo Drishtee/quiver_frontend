@@ -15,13 +15,15 @@ import {
   Building2,
   Users,
   User,
-  Handshake
+  Handshake,
+  ArrowLeft
 } from "lucide-react";
 import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import '../screens/landing.css';
 
 interface IndustrySelectionProps {
   onContinue: (data: EnterpriseData) => void;
+  onBack?: () => void;
 }
 
 export interface EnterpriseData {
@@ -32,7 +34,7 @@ export interface EnterpriseData {
   role: string;
 }
 
-export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
+export function IndustrySelection({ onContinue, onBack }: IndustrySelectionProps) {
   const onboarding = useOnboarding();
 
   // Initialize form data from onboarding context
@@ -162,6 +164,15 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
       {/* Header - Mobile-first */}
       <header className="bg-white shadow-sm py-3 px-4 md:py-4 md:px-6 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="mr-2 md:mr-3 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Back"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
+            </button>
+          )}
           <img src="/logo.jpg" alt="Quiver" className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3" />
           <span className="text-base md:text-xl font-display font-bold text-primary truncate">Quiver</span>
         </div>
@@ -183,7 +194,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           </div>
 
           {/* Business Name */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-4">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
             <label className="text-sm font-medium text-gray-900">
               व्यवसाय का नाम | Business Name <span className="text-red-500">*</span>
             </label>
@@ -206,11 +217,11 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
                - Textile/Handicraft: GFX-ONBD-008-textile
                - Services: GFX-ONBD-008-services
                - Other: GFX-ONBD-008-other */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-4">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
             <label className="text-sm font-medium text-gray-900">
               व्यवसाय क्षेत्र | Sector <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2.5 md:gap-4">
               {sectors.map((sector) => {
                 const Icon = sector.icon;
                 const isSelected = formData.sector === sector.id;
@@ -218,23 +229,23 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
                   <button
                     key={sector.id}
                     onClick={() => updateField('sector', sector.id)}
-                    className={`bg-gradient-to-br ${sector.color} rounded-2xl border-2 p-5 transition-all hover:shadow-md ${
+                    className={`bg-gradient-to-br ${sector.color} rounded-xl md:rounded-2xl border-2 p-3 md:p-5 transition-all hover:shadow-md ${
                       isSelected
                         ? "border-accent ring-2 ring-accent/20"
                         : `${sector.borderColor} hover:border-gray-300`
                     }`}
                   >
-                    <div className="flex flex-col items-center gap-3 text-center">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all ${
+                    <div className="flex flex-col items-center gap-2 md:gap-3 text-center">
+                      <div className={`w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl flex items-center justify-center transition-all ${
                         isSelected
                           ? "bg-accent text-white shadow-lg"
                           : "bg-white/80 text-gray-600"
                       }`}>
-                        <Icon className="w-7 h-7" />
+                        <Icon className="w-5 h-5 md:w-7 md:h-7" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 text-sm">{sector.labelHi}</p>
-                        <p className="text-xs text-gray-500">{sector.labelEn}</p>
+                        <p className="font-medium text-gray-900 text-xs md:text-sm">{sector.labelHi}</p>
+                        <p className="text-[11px] md:text-xs text-gray-500">{sector.labelEn}</p>
                       </div>
                     </div>
                   </button>
@@ -244,7 +255,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           </div>
 
           {/* Year Started */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-4">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
             <label className="text-sm font-medium text-gray-900">
               व्यवसाय शुरू करने का वर्ष | Year Started <span className="text-red-500">*</span>
             </label>
@@ -260,11 +271,11 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           </div>
 
           {/* Ownership Type */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-4">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
             <label className="text-sm font-medium text-gray-900">
               स्वामित्व | Ownership Type <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 md:gap-3">
               {ownershipTypes.map((type) => {
                 const Icon = type.icon;
                 const isSelected = formData.ownershipType === type.value;
@@ -272,16 +283,16 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
                   <button
                     key={type.value}
                     onClick={() => updateField('ownershipType', type.value)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
+                    className={`flex items-center gap-2.5 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 rounded-xl border-2 transition-all ${
                       isSelected
                         ? 'border-accent bg-accent/5'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <Icon className={`w-5 h-5 ${isSelected ? 'text-accent' : 'text-gray-400'}`} />
-                    <div className="text-left">
-                      <p className="font-medium text-gray-900 text-sm">{type.labelHi}</p>
-                      <p className="text-xs text-gray-500">{type.labelEn}</p>
+                    <Icon className={`w-5 h-5 flex-shrink-0 ${isSelected ? 'text-accent' : 'text-gray-400'}`} />
+                    <div className="text-left min-w-0">
+                      <p className="font-medium text-gray-900 text-sm truncate">{type.labelHi}</p>
+                      <p className="text-xs text-gray-500 truncate">{type.labelEn}</p>
                     </div>
                   </button>
                 );
@@ -290,7 +301,7 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
           </div>
 
           {/* Role */}
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 space-y-4">
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 md:border-2 shadow-sm md:shadow-lg p-4 md:p-6 space-y-3 md:space-y-4">
             <label className="text-sm font-medium text-gray-900">
               आपकी भूमिका | Your Role <span className="text-red-500">*</span>
             </label>
@@ -302,15 +313,15 @@ export function IndustrySelection({ onContinue }: IndustrySelectionProps) {
               {roles.map((role) => (
                 <label
                   key={role.value}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                  className={`flex items-center gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-xl border-2 cursor-pointer transition-all ${
                     formData.role === role.value
                       ? 'border-accent bg-accent/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   <RadioGroupItem value={role.value} id={`role-${role.value}`} />
-                  <span className="font-medium text-gray-900">{role.labelHi}</span>
-                  <span className="text-sm text-gray-500">| {role.labelEn}</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-base">{role.labelHi}</span>
+                  <span className="text-xs md:text-sm text-gray-500">| {role.labelEn}</span>
                 </label>
               ))}
             </RadioGroup>

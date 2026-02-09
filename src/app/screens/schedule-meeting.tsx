@@ -36,31 +36,31 @@ export function ScheduleMeeting({ onBack, onSchedule, userEmail }: ScheduleMeeti
 
   const isDev = import.meta.env.DEV;
 
-  const businessHoursSlots = [
+  const timeSlots = [
     "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
     "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
   ];
-
-  const allDaySlots = [
-    "12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM",
-    "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
-    "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
-    "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"
-  ];
-
-  const timeSlots = isDev ? allDaySlots : businessHoursSlots;
 
   const handleSchedule = async () => {
     if (selectedDate && selectedTime) {
       setIsScheduling(true);
       try {
-        // Parse time string (e.g., "9:00 AM") to hours
-        const timeParts = selectedTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
-        let hours = parseInt(timeParts?.[1] || "9");
-        const minutes = parseInt(timeParts?.[2] || "0");
-        const isPM = timeParts?.[3]?.toUpperCase() === "PM";
-        if (isPM && hours !== 12) hours += 12;
-        if (!isPM && hours === 12) hours = 0;
+        // Parse time string — supports "9:00 AM" (prod) or "17:34" (dev 24h input)
+        let hours: number;
+        let minutes: number;
+        const ampmMatch = selectedTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (ampmMatch) {
+          hours = parseInt(ampmMatch[1]);
+          minutes = parseInt(ampmMatch[2]);
+          const isPM = ampmMatch[3].toUpperCase() === "PM";
+          if (isPM && hours !== 12) hours += 12;
+          if (!isPM && hours === 12) hours = 0;
+        } else {
+          // 24-hour format from <input type="time"> e.g. "17:34"
+          const [h, m] = selectedTime.split(':').map(Number);
+          hours = h;
+          minutes = m;
+        }
 
         // Create start_time as LOCAL ISO string (no UTC conversion)
         // Backend expects local time + timezone field to do the conversion
@@ -184,23 +184,47 @@ export function ScheduleMeeting({ onBack, onSchedule, userEmail }: ScheduleMeeti
             <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 shadow-sm p-4 md:p-6 space-y-3 md:space-y-4">
               <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-sm md:text-base">
                 <Clock className="w-4 h-4 md:w-5 md:h-5 text-accent" />
-                Select Time Slot
+                Select Time {isDev && <span className="text-xs text-amber-600 font-normal">(Dev: any time)</span>}
               </h3>
-              <div className="grid grid-cols-2 gap-2 md:gap-3">
-                {timeSlots.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`min-h-[48px] md:h-12 rounded-lg border-2 transition-all text-sm md:text-base font-medium ${
-                      selectedTime === time
-                        ? "border-accent bg-accent/5 text-accent"
-                        : "border-gray-200 hover:border-gray-300 active:border-accent/50 text-gray-900"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
+
+              {isDev ? (
+                <div className="space-y-3">
+                  <input
+                    type="time"
+                    value={selectedTime}
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    className="w-full min-h-[48px] px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none text-base font-medium"
+                  />
+                  {selectedTime && (
+                    <p className="text-sm text-gray-500">
+                      Selected: <span className="font-medium text-accent">{
+                        (() => {
+                          const [h, m] = selectedTime.split(':').map(Number);
+                          const ampm = h >= 12 ? 'PM' : 'AM';
+                          const h12 = h % 12 || 12;
+                          return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+                        })()
+                      }</span>
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
+                  {timeSlots.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className={`min-h-[48px] md:h-12 rounded-lg border-2 transition-all text-sm md:text-base font-medium ${
+                        selectedTime === time
+                          ? "border-accent bg-accent/5 text-accent"
+                          : "border-gray-200 hover:border-gray-300 active:border-accent/50 text-gray-900"
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Meeting With Info */}

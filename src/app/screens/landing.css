@@ -144,12 +144,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Scrollbar Hidden */
-::-webkit-scrollbar {
-  display: none;
-}
-
-/* Scrollbar-hide utility for horizontal scroll carousels */
+/* Scrollbar-hide utility — use on horizontal scroll containers only */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -184,8 +179,23 @@
   animation: avatar-pulse 3s ease-in-out infinite;
 }
 
-/* Additional utility classes for better compatibility */
-* {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Mobile-first utility classes */
+.mobile-full-screen {
+  min-height: 100dvh;
+  min-height: 100vh;
+}
+
+.min-h-touch {
+  min-height: 44px;
+}
+
+.scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe area insets for notched phones */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

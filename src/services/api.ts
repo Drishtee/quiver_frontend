@@ -673,6 +673,90 @@ export const getMyProfile = async (): Promise<MyProfileResponse> => {
 };
 
 // ============================================
+// DOCUMENT UPLOAD ENDPOINTS
+// ============================================
+
+export interface DocumentUploadResponse {
+  success: boolean;
+  document_id: number;
+  document_url: string;
+  blob_name: string;
+  original_filename: string;
+  document_type: string;
+}
+
+export interface DocumentItem {
+  id: number;
+  document_type: string;
+  document_url: string;
+  original_filename: string;
+  file_size_bytes: number | null;
+  content_type: string | null;
+  created_at: string;
+}
+
+export interface ListDocumentsResponse {
+  session_id: string;
+  documents: DocumentItem[];
+}
+
+/**
+ * POST /onboarding/upload-document/
+ * Upload a document (Aadhaar, Udyam, CIBIL) to Azure Blob Storage
+ */
+export const uploadDocument = async (
+  sessionId: string,
+  documentType: string,
+  file: File
+): Promise<DocumentUploadResponse> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('session_id', sessionId);
+  formData.append('document_type', documentType);
+
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('No access token found. Please login again.');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/onboarding/upload-document/`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      error: 'unknown_error',
+      message: 'Failed to upload document',
+    }));
+    throw new Error(error.message || error.details || error.error);
+  }
+
+  return response.json();
+};
+
+/**
+ * GET /onboarding/{session_id}/documents/
+ * List all uploaded documents for a session
+ */
+export const listDocuments = async (sessionId: string): Promise<ListDocumentsResponse> => {
+  return makeAuthenticatedRequest(`/onboarding/${sessionId}/documents/`);
+};
+
+/**
+ * DELETE /onboarding/document/{document_id}/delete/
+ * Delete an uploaded document
+ */
+export const deleteDocument = async (documentId: number): Promise<{ success: boolean }> => {
+  return makeAuthenticatedRequest(`/onboarding/document/${documentId}/delete/`, {
+    method: 'DELETE',
+  });
+};
+
+// ============================================
 // VOICE AGENT ENDPOINTS
 // ============================================
 

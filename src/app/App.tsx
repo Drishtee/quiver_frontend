@@ -709,6 +709,12 @@ export default function App() {
           </div>
           <div className="space-y-4 pt-4">
             <button
+              onClick={() => setCurrentScreen("ai-pathway")}
+              className="w-full h-14 bg-primary text-white rounded-xl font-display font-bold text-lg hover:bg-primary/90 transition-all shadow-lg"
+            >
+              View Your Growth Pathway
+            </button>
+            <button
               onClick={handleGoToDashboard}
               className="w-full h-14 bg-accent text-white rounded-xl font-display font-bold text-lg hover:bg-accent/90 transition-all shadow-lg"
             >
@@ -791,13 +797,29 @@ export default function App() {
         />
       )}
       {currentScreen === "industry" && (
-        <IndustrySelection onContinue={handleEnterpriseContinue} />
+        <IndustrySelection
+          onContinue={handleEnterpriseContinue}
+          onBack={() => setCurrentScreen("profile")}
+        />
       )}
       {currentScreen === "questionnaire" && (
-        <BusinessQuestionnaire onContinue={handleQuestionnaireContinue} />
+        <BusinessQuestionnaire
+          onContinue={handleQuestionnaireContinue}
+          onBack={() => setCurrentScreen("industry")}
+        />
       )}
       {currentScreen === "equity" && (
-        <EquityPartnership onContinue={handleEquityContinue} />
+        <EquityPartnership
+          onContinue={handleEquityContinue}
+          onBack={() => setCurrentScreen("questionnaire")}
+        />
+      )}
+      {currentScreen === "documents" && sessionId && (
+        <DocumentUpload
+          sessionId={sessionId}
+          onContinue={() => setCurrentScreen("dashboard")}
+          onBack={() => setCurrentScreen("dashboard")}
+        />
       )}
       {currentScreen === "review" && (
         <ReviewSubmit
@@ -808,6 +830,7 @@ export default function App() {
           onEdit={handleEdit}
           onSubmit={handleSubmit}
           isSubmitting={submitting}
+          onBack={() => setCurrentScreen("equity")}
         />
       )}
       {currentScreen === "admin" && (
@@ -819,6 +842,19 @@ export default function App() {
           onScheduleMeeting={handleScheduleMeeting}
           onJoinMeeting={handleJoinMeeting}
           onLogout={handleLogout}
+          onUploadDocuments={async () => {
+            if (!sessionId) {
+              try {
+                const startResponse = await startOnboarding();
+                setSessionId(startResponse.session_id);
+                onboarding.setSessionId(startResponse.session_id);
+              } catch {
+                setError('Failed to load session for document upload');
+                return;
+              }
+            }
+            setCurrentScreen("documents");
+          }}
         />
       )}
       {currentScreen === "schedule" && (
@@ -839,17 +875,26 @@ export default function App() {
           }}
         />
       )}
-      {currentScreen === "ai-pathway" && sessionId && (
+      {currentScreen === "ai-pathway" && (
         <AIGrowthPathway
-          sessionId={sessionId}
-          industry={industry}
-          businessData={enterpriseData ? {
-            business_name: enterpriseData.businessName,
-            year_started: enterpriseData.yearStarted,
-            sector: enterpriseData.sector
-          } : {}}
-          onBack={() => setCurrentScreen("industry")}
-          onContinue={() => setCurrentScreen("questionnaire")}
+          businessData={{
+            // Profile data (Section B)
+            state: profileData?.state,
+            district: profileData?.district,
+            // Enterprise data (Section C)
+            businessName: enterpriseData?.businessName,
+            sector: enterpriseData?.sector,
+            yearStarted: enterpriseData?.yearStarted,
+            // Questionnaire data (Sections D-G) - flatten from answers
+            ...Object.fromEntries(
+              Object.entries(questionnaireAnswers).map(([key, value]) => [
+                key,
+                Array.isArray(value) ? value.join(', ') : value
+              ])
+            )
+          }}
+          onBack={() => setCurrentScreen("dashboard")}
+          onContinue={() => setCurrentScreen("dashboard")}
         />
       )}
       {currentScreen === "video-meeting" && currentMeeting && (
