@@ -3,9 +3,10 @@
  * Branded voice assistant component with enhanced UI/UX
  */
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useOpenAIVoice } from '../../../contexts/OpenAIVoiceContext';
 import { useLanguage } from '../../../i18n/LanguageContext';
+import { useAIAssistantConfig } from '../../../contexts/AIAssistantConfigContext';
 import {
   Mic,
   MicOff,
@@ -23,14 +24,15 @@ import {
   Sparkles,
   MessageCircle
 } from 'lucide-react';
-import type { ScreenType } from '../../../config/formFieldMappings';
+import type { AllScreenType } from '../../../types/screenAssistantConfig';
 
 interface QuiverAIAssistantProps {
-  currentScreen?: ScreenType;
+  currentScreen?: AllScreenType;
 }
 
 export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
   const { currentLanguage } = useLanguage();
+  const { getLocalizedValue } = useAIAssistantConfig();
   const [textInput, setTextInput] = useState('');
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -50,89 +52,92 @@ export function QuiverAIAssistant({ currentScreen }: QuiverAIAssistantProps) {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [voice.conversationHistory]);
 
-  // Translations
-  const t = {
-    en: {
-      brandName: 'Quiver AI',
-      subtitle: 'Voice Assistant',
-      connecting: 'Connecting...',
-      connected: 'Ready to help',
-      disconnected: 'Tap to start',
-      error: 'Connection error',
-      listening: 'Listening...',
-      speaking: 'Speaking...',
-      tapToStart: 'Tap to talk with Quiver AI',
-      typeMessage: 'Type a message...',
-      collectedFields: 'Collected Information',
-      noFieldsYet: 'I\'ll help you fill the form',
-      recordings: 'Recordings',
-      noRecordings: 'No recordings yet',
-      download: 'Download',
-      delete: 'Delete',
-      confirm: 'Confirm',
-      edit: 'Edit',
-      save: 'Save',
-      applyToForm: 'Apply All',
-      startCall: 'Start Conversation',
-      endCall: 'End',
-      mute: 'Mute',
-      unmute: 'Unmute'
-    },
-    hi: {
-      brandName: 'Quiver AI',
-      subtitle: 'वॉयस असिस्टेंट',
-      connecting: 'कनेक्ट हो रहा है...',
-      connected: 'मदद के लिए तैयार',
-      disconnected: 'शुरू करने के लिए टैप करें',
-      error: 'कनेक्शन त्रुटि',
-      listening: 'सुन रहा हूँ...',
-      speaking: 'बोल रहा हूँ...',
-      tapToStart: 'Quiver AI से बात करने के लिए टैप करें',
-      typeMessage: 'संदेश लिखें...',
-      collectedFields: 'एकत्रित जानकारी',
-      noFieldsYet: 'मैं फॉर्म भरने में मदद करूंगा',
-      recordings: 'रिकॉर्डिंग',
-      noRecordings: 'अभी तक कोई रिकॉर्डिंग नहीं',
-      download: 'डाउनलोड',
-      delete: 'हटाएं',
-      confirm: 'पुष्टि करें',
-      edit: 'संपादित करें',
-      save: 'सेव करें',
-      applyToForm: 'सभी लागू करें',
-      startCall: 'बातचीत शुरू करें',
-      endCall: 'समाप्त',
-      mute: 'म्यूट',
-      unmute: 'अनम्यूट'
-    },
-    as: {
-      brandName: 'Quiver AI',
-      subtitle: 'ভয়েচ সহায়ক',
-      connecting: 'সংযোগ হৈ আছে...',
-      connected: 'সহায় কৰিবলৈ প্ৰস্তুত',
-      disconnected: 'আৰম্ভ কৰিবলৈ টেপ কৰক',
-      error: 'সংযোগ ত্ৰুটি',
-      listening: 'শুনি আছো...',
-      speaking: 'কৈ আছো...',
-      tapToStart: 'Quiver AI ৰ সৈতে কথা পাতিবলৈ টেপ কৰক',
-      typeMessage: 'বাৰ্তা লিখক...',
-      collectedFields: 'সংগ্ৰহ কৰা তথ্য',
-      noFieldsYet: 'মই ফৰ্ম পূৰণত সহায় কৰিম',
-      recordings: 'ৰেকৰ্ডিং',
-      noRecordings: 'এতিয়ালৈকে কোনো ৰেকৰ্ডিং নাই',
-      download: 'ডাউনলোড',
-      delete: 'মচক',
-      confirm: 'নিশ্চিত কৰক',
-      edit: 'সম্পাদনা কৰক',
-      save: 'সংৰক্ষণ কৰক',
-      applyToForm: 'সকলো প্ৰয়োগ কৰক',
-      startCall: 'কথোপকথন আৰম্ভ কৰক',
-      endCall: 'শেষ',
-      mute: 'মিউট',
-      unmute: 'আনমিউট'
-    }
-  };
+  // Dynamic translations using config context
+  const brandName = getLocalizedValue('assistant_name', currentLanguage);
+  const subtitle = getLocalizedValue('assistant_subtitle', currentLanguage);
 
-  const texts = t[currentLanguage as keyof typeof t] || t.en;
+  const texts = useMemo(() => {
+    const base = {
+      en: {
+        connecting: 'Connecting...',
+        connected: 'Ready to help',
+        disconnected: 'Tap to start',
+        error: 'Connection error',
+        listening: 'Listening...',
+        speaking: 'Speaking...',
+        typeMessage: 'Type a message...',
+        collectedFields: 'Collected Information',
+        noFieldsYet: 'I\'ll help you fill the form',
+        recordings: 'Recordings',
+        noRecordings: 'No recordings yet',
+        download: 'Download',
+        delete: 'Delete',
+        confirm: 'Confirm',
+        edit: 'Edit',
+        save: 'Save',
+        applyToForm: 'Apply All',
+        endCall: 'Stop',
+        mute: 'Mute',
+        unmute: 'Unmute'
+      },
+      hi: {
+        connecting: 'कनेक्ट हो रहा है...',
+        connected: 'मदद के लिए तैयार',
+        disconnected: 'शुरू करने के लिए टैप करें',
+        error: 'कनेक्शन त्रुटि',
+        listening: 'सुन रही हूँ...',
+        speaking: 'बोल रही हूँ...',
+        typeMessage: 'संदेश लिखें...',
+        collectedFields: 'एकत्रित जानकारी',
+        noFieldsYet: 'मैं फॉर्म भरने में मदद करूंगी',
+        recordings: 'रिकॉर्डिंग',
+        noRecordings: 'अभी तक कोई रिकॉर्डिंग नहीं',
+        download: 'डाउनलोड',
+        delete: 'हटाएं',
+        confirm: 'पुष्टि करें',
+        edit: 'संपादित करें',
+        save: 'सेव करें',
+        applyToForm: 'सभी लागू करें',
+        endCall: 'रोकें',
+        mute: 'म्यूट',
+        unmute: 'अनम्यूट'
+      },
+      as: {
+        connecting: 'সংযোগ হৈ আছে...',
+        connected: 'সহায় কৰিবলৈ প্ৰস্তুত',
+        disconnected: 'আৰম্ভ কৰিবলৈ টেপ কৰক',
+        error: 'সংযোগ ত্ৰুটি',
+        listening: 'শুনি আছো...',
+        speaking: 'কৈ আছো...',
+        typeMessage: 'বাৰ্তা লিখক...',
+        collectedFields: 'সংগ্ৰহ কৰা তথ্য',
+        noFieldsYet: 'মই ফৰ্ম পূৰণত সহায় কৰিম',
+        recordings: 'ৰেকৰ্ডিং',
+        noRecordings: 'এতিয়ালৈকে কোনো ৰেকৰ্ডিং নাই',
+        download: 'ডাউনলোড',
+        delete: 'মচক',
+        confirm: 'নিশ্চিত কৰক',
+        edit: 'সম্পাদনা কৰক',
+        save: 'সংৰক্ষণ কৰক',
+        applyToForm: 'সকলো প্ৰয়োগ কৰক',
+        endCall: 'বন্ধ কৰক',
+        mute: 'মিউট',
+        unmute: 'আনমিউট'
+      }
+    };
+    const lang = base[currentLanguage as keyof typeof base] || base.en;
+    return {
+      ...lang,
+      brandName,
+      subtitle,
+      tapToStart: currentLanguage === 'hi' ? `${brandName} से बात करने के लिए टैप करें` :
+                  currentLanguage === 'as' ? `${brandName}ৰ সৈতে কথা পাতিবলৈ টেপ কৰক` :
+                  `Tap to talk with ${brandName}`,
+      startCall: currentLanguage === 'hi' ? `${brandName} से बात करें` :
+                 currentLanguage === 'as' ? `${brandName}ৰ সৈতে কথা পাতক` :
+                 `Talk to ${brandName}`,
+    };
+  }, [currentLanguage, brandName, subtitle]);
 
   // Handle text submit
   const handleTextSubmit = (e: React.FormEvent) => {

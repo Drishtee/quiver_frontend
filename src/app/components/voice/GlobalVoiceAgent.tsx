@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useVoiceAgent } from '../../../hooks/useVoiceAgent';
 import { useLanguage } from '../../../i18n/LanguageContext';
+import { useAIAssistantConfig } from '../../../contexts/AIAssistantConfigContext';
 import {
   Mic,
   MicOff,
@@ -21,6 +22,7 @@ interface GlobalVoiceAgentProps {
 
 export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
   const { currentLanguage } = useLanguage();
+  const { getLocalizedValue } = useAIAssistantConfig();
   const [textInput, setTextInput] = useState('');
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
@@ -44,10 +46,11 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
     }
   };
 
+  const brandName = getLocalizedValue('assistant_name', currentLanguage);
+
   // Get translations
-  const translations = {
+  const translations = useMemo(() => ({
     en: {
-      title: 'Voice Assistant',
       listening: 'Listening...',
       processing: 'Processing...',
       speaking: 'Speaking...',
@@ -58,7 +61,6 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
       noFieldsYet: 'No fields filled yet'
     },
     hi: {
-      title: 'वॉयस असिस्टेंट',
       listening: 'सुन रहा हूँ...',
       processing: 'प्रोसेस कर रहा हूँ...',
       speaking: 'बोल रहा हूँ...',
@@ -69,7 +71,6 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
       noFieldsYet: 'अभी कोई फ़ील्ड नहीं भरा'
     },
     as: {
-      title: 'ভয়েচ সহায়ক',
       listening: 'শুনি আছো...',
       processing: 'প্ৰচেছ কৰি আছো...',
       speaking: 'কৈ আছো...',
@@ -79,9 +80,9 @@ export function GlobalVoiceAgent({ currentScreen }: GlobalVoiceAgentProps) {
       filledFields: 'পূৰণ কৰা ক্ষেত্ৰসমূহ',
       noFieldsYet: 'এতিয়ালৈকে কোনো ক্ষেত্ৰ পূৰণ কৰা হোৱা নাই'
     }
-  };
+  }), []);
 
-  const t = translations[currentLanguage as keyof typeof translations] || translations.en;
+  const t = { title: brandName, ...(translations[currentLanguage as keyof typeof translations] || translations.en) };
 
   // Get status text
   const getStatusText = () => {

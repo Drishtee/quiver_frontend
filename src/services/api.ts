@@ -896,6 +896,85 @@ export const submitVoiceAgentData = async (
  * Note: This is a client-side only logout
  * Backend doesn't have a logout endpoint in the docs
  */
+// ============================================
+// AI ASSISTANT CONFIG ENDPOINTS
+// ============================================
+
+import type { AIAssistantConfig, AIAssistantPublicConfig } from '../types/aiAssistantConfig';
+import type { ScreenConfigMap } from '../types/screenAssistantConfig';
+
+/**
+ * GET /auth/ai-assistant-config/
+ * Get full AI assistant config (admin-only, requires Bearer token)
+ */
+export const fetchAIAssistantConfig = async (): Promise<AIAssistantConfig> => {
+  return makeAuthenticatedRequest('/auth/ai-assistant-config/');
+};
+
+/**
+ * PUT /auth/ai-assistant-config/
+ * Update AI assistant config (admin-only)
+ */
+export const updateAIAssistantConfig = async (
+  data: Partial<Omit<AIAssistantConfig, 'updated_at'>>
+): Promise<AIAssistantConfig> => {
+  return makeAuthenticatedRequest('/auth/ai-assistant-config/', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+};
+
+/**
+ * GET /auth/ai-assistant-public-config/
+ * Get public-safe subset of AI assistant config (no auth required)
+ */
+export const fetchPublicAIConfig = async (): Promise<AIAssistantPublicConfig> => {
+  const response = await fetch(`${API_BASE_URL}/auth/ai-assistant-public-config/`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch AI assistant config');
+  }
+
+  return response.json();
+};
+
+// ============================================
+// SCREEN ASSISTANT CONFIG ENDPOINTS
+// ============================================
+
+/**
+ * GET /auth/screen-assistant-configs/
+ * Get all screen assistant configs as {screen_key: config} map (public)
+ */
+export const fetchScreenAssistantConfigs = async (): Promise<ScreenConfigMap> => {
+  const response = await fetch(`${API_BASE_URL}/auth/screen-assistant-configs/`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch screen assistant configs');
+  }
+
+  return response.json();
+};
+
+/**
+ * PUT /auth/screen-assistant-configs/
+ * Bulk update screen assistant configs (admin-only)
+ */
+export const updateScreenAssistantConfigs = async (
+  configs: ScreenConfigMap
+): Promise<ScreenConfigMap> => {
+  return makeAuthenticatedRequest('/auth/screen-assistant-configs/', {
+    method: 'PUT',
+    body: JSON.stringify(configs),
+  });
+};
+
 export const logout = async (): Promise<void> => {
   console.log('Logging out user...');
 

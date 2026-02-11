@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useRealtimeVoice } from '../../../contexts/RealtimeVoiceContext';
 import { useOnboarding } from '../../../contexts/OnboardingContext';
 import { useLanguage } from '../../../i18n/LanguageContext';
+import { useAIAssistantConfig } from '../../../contexts/AIAssistantConfigContext';
 import { getFieldsForScreen, type ScreenType } from '../../../config/formFieldMappings';
 import { Check, Circle, Mic } from 'lucide-react';
 
@@ -19,6 +20,7 @@ export function VoiceFormOverlay({ screen, children }: VoiceFormOverlayProps) {
   const voice = useRealtimeVoice();
   const onboarding = useOnboarding();
   const { currentLanguage } = useLanguage();
+  const { getLocalizedValue } = useAIAssistantConfig();
 
   // Set the current screen for voice context
   useEffect(() => {
@@ -46,29 +48,31 @@ export function VoiceFormOverlay({ screen, children }: VoiceFormOverlayProps) {
       ).length / screenFields.length) * 100)
     : 0;
 
-  // Translations
-  const t = {
-    en: {
-      voiceActive: 'Voice Assistant Active',
-      fieldsCompleted: 'fields completed',
-      speakToFill: 'Speak to fill the form',
-      tapMic: 'Tap the mic to start voice input'
-    },
-    hi: {
-      voiceActive: 'वॉयस असिस्टेंट सक्रिय',
-      fieldsCompleted: 'फ़ील्ड पूर्ण',
-      speakToFill: 'फॉर्म भरने के लिए बोलें',
-      tapMic: 'वॉयस इनपुट शुरू करने के लिए माइक टैप करें'
-    },
-    as: {
-      voiceActive: 'ভয়েচ সহায়ক সক্ৰিয়',
-      fieldsCompleted: 'ক্ষেত্ৰ সম্পূৰ্ণ',
-      speakToFill: 'ফৰ্ম পূৰণ কৰিবলৈ কওক',
-      tapMic: 'ভয়েচ ইনপুট আৰম্ভ কৰিবলৈ মাইক টেপ কৰক'
-    }
-  };
+  const brandName = getLocalizedValue('assistant_name', currentLanguage);
 
-  const texts = t[currentLanguage as keyof typeof t] || t.en;
+  // Translations
+  const texts = useMemo(() => {
+    const base = {
+      en: {
+        fieldsCompleted: 'fields completed',
+        speakToFill: 'Speak to fill the form',
+        tapMic: 'Tap the mic to start voice input'
+      },
+      hi: {
+        fieldsCompleted: 'फ़ील्ड पूर्ण',
+        speakToFill: 'फॉर्म भरने के लिए बोलें',
+        tapMic: 'वॉयस इनपुट शुरू करने के लिए माइक टैप करें'
+      },
+      as: {
+        fieldsCompleted: 'ক্ষেত্ৰ সম্পূৰ্ণ',
+        speakToFill: 'ফৰ্ম পূৰণ কৰিবলৈ কওক',
+        tapMic: 'ভয়েচ ইনপুট আৰম্ভ কৰিবলৈ মাইক টেপ কৰক'
+      }
+    };
+    const lang = base[currentLanguage as keyof typeof base] || base.en;
+    const activeSuffix = currentLanguage === 'hi' ? 'सक्रिय' : currentLanguage === 'as' ? 'সক্ৰিয়' : 'Active';
+    return { ...lang, voiceActive: `${brandName} ${activeSuffix}` };
+  }, [currentLanguage, brandName]);
 
   return (
     <div className="relative">

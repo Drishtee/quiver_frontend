@@ -324,14 +324,12 @@ export function UnderstandingConsent({ onContinue, onVoiceOnboarding, onBack }: 
               </div>
             </div>
 
-            {/* Consent Summary - shown when all checked */}
+            {/* Consent completion indicator - plain text, not a button */}
             {allConsentsGiven && (
-              <div className="bg-accent/10 rounded-lg p-3 md:p-4 border border-accent/20">
-                <p className="text-sm md:text-base text-accent font-medium text-center flex items-center justify-center gap-2">
-                  <Check className="w-4 h-4" />
-                  {t('consent.allConsentsRecorded')}
-                </p>
-              </div>
+              <p className="text-sm text-accent font-medium text-center flex items-center justify-center gap-2 pt-2">
+                <Check className="w-4 h-4" />
+                {t('consent.allConsentsRecorded')}
+              </p>
             )}
           </div>
 

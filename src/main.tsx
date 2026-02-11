@@ -8,20 +8,23 @@ import './i18n';
 
 // Providers
 import { LanguageProvider } from './i18n/LanguageContext';
+import { AIAssistantConfigProvider } from './contexts/AIAssistantConfigContext';
 import { OnboardingProvider } from './contexts/OnboardingContext';
 import { VoiceAgentProvider } from './contexts/VoiceAgentContext';
 import { OpenAIVoiceProvider } from './contexts/OpenAIVoiceContext';
 
 createRoot(document.getElementById("root")!).render(
   <LanguageProvider>
-    <OnboardingProvider>
-      <VoiceAgentProvider>
-        <OpenAIVoiceProvider>
-          <App />
-          <FeedbackRoot />
-        </OpenAIVoiceProvider>
-      </VoiceAgentProvider>
-    </OnboardingProvider>
+    <AIAssistantConfigProvider>
+      <OnboardingProvider>
+        <VoiceAgentProvider>
+          <OpenAIVoiceProvider>
+            <App />
+            <FeedbackRoot />
+          </OpenAIVoiceProvider>
+        </VoiceAgentProvider>
+      </OnboardingProvider>
+    </AIAssistantConfigProvider>
   </LanguageProvider>
 );
   

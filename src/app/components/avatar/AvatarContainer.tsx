@@ -4,6 +4,7 @@ import { useAvatarState } from '../../../hooks/useAvatarState';
 import { useSpeechRecognition } from '../../../hooks/useSpeechRecognition';
 import { useTextToSpeech } from '../../../hooks/useTextToSpeech';
 import { useLanguage } from '../../../i18n/LanguageContext';
+import { useAIAssistantConfig } from '../../../contexts/AIAssistantConfigContext';
 import {
   Mic,
   MicOff,
@@ -41,6 +42,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
 }) => {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
+  const { getLocalizedValue } = useAIAssistantConfig();
   const [isExpanded, setIsExpanded] = useState(mode !== 'floating');
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -94,12 +96,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
   }, []);
 
   const getGreeting = () => {
-    if (currentLanguage === 'hi') {
-      return 'नमस्ते! मैं आपकी Quiver यात्रा में मदद करने के लिए हूँ।';
-    } else if (currentLanguage === 'as') {
-      return 'নমস্কাৰ! মই আপোনাৰ Quiver যাত্ৰাত সহায় কৰিবলৈ ইয়াত আছোঁ।';
-    }
-    return 'Hello! I\'m here to help you on your Quiver journey.';
+    return getLocalizedValue('greeting_messages', currentLanguage);
   };
 
   const handleUserMessage = useCallback(async (text: string) => {
@@ -198,7 +195,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
           <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
             <MessageCircle className="w-4 h-4 text-white" />
           </div>
-          <span className="font-medium text-gray-700">AI Assistant</span>
+          <span className="font-medium text-gray-700">{getLocalizedValue('assistant_name', currentLanguage)}</span>
           <Maximize2 className="w-4 h-4 text-gray-400" />
         </button>
       </div>
@@ -234,7 +231,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
             }`} />
           </div>
           <div className="text-white">
-            <h3 className="font-bold">Quiver Assistant</h3>
+            <h3 className="font-bold">{getLocalizedValue('assistant_name', currentLanguage)}</h3>
             <p className="text-xs text-white/80">
               {avatarState.state === 'talking' ? t('landing.avatar.aiReady') :
                avatarState.state === 'listening' ? t('landing.avatar.listening') :

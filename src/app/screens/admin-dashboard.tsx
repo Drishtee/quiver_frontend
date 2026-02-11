@@ -41,16 +41,18 @@ import {
   Briefcase,
   Lock,
   Shield,
-  LogOut
+  LogOut,
+  Bot
 } from "lucide-react";
 import { IllustrationPlaceholder } from "../components/IllustrationPlaceholder";
 import { sendOTP, verifyOTP, logout } from "../../services/api";
+import AIAssistantTab from "../components/admin/AIAssistantTab";
 
 // API Base URL
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // Tab type
-type TabType = 'overview' | 'entrepreneurs' | 'recordings' | 'meetings';
+type TabType = 'overview' | 'entrepreneurs' | 'recordings' | 'meetings' | 'ai-assistant';
 
 // Types
 interface Metrics {
@@ -905,7 +907,8 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
               { id: 'overview', label: 'Overview', icon: BarChart3 },
               { id: 'entrepreneurs', label: 'Entrepreneurs', icon: Users },
               { id: 'recordings', label: 'Recordings', icon: AudioLines },
-              { id: 'meetings', label: 'Meetings', icon: CalendarDays }
+              { id: 'meetings', label: 'Meetings', icon: CalendarDays },
+              { id: 'ai-assistant', label: 'AI Assistant', icon: Bot }
             ].map(tab => {
               const Icon = tab.icon;
               return (
@@ -1862,6 +1865,11 @@ function AdminDashboardContent({ onLogout }: { onLogout: () => void }) {
               </div>
             )}
           </div>
+        )}
+
+        {/* AI ASSISTANT TAB */}
+        {activeTab === 'ai-assistant' && (
+          <AIAssistantTab />
         )}
       </main>
 

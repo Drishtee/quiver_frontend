@@ -35,6 +35,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasRestoredSession, setHasRestoredSession] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
 
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -518,6 +519,19 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
     }
   };
 
+  // Recording timer
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (isRecording && !isMuted) {
+      interval = setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
+    } else {
+      setRecordingSeconds(0);
+    }
+    return () => clearInterval(interval);
+  }, [isRecording, isMuted]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -592,6 +606,12 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
     return btoa(binary);
   };
 
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
@@ -610,8 +630,8 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
             <ArrowLeft className="w-5 h-5 text-gray-900" />
           </button>
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">Voice-Guided Onboarding</h1>
-            <p className="text-sm text-gray-500">Speak naturally to complete your profile</p>
+            <h1 className="text-lg font-semibold text-gray-900">Talk to Jyoti Didi</h1>
+            <p className="text-sm text-gray-500">Your personal business guide</p>
           </div>
         </div>
       </header>
@@ -626,31 +646,12 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
               {/* TODO: Replace with final illustration — see GRAPHIC_DESIGN_SPEC.md */}
               <IllustrationPlaceholder
                 id="GFX-VOICE-001"
-                label="Friendly AI voice assistant avatar with headphones and waveforms"
+                label="Jyoti Didi — friendly, approachable rural woman guide avatar"
                 width="120px"
                 height="120px"
                 className="mx-auto"
               />
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900">Voice Assistant</h3>
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-                  connectionStatus === "connected" ? "bg-green-100 text-green-700" :
-                  connectionStatus === "connecting" ? "bg-yellow-100 text-yellow-700" :
-                  connectionStatus === "error" ? "bg-red-100 text-red-600" :
-                  "bg-gray-100 text-gray-700"
-                }`}>
-                  <div className={`w-2 h-2 rounded-full ${
-                    connectionStatus === "connected" ? "bg-green-500 animate-pulse" :
-                    connectionStatus === "connecting" ? "bg-yellow-500 animate-pulse" :
-                    connectionStatus === "error" ? "bg-red-500" :
-                    "bg-gray-400"
-                  }`} />
-                  {connectionStatus === "connected" ? "Connected" :
-                   connectionStatus === "connecting" ? "Connecting..." :
-                   connectionStatus === "error" ? "Error" :
-                   "Disconnected"}
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 text-left mb-4">Jyoti Didi</h3>
 
               {/* Error Display */}
               {error && (
@@ -685,11 +686,16 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
               <div className="flex items-center justify-center gap-4">
                 {connectionStatus === "disconnected" || connectionStatus === "error" ? (
                   <button
-                    onClick={connectToVoiceAgent}
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      connectToVoiceAgent();
+                    }}
                     className="h-14 px-8 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl min-h-[48px] flex items-center justify-center"
                   >
                     <Mic className="w-5 h-5 mr-2" />
-                    {hasRestoredSession && collectedFields.length > 0 ? "Continue Session" : "Start Voice Onboarding"}
+                    {hasRestoredSession && collectedFields.length > 0
+                      ? "Continue with Jyoti Didi"
+                      : "Namaste! I'm Jyoti — Click to Begin"}
                   </button>
                 ) : connectionStatus === "connecting" ? (
                   <button disabled className="h-14 px-8 border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] flex items-center justify-center opacity-70 cursor-not-allowed">
@@ -702,8 +708,8 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
                       onClick={toggleMute}
                       className={`h-14 w-14 rounded-full p-0 flex items-center justify-center ${
                         isMuted
-                          ? "bg-red-500 hover:bg-red-600 text-white"
-                          : "border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900"
+                          ? "bg-gray-300 hover:bg-gray-400 text-gray-600"
+                          : "bg-red-500 hover:bg-red-600 text-white"
                       }`}
                     >
                       {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
@@ -712,17 +718,40 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
                       onClick={disconnect}
                       className="border-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-medium rounded-xl min-h-[48px] px-6 h-14 flex items-center justify-center"
                     >
-                      End Session
+                      Stop Recording
                     </button>
                   </>
                 )}
               </div>
 
-              {/* Recording Indicator */}
+              {/* Recording Indicator with Sound Bar and Timer */}
               {isRecording && !isMuted && (
-                <div className="mt-4 flex items-center justify-center gap-2 text-accent">
-                  <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse" />
-                  <span className="text-sm">Listening...</span>
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                    <span className="text-sm font-medium text-red-600">Recording</span>
+                    <span className="text-sm font-mono text-gray-600">{formatTime(recordingSeconds)}</span>
+                  </div>
+                  {/* Sound bar visualization */}
+                  <div className="flex items-end gap-[3px] h-6">
+                    {[...Array(12)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-red-400 rounded-full"
+                        style={{
+                          animation: `soundBar 0.${3 + (i % 5)}s ease-in-out infinite alternate`,
+                          animationDelay: `${i * 0.05}s`,
+                          height: `${8 + Math.random() * 16}px`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <style>{`
+                    @keyframes soundBar {
+                      0% { height: 4px; }
+                      100% { height: 20px; }
+                    }
+                  `}</style>
                 </div>
               )}
             </div>
@@ -800,7 +829,7 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
 
             {/* Tips */}
             <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
-              <h4 className="font-semibold text-gray-900 mb-3">Tips for Voice Onboarding</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">Tips for Talking to Jyoti Didi</h4>
               <ul className="space-y-2 text-sm text-gray-500">
                 <li className="flex items-start gap-2">
                   <span className="text-accent">1.</span>

@@ -360,24 +360,24 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin, onSignu
             {/* Before Quiver */}
             <div className="flex flex-col items-center">
               <p className="text-xs font-bold text-gray-900 mb-3 h-8 flex items-end text-center">{t('landing.equity.before.title')}</p>
-              <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+              <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-primary flex items-center justify-center shadow-lg">
                 <div className="text-center text-white">
                   <Store className="w-5 h-5 lg:w-8 lg:h-8 mx-auto mb-1 opacity-80" />
                   <div className="text-xl lg:text-3xl font-bold">{t('landing.equity.before.percent')}</div>
-                  <div className="text-[10px] lg:text-xs opacity-80">{t('landing.equity.before.ownership')}</div>
+                  <div className="text-xs lg:text-sm opacity-90">{t('landing.equity.before.ownership')}</div>
                 </div>
               </div>
-              <p className="text-xs text-gray-500 font-medium mt-3 text-center">{t('landing.equity.before.limited')}</p>
+              <p className="text-xs text-gray-500 font-medium mt-4 text-center min-h-[2rem] flex items-start">{t('landing.equity.before.limited')}</p>
             </div>
 
             {/* With Quiver */}
             <div className="flex flex-col items-center">
               <p className="text-xs font-bold text-gray-900 mb-3 h-8 flex items-end text-center">{t('landing.equity.after.title')}</p>
-              <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg relative">
+              <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-primary flex items-center justify-center shadow-lg relative">
                 <div className="text-center text-white">
                   <Store className="w-5 h-5 lg:w-8 lg:h-8 mx-auto mb-1 opacity-80" />
                   <div className="text-xl lg:text-3xl font-bold">{t('landing.equity.after.percent')}</div>
-                  <div className="text-[10px] lg:text-xs opacity-80">{t('landing.equity.after.youOwn')}</div>
+                  <div className="text-xs lg:text-sm opacity-90">{t('landing.equity.after.youOwn')}</div>
                 </div>
                 {/* Quiver's share — badge at bottom-right */}
                 <div className="absolute -bottom-2 -right-2 lg:-bottom-2 lg:-right-3 w-14 h-14 lg:w-[4.5rem] lg:h-[4.5rem] rounded-full bg-accent flex items-center justify-center shadow-lg border-[3px] border-white">
@@ -387,7 +387,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin, onSignu
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-accent font-medium mt-5 text-center">{t('landing.equity.after.description')}</p>
+              <p className="text-xs text-accent font-medium mt-4 text-center min-h-[2rem] flex items-start">{t('landing.equity.after.description')}</p>
             </div>
           </div>
 
@@ -398,21 +398,21 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted, onLogin, onSignu
           </div>
           <div className="grid grid-cols-3 gap-2 max-w-2xl mx-auto">
             <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-accent flex items-center justify-center mb-2 shadow-sm">
                 <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.stayOwner.title')}</h4>
               <p className="text-xs text-gray-600 text-center">{t('landing.equity..stayOwner.description')}</p>
             </div>
             <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-accent flex items-center justify-center mb-2 shadow-sm">
                 <Handshake className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.supportGrowth.title')}</h4>
               <p className="text-xs text-gray-600 text-center">{t('landing.equity.benefits.supportGrowth.description')}</p>
             </div>
             <div className="flex flex-col items-center bg-white border border-gray-200 rounded-xl p-3 lg:p-4">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center mb-2 shadow-sm">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-accent flex items-center justify-center mb-2 shadow-sm">
                 <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <h4 className="font-bold text-gray-900 text-xs lg:text-sm mb-0.5 text-center">{t('landing.equity.benefits.earnTogether.title')}</h4>

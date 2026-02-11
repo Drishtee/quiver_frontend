@@ -26,7 +26,9 @@ import { ResumeJourneyModal } from "./components/resume-journey-modal";
 import { MeetingConfirmationModal } from "./components/meeting-confirmation-modal";
 import { VoiceOnboarding } from "./screens/voice-onboarding";
 import { QuiverAIAssistant } from "./components/voice/QuiverAIAssistant";
-import type { ScreenType } from "../config/formFieldMappings";
+import type { AllScreenType } from "../types/screenAssistantConfig";
+import { actionRegistry } from "../config/actionRegistry";
+import { useAIAssistantConfig } from "../contexts/AIAssistantConfigContext";
 import { sendOTP, verifyOTP, startOnboarding, updateField, bulkUpdateFields, getOnboardingData, submitOnboarding, logout as apiLogout } from "../services/api";
 import type { VerifyOTPResponse } from "../types/api";
 import { useOnboarding } from "../contexts/OnboardingContext";
@@ -68,6 +70,7 @@ const getInitialScreen = (): Screen => {
 export default function App() {
   const { t } = useTranslation();
   const onboarding = useOnboarding();
+  const { screenConfigs, getScreenConfig } = useAIAssistantConfig();
 
   const [currentScreen, setCurrentScreen] = useState<Screen>(getInitialScreen);
   const [phone, setPhone] = useState("");
@@ -103,24 +106,55 @@ export default function App() {
     meetLink: string;
   } | null>(null);
 
-  // Show voice agent on onboarding screens
-  const showVoiceAgent = ['consent', 'profile', 'industry', 'questionnaire', 'equity', 'schedule'].includes(currentScreen);
-
-  // Map screen name to voice agent screen type
-  const getVoiceAgentScreen = (): ScreenType | undefined => {
-    const screenMap: Record<string, ScreenType> = {
-      'consent': 'consent',
-      'profile': 'profile',
-      'industry': 'industry',
-      'questionnaire': 'questionnaire',
-      'equity': 'equity',
-      'schedule': 'schedule'
-    };
-    return screenMap[currentScreen];
-  };
+  // Config-driven voice agent visibility
+  const showVoiceAgent = getScreenConfig(currentScreen)?.enabled ?? false;
 
   // Track if initial routing has been handled
   const [initialRouteHandled, setInitialRouteHandled] = useState(false);
+
+  // Register navigation handler for AI voice assistant
+  useEffect(() => {
+    actionRegistry.registerNavigationHandler((screen) => setCurrentScreen(screen as Screen));
+  }, []);
+
+  // Register screen-specific actions for AI voice assistant
+  useEffect(() => {
+    actionRegistry.clearActions();
+
+    // Back navigation map
+    const backMap: Record<string, Screen> = {
+      'profile': 'consent',
+      'industry': 'profile',
+      'questionnaire': 'industry',
+      'equity': 'questionnaire',
+      'review': 'equity',
+      'documents': 'dashboard',
+      'schedule': 'dashboard',
+    };
+
+    // Universal go_back action
+    actionRegistry.registerAction('go_back', () => {
+      const target = backMap[currentScreen];
+      if (target) setCurrentScreen(target);
+    }, 'Go back to the previous screen');
+
+    // Screen-specific actions
+    if (currentScreen === 'consent') {
+      actionRegistry.registerAction('accept_consent', () => {
+        handleConsentContinue();
+      }, 'Accept consent and proceed to profile');
+    }
+
+    // Note: submit actions for profile, industry, questionnaire, equity
+    // are not registered here because they require form data from the screen components.
+    // The AI can guide users to click the submit button instead.
+
+    if (currentScreen === 'review') {
+      actionRegistry.registerAction('submit_review', () => {
+        handleSubmit();
+      }, 'Submit the complete application');
+    }
+  }, [currentScreen]);
 
   // Debug: Monitor screen changes and update URL
   useEffect(() => {
@@ -916,9 +950,9 @@ export default function App() {
         />
       )}
 
-      {/* Quiver AI Voice Assistant - shown on onboarding screens */}
+      {/* Quiver AI Voice Assistant - shown on config-enabled screens */}
       {showVoiceAgent && (
-        <QuiverAIAssistant currentScreen={getVoiceAgentScreen()} />
+        <QuiverAIAssistant currentScreen={currentScreen as AllScreenType} />
       )}
 
       {/* Resume Journey Modal */}

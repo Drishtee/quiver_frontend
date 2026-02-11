@@ -96,7 +96,7 @@
       }
     },
     "avatar": {
-      "title": "Talk to Our Growth Expert",
+      "title": "Talk to Jyoti Didi",
       "subtitle": "Voice or text — your choice, your language",
       "listening": "Listening...",
       "speakLanguage": "Speak in your language",
@@ -135,7 +135,7 @@
       "learnMore": "Learn More"
     },
     "equity": {
-      "badge": "Understanding Partnership",
+      "badge": "Understanding Our Partnership Model",
       "title": "What Does \"Equity\" Mean?",
       "subtitle": "It's simple: Partnership, not control. You remain the owner.",
       "cta": "Ask Our Growth Expert",
@@ -234,7 +234,7 @@
         "states": "States Covered"
       },
       "continueLanguage": "Continue in Your Language",
-      "startVoice": "Start with Voice",
+      "startVoice": "Talk to Jyoti Didi",
       "features": {
         "safe": "100% Safe",
         "yourLanguage": "Your Language",
@@ -309,12 +309,12 @@
     "chooseMethod": "How would you like to proceed?",
     "formOption": "Fill Forms",
     "formOptionDesc": "Type your answers step by step",
-    "voiceOption": "Voice Assistant",
-    "voiceOptionDesc": "Speak with our AI guide",
+    "voiceOption": "Talk to Jyoti Didi",
+    "voiceOptionDesc": "Speak with your personal guide",
     "recommended": "Recommended",
     "agreedAt": "Agreed at",
     "pleaseAgreeAll": "Please agree to all terms to continue",
-    "allConsentsRecorded": "All consents recorded. You may proceed.",
+    "allConsentsRecorded": "All consents recorded",
     "aiHelp": "Have questions? I'm here to help!",
     "preferredLanguage": "Preferred Language",
     "mobileNumber": "Mobile Number",

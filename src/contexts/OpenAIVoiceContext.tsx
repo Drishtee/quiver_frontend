@@ -6,10 +6,13 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { useOnboarding } from './OnboardingContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useAIAssistantConfig } from './AIAssistantConfigContext';
 import { getVoiceAgentToken, bulkUpdateFields, uploadAudio } from '../services/api';
 import { audioStorage } from '../services/audioStorage';
 import type { ScreenType } from '../config/formFieldMappings';
 import { getFieldsForScreen } from '../config/formFieldMappings';
+import type { AllScreenType, ScreenAssistantConfig } from '../types/screenAssistantConfig';
+import { actionRegistry } from '../config/actionRegistry';
 
 // Types
 interface AudioRecording {
@@ -50,7 +53,7 @@ interface OpenAIVoiceState {
   conversationHistory: ConversationMessage[];
   collectedFields: CollectedField[];
   audioRecordings: AudioRecording[];
-  currentScreen: ScreenType | null;
+  currentScreen: AllScreenType | null;
   error: string | null;
   volume: number;
 }
@@ -73,7 +76,7 @@ interface OpenAIVoiceContextValue extends OpenAIVoiceState {
   setVolume: (volume: number) => void;
 
   // Screen management
-  setCurrentScreen: (screen: ScreenType | null) => void;
+  setCurrentScreen: (screen: AllScreenType | null) => void;
 
   // Data management
   confirmField: (fieldKey: string) => void;
@@ -100,6 +103,7 @@ interface OpenAIVoiceProviderProps {
 export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ children }) => {
   const onboarding = useOnboarding();
   const { currentLanguage } = useLanguage();
+  const { config: aiConfig, getScreenConfig } = useAIAssistantConfig();
 
   const [state, setState] = useState<OpenAIVoiceState>({
     isActive: false,
@@ -133,7 +137,7 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
 
   // Refs to avoid stale closures in WebSocket callbacks
   const sessionIdRef = useRef<string | null>(onboarding.sessionId);
-  const currentScreenRef = useRef<ScreenType | null>(state.currentScreen);
+  const currentScreenRef = useRef<AllScreenType | null>(state.currentScreen);
 
   // Keep refs in sync with state
   useEffect(() => {
@@ -148,9 +152,107 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
     currentScreenRef.current = state.currentScreen;
   }, [state.currentScreen]);
 
+  // Build dynamic tools for a given screen config
+  const getToolsForScreen = useCallback((screenConfig: ScreenAssistantConfig) => {
+    const tools: any[] = [];
+    const enabledTools = screenConfig.enabled_tools;
+
+    if (enabledTools.includes('update_form_field')) {
+      tools.push({
+        type: 'function',
+        name: 'update_form_field',
+        description: 'Save a single form field value. Only use AFTER the user has clearly provided this information. Do NOT announce or confirm the save — continue talking naturally.',
+        parameters: {
+          type: 'object',
+          properties: {
+            field: { type: 'string', description: 'The field key to update (e.g., fullName, email, gender, age, etc.)' },
+            value: { type: 'string', description: 'The extracted value for the field' }
+          },
+          required: ['field', 'value']
+        }
+      });
+    }
+
+    if (enabledTools.includes('batch_update_fields')) {
+      tools.push({
+        type: 'function',
+        name: 'batch_update_fields',
+        description: 'Save multiple form fields at once. Use when the user shares 2+ details in one response. Do NOT announce or list the saves — continue the conversation naturally.',
+        parameters: {
+          type: 'object',
+          properties: {
+            fields: {
+              type: 'array',
+              description: 'Array of field-value pairs to update',
+              items: {
+                type: 'object',
+                properties: {
+                  field: { type: 'string', description: 'The field key to update' },
+                  value: { type: 'string', description: 'The extracted value for the field' }
+                },
+                required: ['field', 'value']
+              }
+            }
+          },
+          required: ['fields']
+        }
+      });
+    }
+
+    if (enabledTools.includes('confirm_all_fields')) {
+      tools.push({
+        type: 'function',
+        name: 'confirm_all_fields',
+        description: 'Mark all collected fields as confirmed when user approves',
+        parameters: { type: 'object', properties: {}, required: [] }
+      });
+    }
+
+    if (enabledTools.includes('navigate_to_screen') && screenConfig.allowed_navigation_targets.length > 0) {
+      tools.push({
+        type: 'function',
+        name: 'navigate_to_screen',
+        description: `Navigate the user to a different screen. Available targets: ${screenConfig.allowed_navigation_targets.join(', ')}`,
+        parameters: {
+          type: 'object',
+          properties: {
+            screen: {
+              type: 'string',
+              enum: screenConfig.allowed_navigation_targets,
+              description: 'The screen to navigate to'
+            },
+            reason: { type: 'string', description: 'Brief reason for navigation' }
+          },
+          required: ['screen']
+        }
+      });
+    }
+
+    if (enabledTools.includes('trigger_action') && screenConfig.custom_actions.length > 0) {
+      tools.push({
+        type: 'function',
+        name: 'trigger_action',
+        description: `Trigger a screen action. Available actions: ${screenConfig.custom_actions.map(a => `${a.action_id} (${a.description})`).join(', ')}`,
+        parameters: {
+          type: 'object',
+          properties: {
+            action_id: {
+              type: 'string',
+              enum: screenConfig.custom_actions.map(a => a.action_id),
+              description: 'The action to trigger'
+            }
+          },
+          required: ['action_id']
+        }
+      });
+    }
+
+    return tools;
+  }, []);
+
   // Get system prompt based on current screen and language
   const getSystemPrompt = useCallback(() => {
-    const screenFields = state.currentScreen ? getFieldsForScreen(state.currentScreen) : [];
+    const screenFields = state.currentScreen ? getFieldsForScreen(state.currentScreen as ScreenType) : [];
     const fieldsList = screenFields.map(f => `- ${f.fieldKey}: ${f.aliases.en[0]}`).join('\n');
 
     const languageInstructions: Record<string, string> = {
@@ -160,68 +262,53 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
       mr: 'Respond in Marathi (मराठीत उत्तर द्या). Be friendly and conversational.'
     };
 
-    return `You are Quiver AI, a friendly voice assistant for Quiver - an equity partnership platform for rural entrepreneurs in India.
+    const assistantName = aiConfig?.assistant_name?.en || 'Quiver AI';
+    const stylePreset = aiConfig?.style_preset || 'friendly';
+
+    return `You are ${assistantName}, a ${stylePreset} voice assistant for Quiver - an equity partnership platform for rural entrepreneurs in India.
 
 ABOUT QUIVER:
-Quiver is a unique platform that partners with rural entrepreneurs by providing:
-- Business resources and support (not loans, but partnership)
-- Access to technology, markets, and training
-- Equity-based partnership where Quiver invests in your business growth
-- Complete handholding from onboarding to business success
-- No interest payments - Quiver grows when you grow
+Quiver partners with rural entrepreneurs by providing business resources, technology access, market connections, and training — through an equity-based partnership (not a loan). Quiver invests in your business growth. No interest payments — Quiver grows when you grow.
 
-You are here to:
-1. Explain the Quiver partnership model to new entrepreneurs
-2. Help them complete the onboarding process through voice
-3. Answer their questions about how Quiver works
-4. Guide them through form fields when they need assistance
+YOUR PERSONALITY:
+- You are warm, patient, and conversational — like a helpful friend, NOT a form-filling robot
+- Have natural conversations. Ask follow-up questions. Show genuine interest in their story
+- Use short, simple sentences. Keep responses to 1-2 sentences max
+- Match the user's energy and pace. If they want to chat, chat. If they want to get things done, help efficiently
 
-IMPORTANT LANGUAGE INSTRUCTION:
 ${languageInstructions[currentLanguage] || languageInstructions.en}
 
-STRICT LANGUAGE POLICY:
-- You ONLY support 4 languages: English, Hindi, Marathi, and Assamese.
-- NEVER respond in Urdu, Arabic, Bengali, Tamil, Telugu, Gujarati, Kannada, Malayalam, Punjabi, Odia, or ANY other language.
-- If the user speaks in an unsupported language, respond in English and politely ask them to speak in English, Hindi, Marathi, or Assamese.
-- All transcriptions and responses must be in one of these 4 languages only.
-- Use Devanagari script for Hindi and Marathi. Use Eastern Nagari script for Assamese. Never use Arabic/Perso-Arabic script.
-- Match the user's language if it is one of the 4 supported languages.
+LANGUAGE POLICY:
+- Only support English, Hindi, Marathi, and Assamese
+- Match the user's language. Use Devanagari for Hindi/Marathi, Eastern Nagari for Assamese
+- If user speaks an unsupported language, politely ask them to switch
 
-CRITICAL RULES - FOLLOW STRICTLY:
-1. NEVER assume or guess information the user did not explicitly say
-2. NEVER auto-fill fields based on partial or unclear audio
-3. ALWAYS repeat back what you heard and ask for confirmation before saving fields
-4. If audio is unclear or you're not 100% certain, ASK the user to repeat
-5. EXTRACT ALL INFORMATION the user provides in a single response - if they give multiple details, capture them all at once
-6. Only call update functions AFTER the user confirms the information is correct
+CONVERSATION STYLE:
+- Talk naturally. Do NOT ask for fields one by one like a survey
+- Do NOT proactively ask "What is your age?", "What is your education?" etc. unprompted
+- If the user volunteers information ("I'm Raj, 25, from Mumbai"), acknowledge it warmly and save it
+- Only ask about specific fields if the user asks for help filling the form or seems stuck
+- NEVER ask about irrelevant personal details (parents, family members, etc.) — only ask about fields that exist on the current screen
+- When the user just wants to talk or ask questions, have a normal conversation — don't redirect to form filling
 
-CONVERSATION GUIDE:
-- If user asks "What is Quiver?" explain the partnership model
-- If user asks about loans, clarify that Quiver is NOT a loan but an equity partnership
-- If user seems confused, patiently explain that Quiver will become their business partner
-- Help with form filling ONLY when the user is ready and asks for help
+FORM FILLING (only when user provides info or asks for help):
+- When user provides info naturally, confirm briefly: "Got it, Raj from Mumbai!" then save
+- Do NOT repeat every single field back in a long list — keep confirmations short and natural
+- Use batch_update_fields when user gives multiple details at once
+- Use update_form_field for a single detail
+- If audio is unclear, ask them to repeat — never guess
+- After saving fields, do NOT say "field updated" or "saved successfully" — just continue the conversation naturally
 
-EFFICIENT FORM FILLING:
-- When the user provides MULTIPLE pieces of information (e.g., "My name is Raj, I'm 25 years old, from Mumbai"), use batch_update_fields to save ALL values at once
-- Use update_form_field only when user provides a SINGLE piece of information
-- Always prefer batch_update_fields when you have 2 or more fields to update
-- List back ALL the information you captured and ask for confirmation once
+Current screen: ${state.currentScreen || 'general'}
+${fieldsList ? `Available fields on this screen:\n${fieldsList}` : ''}
 
-When helping with forms:
-1. Listen for ALL information the user provides in their response
-2. When you hear answers, repeat them ALL back: "I heard your name is [name], age is [age], and you're from [city]. Is that correct?"
-3. Only save the fields AFTER user confirms with "yes", "हाँ", "correct", etc.
-4. Use batch_update_fields to save multiple fields in one call
-5. Be patient, supportive, and encouraging
+Start by greeting the user warmly: "${aiConfig?.greeting_messages?.en || 'Hello! I am here to help you on your Quiver journey.'}"
 
-Current form section: ${state.currentScreen || 'general'}
-${fieldsList ? `Fields available on this screen:\n${fieldsList}` : ''}
-
-IMPORTANT: Do NOT call update_form_field until the user explicitly confirms the value.
-Keep responses concise (1-2 sentences) and conversational.
-
-Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI. I can tell you about Quiver's partnership program or help you fill out the form. How can I help you today?"`;
-  }, [state.currentScreen, currentLanguage]);
+${state.currentScreen ? (() => {
+  const sc = getScreenConfig(state.currentScreen!);
+  return sc.system_prompt_override ? `\nSCREEN CONTEXT:\n${sc.system_prompt_override}` : '';
+})() : ''}`;
+  }, [state.currentScreen, currentLanguage, aiConfig, getScreenConfig]);
 
   // Connect to Voice Realtime API
   const connect = useCallback(async () => {
@@ -299,13 +386,62 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
       ws.onopen = () => {
         console.log('Quiver Voice: WebSocket connected with subprotocol auth');
 
+        // Build tools dynamically based on current screen config
+        const screenConfig = state.currentScreen ? getScreenConfig(state.currentScreen) : null;
+        const dynamicTools = screenConfig ? getToolsForScreen(screenConfig) : [
+          // Fallback tools if no screen config
+          {
+            type: 'function',
+            name: 'update_form_field',
+            description: 'Update a SINGLE form field with the extracted value from user speech.',
+            parameters: {
+              type: 'object',
+              properties: {
+                field: { type: 'string', description: 'The field key to update' },
+                value: { type: 'string', description: 'The extracted value for the field' }
+              },
+              required: ['field', 'value']
+            }
+          },
+          {
+            type: 'function',
+            name: 'batch_update_fields',
+            description: 'Update MULTIPLE form fields at once.',
+            parameters: {
+              type: 'object',
+              properties: {
+                fields: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      field: { type: 'string' },
+                      value: { type: 'string' }
+                    },
+                    required: ['field', 'value']
+                  }
+                }
+              },
+              required: ['fields']
+            }
+          },
+          {
+            type: 'function',
+            name: 'confirm_all_fields',
+            description: 'Mark all collected fields as confirmed when user approves',
+            parameters: { type: 'object', properties: {}, required: [] }
+          }
+        ];
+
+        console.log(`Quiver Voice: Screen=${state.currentScreen}, Tools=${dynamicTools.map(t => t.name).join(', ')}`);
+
         // Send session configuration (auth handled by subprotocol)
         ws.send(JSON.stringify({
           type: 'session.update',
           session: {
             modalities: ['text', 'audio'],
             instructions: getSystemPrompt(),
-            voice: 'alloy',
+            voice: aiConfig?.voice_type || 'alloy',
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {
@@ -314,70 +450,11 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
             },
             turn_detection: {
               type: 'server_vad',
-              threshold: 0.7,           // Higher = less sensitive to background noise
-              prefix_padding_ms: 500,   // More buffer before speech starts
-              silence_duration_ms: 1200 // Wait longer before considering speech ended
+              threshold: 0.7,
+              prefix_padding_ms: 500,
+              silence_duration_ms: 1200
             },
-            tools: [
-              {
-                type: 'function',
-                name: 'update_form_field',
-                description: 'Update a SINGLE form field with the extracted value from user speech. Use this only when user provides ONE piece of information.',
-                parameters: {
-                  type: 'object',
-                  properties: {
-                    field: {
-                      type: 'string',
-                      description: 'The field key to update (e.g., fullName, email, gender, age, etc.)'
-                    },
-                    value: {
-                      type: 'string',
-                      description: 'The extracted value for the field'
-                    }
-                  },
-                  required: ['field', 'value']
-                }
-              },
-              {
-                type: 'function',
-                name: 'batch_update_fields',
-                description: 'Update MULTIPLE form fields at once. Use this when user provides 2 or more pieces of information in a single response. This is the PREFERRED method for efficiency.',
-                parameters: {
-                  type: 'object',
-                  properties: {
-                    fields: {
-                      type: 'array',
-                      description: 'Array of field-value pairs to update',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          field: {
-                            type: 'string',
-                            description: 'The field key to update (e.g., fullName, email, gender, age, district, state, etc.)'
-                          },
-                          value: {
-                            type: 'string',
-                            description: 'The extracted value for the field'
-                          }
-                        },
-                        required: ['field', 'value']
-                      }
-                    }
-                  },
-                  required: ['fields']
-                }
-              },
-              {
-                type: 'function',
-                name: 'confirm_all_fields',
-                description: 'Mark all collected fields as confirmed when user approves',
-                parameters: {
-                  type: 'object',
-                  properties: {},
-                  required: []
-                }
-              }
-            ]
+            tools: dynamicTools
           }
         }));
 
@@ -413,7 +490,42 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         error: err instanceof Error ? err.message : 'Failed to connect'
       }));
     }
-  }, [state.connectionStatus, getSystemPrompt]);
+  }, [state.connectionStatus, getSystemPrompt, getScreenConfig, getToolsForScreen]);
+
+  // Send session.update when screen changes while connected
+  const sessionUpdateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (state.connectionStatus !== 'connected' || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      return;
+    }
+
+    // Debounce by 300ms to handle rapid screen changes
+    if (sessionUpdateTimerRef.current) {
+      clearTimeout(sessionUpdateTimerRef.current);
+    }
+
+    sessionUpdateTimerRef.current = setTimeout(() => {
+      const screenConfig = state.currentScreen ? getScreenConfig(state.currentScreen) : null;
+      const dynamicTools = screenConfig ? getToolsForScreen(screenConfig) : [];
+
+      console.log(`Quiver Voice: session.update for screen=${state.currentScreen}, tools=${dynamicTools.map(t => t.name).join(', ')}`);
+
+      wsRef.current?.send(JSON.stringify({
+        type: 'session.update',
+        session: {
+          instructions: getSystemPrompt(),
+          tools: dynamicTools,
+        }
+      }));
+    }, 300);
+
+    return () => {
+      if (sessionUpdateTimerRef.current) {
+        clearTimeout(sessionUpdateTimerRef.current);
+      }
+    };
+  }, [state.currentScreen, state.connectionStatus, getSystemPrompt, getScreenConfig, getToolsForScreen]);
 
   // Handle incoming WebSocket messages
   const handleRealtimeMessage = useCallback((message: any) => {
@@ -480,50 +592,121 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         }
         break;
 
-      case 'response.function_call_arguments.done':
+      case 'response.function_call_arguments.done': {
+        let toolResult: { success: boolean; message?: string; instruction?: string } = { success: true };
+
         if (message.name === 'update_form_field') {
           try {
             const args = JSON.parse(message.arguments);
             handleFieldUpdate(args.field, args.value);
+            toolResult = { success: true, message: `Saved ${args.field}.`, instruction: 'Field saved silently. Continue the conversation naturally. Do NOT say "field updated" or "saved" — just move on naturally.' };
           } catch (e) {
             console.error('Failed to parse function call', e);
+            toolResult = { success: false, message: 'Failed to parse arguments' };
           }
         } else if (message.name === 'batch_update_fields') {
           try {
             const args = JSON.parse(message.arguments);
             if (args.fields && Array.isArray(args.fields)) {
-              // Process all fields at once
               args.fields.forEach((fieldData: { field: string; value: string }) => {
                 handleFieldUpdate(fieldData.field, fieldData.value);
               });
               console.log(`Batch updated ${args.fields.length} fields:`, args.fields.map((f: any) => f.field).join(', '));
             }
+            toolResult = { success: true, message: `Saved ${args.fields?.length || 0} fields.`, instruction: 'Fields saved silently. Continue the conversation naturally. Do NOT say "fields updated" or list what was saved — just acknowledge warmly and move on.' };
           } catch (e) {
             console.error('Failed to parse batch update function call', e);
+            toolResult = { success: false, message: 'Failed to parse arguments' };
           }
         } else if (message.name === 'confirm_all_fields') {
           confirmAllFields();
+        } else if (message.name === 'navigate_to_screen') {
+          try {
+            const args = JSON.parse(message.arguments);
+            console.log(`Quiver Voice: navigate_to_screen → ${args.screen} (reason: ${args.reason || 'none'})`);
+            toolResult = actionRegistry.navigateTo(args.screen);
+          } catch (e) {
+            console.error('Failed to parse navigate_to_screen call', e);
+            toolResult = { success: false, message: 'Failed to parse navigation arguments' };
+          }
+        } else if (message.name === 'trigger_action') {
+          try {
+            const args = JSON.parse(message.arguments);
+            console.log(`Quiver Voice: trigger_action → ${args.action_id}`);
+            // Execute action async and send result back
+            const callId = message.call_id || `call_${Date.now()}`;
+            actionRegistry.executeAction(args.action_id).then((result) => {
+              wsRef.current?.send(JSON.stringify({
+                type: 'conversation.item.create',
+                item: { type: 'function_call_output', call_id: callId, output: JSON.stringify(result) }
+              }));
+              wsRef.current?.send(JSON.stringify({
+                type: 'response.create',
+                response: { modalities: ['text', 'audio'] }
+              }));
+            });
+            return; // Skip the synchronous send below
+          } catch (e) {
+            console.error('Failed to parse trigger_action call', e);
+            toolResult = { success: false, message: 'Failed to parse action arguments' };
+          }
         }
 
-        // Send function result
+        // Send function result back to OpenAI
         wsRef.current?.send(JSON.stringify({
           type: 'conversation.item.create',
           item: {
             type: 'function_call_output',
             call_id: message.call_id || `call_${Date.now()}`,
-            output: JSON.stringify({ success: true })
+            output: JSON.stringify(toolResult)
           }
         }));
+
+        // Trigger a response after function call output
+        wsRef.current?.send(JSON.stringify({
+          type: 'response.create',
+          response: { modalities: ['text', 'audio'] }
+        }));
         break;
+      }
 
       case 'input_audio_buffer.speech_started':
+        console.log('Quiver Voice: Speech detected');
         setState(prev => ({ ...prev, isRecording: true }));
         recordingStartTimeRef.current = new Date();
         recordingChunksRef.current = [];
         break;
 
       case 'input_audio_buffer.speech_stopped':
+        console.log('Quiver Voice: Speech ended');
         setState(prev => ({ ...prev, isRecording: false }));
+        break;
+
+      case 'input_audio_buffer.committed':
+        console.log('Quiver Voice: Audio committed, awaiting response...');
+        break;
+
+      case 'response.created':
+        console.log('Quiver Voice: Response generation started');
+        break;
+
+      case 'response.done':
+        // Detect failed responses — the API may silently fail
+        if (message.response?.status === 'failed') {
+          console.error('Quiver Voice: Response FAILED:', message.response?.status_details);
+          setState(prev => ({
+            ...prev,
+            error: message.response?.status_details?.error?.message || 'Response failed'
+          }));
+        } else if (message.response?.status === 'cancelled') {
+          console.log('Quiver Voice: Response cancelled (user interrupted)');
+        } else {
+          console.log('Quiver Voice: Response completed');
+        }
+        break;
+
+      case 'session.updated':
+        console.log('Quiver Voice: Session config updated');
         break;
 
       case 'error':
@@ -572,27 +755,42 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          sampleRate: 24000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: true
+          noiseSuppression: true,
+          autoGainControl: true
         }
       });
       mediaStreamRef.current = stream;
 
-      audioContextRef.current = new AudioContext({ sampleRate: 24000 });
-      const source = audioContextRef.current.createMediaStreamSource(stream);
+      // Let browser choose native sample rate — we'll resample to 24kHz
+      const ctx = new AudioContext();
+      audioContextRef.current = ctx;
 
-      processorRef.current = audioContextRef.current.createScriptProcessor(4096, 1, 1);
+      // Critical: resume AudioContext (browsers suspend it without user gesture)
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
+
+      const actualRate = ctx.sampleRate;
+      const targetRate = 24000;
+      console.log(`Quiver Voice: AudioContext sampleRate=${actualRate}, target=${targetRate}`);
+
+      const source = ctx.createMediaStreamSource(stream);
+
+      processorRef.current = ctx.createScriptProcessor(4096, 1, 1);
       processorRef.current.onaudioprocess = (e) => {
         if (!isMutedRef.current && wsRef.current?.readyState === WebSocket.OPEN) {
           const inputData = e.inputBuffer.getChannelData(0);
 
-          // Store for recording
+          // Store for recording (at original rate)
           recordingChunksRef.current.push(new Float32Array(inputData));
 
-          // Send to API
-          const pcm16 = float32ToPCM16(inputData);
+          // Resample to 24kHz if needed, then send as PCM16
+          const samples = actualRate !== targetRate
+            ? resampleAudio(inputData, actualRate, targetRate)
+            : inputData;
+          const pcm16 = float32ToPCM16(samples);
           const base64 = arrayBufferToBase64(pcm16.buffer);
 
           wsRef.current.send(JSON.stringify({
@@ -603,7 +801,9 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
       };
 
       source.connect(processorRef.current);
-      processorRef.current.connect(audioContextRef.current.destination);
+      processorRef.current.connect(ctx.destination);
+
+      console.log('Quiver Voice: Audio capture started');
 
     } catch (err) {
       console.error('Failed to access microphone', err);
@@ -612,7 +812,7 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         error: 'Could not access microphone. Please check permissions.'
       }));
     }
-  }, [state.isMuted]);
+  }, []);
 
   // Stop audio capture
   const stopAudioCapture = useCallback(() => {
@@ -703,12 +903,23 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
     recordingStartTimeRef.current = null;
   }, []); // No dependencies needed - uses refs for latest values
 
+  // Persistent AudioContext for playback (avoid creating one per chunk)
+  const playbackContextRef = useRef<AudioContext | null>(null);
+  const volumeRef = useRef(state.volume);
+  useEffect(() => { volumeRef.current = state.volume; }, [state.volume]);
+
+  const getPlaybackContext = useCallback(() => {
+    if (!playbackContextRef.current || playbackContextRef.current.state === 'closed') {
+      playbackContextRef.current = new AudioContext({ sampleRate: 24000 });
+    }
+    return playbackContextRef.current;
+  }, []);
+
   // Play audio from queue
   const playNextAudio = useCallback(async () => {
     // Don't play if muted or no audio in queue
     if (isPlayingRef.current || playbackQueueRef.current.length === 0 || isMutedRef.current) {
       if (isMutedRef.current) {
-        // Clear the queue when muted
         playbackQueueRef.current = [];
       }
       return;
@@ -718,15 +929,16 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
     const audioData = playbackQueueRef.current.shift()!;
 
     try {
-      // Double check mute state before playing
       if (isMutedRef.current) {
         isPlayingRef.current = false;
         playbackQueueRef.current = [];
         return;
       }
 
-      const audioContext = new AudioContext({ sampleRate: 24000 });
-      const audioBuffer = audioContext.createBuffer(1, audioData.byteLength / 2, 24000);
+      const ctx = getPlaybackContext();
+      if (ctx.state === 'suspended') await ctx.resume();
+
+      const audioBuffer = ctx.createBuffer(1, audioData.byteLength / 2, 24000);
       const channelData = audioBuffer.getChannelData(0);
       const dataView = new DataView(audioData);
 
@@ -734,13 +946,13 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
         channelData[i] = dataView.getInt16(i * 2, true) / 32768;
       }
 
-      const source = audioContext.createBufferSource();
-      const gainNode = audioContext.createGain();
-      gainNode.gain.value = isMutedRef.current ? 0 : state.volume;
+      const source = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = isMutedRef.current ? 0 : volumeRef.current;
 
       source.buffer = audioBuffer;
       source.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(ctx.destination);
 
       source.onended = () => {
         isPlayingRef.current = false;
@@ -754,7 +966,7 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
       isPlayingRef.current = false;
       playNextAudio();
     }
-  }, [state.volume]);
+  }, [getPlaybackContext]);
 
   // Disconnect
   const disconnect = useCallback(() => {
@@ -763,6 +975,13 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
       wsRef.current.close();
       wsRef.current = null;
     }
+    // Close playback context
+    if (playbackContextRef.current && playbackContextRef.current.state !== 'closed') {
+      playbackContextRef.current.close();
+      playbackContextRef.current = null;
+    }
+    playbackQueueRef.current = [];
+    isPlayingRef.current = false;
     setState(prev => ({ ...prev, connectionStatus: 'disconnected' }));
   }, [stopAudioCapture]);
 
@@ -817,7 +1036,7 @@ Start by greeting the user warmly and introduce yourself: "Hello! I am Quiver AI
   }, []);
 
   // Screen management
-  const setCurrentScreen = useCallback((screen: ScreenType | null) => {
+  const setCurrentScreen = useCallback((screen: AllScreenType | null) => {
     setState(prev => ({ ...prev, currentScreen: screen }));
   }, []);
 
@@ -1078,6 +1297,20 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary);
+}
+
+function resampleAudio(input: Float32Array, fromRate: number, toRate: number): Float32Array {
+  const ratio = fromRate / toRate;
+  const outputLength = Math.round(input.length / ratio);
+  const output = new Float32Array(outputLength);
+  for (let i = 0; i < outputLength; i++) {
+    const srcIdx = i * ratio;
+    const floor = Math.floor(srcIdx);
+    const ceil = Math.min(floor + 1, input.length - 1);
+    const frac = srcIdx - floor;
+    output[i] = input[floor] * (1 - frac) + input[ceil] * frac;
+  }
+  return output;
 }
 
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
