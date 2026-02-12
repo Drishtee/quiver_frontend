@@ -596,15 +596,15 @@ export interface AudioRecordsResponse {
  * Upload audio recording to Azure Blob Storage
  */
 export const uploadAudio = async (
-  sessionId: string,
+  sessionId: string | null | undefined,
   audioBlob: Blob,
   metadata: Omit<AudioUploadMetadata, 'session_id'>
 ): Promise<AudioUploadResponse> => {
-  console.log('Uploading audio recording...');
+  console.log('Uploading audio recording...', sessionId ? `session=${sessionId}` : '(no session — landing page)');
 
   const formData = new FormData();
   formData.append('audio', audioBlob, 'recording.wav');
-  formData.append('session_id', sessionId);
+  if (sessionId) formData.append('session_id', sessionId);
 
   if (metadata.transcript) formData.append('transcript', metadata.transcript);
   if (metadata.duration_seconds !== undefined) formData.append('duration_seconds', String(metadata.duration_seconds));

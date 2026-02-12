@@ -273,6 +273,14 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
       return `- ${f.fieldKey}: ${f.aliases.en[0]}`;
     }).join('\n');
 
+    // Build a full overview of ALL screens and their fields
+    const allScreens: ScreenType[] = ['profile', 'industry', 'questionnaire', 'equity'];
+    const allScreenFieldsList = allScreens.map(screen => {
+      const fields = getFieldsForScreen(screen);
+      const fieldNames = fields.map(f => f.fieldKey).join(', ');
+      return `${screen.toUpperCase()}: ${fieldNames}`;
+    }).join('\n');
+
     const languageInstructions: Record<string, string> = {
       en: `LANGUAGE: English
 Speak in simple, warm English. Short sentences. No jargon. Use encouraging words like "Great!", "Wonderful!", "That's lovely!".`,
@@ -354,43 +362,73 @@ Quiver partners with rural entrepreneurs by providing business resources, techno
 - If they give info that maps to a field with options, match to the closest option value
 - Do NOT go through fields one by one like a checklist. Let information flow naturally
 
+# FULL ONBOARDING JOURNEY — YOU MUST COMPLETE ALL SCREENS
+The onboarding has 4 sections that MUST be completed in order. NEVER say "form is complete" or stop until you have gone through ALL 4 sections:
+
+${allScreenFieldsList}
+
+## Section flow:
+1. PROFILE → Personal details (name, email, gender, age, education, state, district)
+2. INDUSTRY → Business details (business name, sector, year started, ownership, role)
+3. QUESTIONNAIRE → Detailed business questions (products, customers, revenue, expenses, workers, workspace, growth plans, funding needs)
+4. EQUITY → Partnership willingness
+
+YOU MUST KEEP ASKING QUESTIONS until all 4 sections are covered. After finishing one section, move to the next. NEVER stop early.
+
+# PERSISTENCE RULES — CRITICAL
+- NEVER declare the form "complete", "done", "finished", or "bharh gaya" unless ALL 4 sections above have been covered
+- If you've only collected profile info (name, age, city), you are ONLY 25% done — ask about their BUSINESS next
+- If you've collected profile + business info, you are ONLY 50% done — ask about revenue, customers, expenses next
+- After each answer, think: "What field should I ask about next?" and keep going
+- If the user says "ho gaya" or "bas" but you haven't covered all sections, gently say: "Bahut accha! Aapki personal details ho gayi. Ab thoda business ke baare mein baat karte hain?"
+- The ONLY time you can stop is if the user explicitly and repeatedly refuses to continue
+
 # END-OF-SECTION PROTOCOL
-When you've collected most fields for the current screen (or the user says "done", "next", "aage", "পাছৰ", "पुढे"):
-1. Verbally summarize what you've collected in a warm, conversational way
-2. Mention any missing fields gently: "Bas ek cheez reh gayi — aapki email? Agar dena chahein toh bata dijiye, warna hum aage chalte hain"
-3. Wait for the user to confirm ("haan sahi hai", "yes", "correct", "হয়")
-4. ONLY THEN call summarize_and_confirm with confirmed=true
-5. If user wants to change something, help them fix it first, then re-summarize
+When you've collected the fields for the CURRENT section:
+1. Briefly summarize: "Toh aapka naam Priya, Nagpur se, 32 saal, 12th pass. Sahi hai?"
+2. Ask about any missing fields in this section
+3. Once confirmed, call summarize_and_confirm with confirmed=true
+4. Then IMMEDIATELY move to the next section's questions — do NOT stop here
+5. Use navigate_to_screen to move to the next screen if available
+
+# NAVIGATION
+- After completing PROFILE fields, navigate to INDUSTRY screen
+- After completing INDUSTRY fields, navigate to QUESTIONNAIRE screen
+- After completing QUESTIONNAIRE fields, navigate to EQUITY screen
+- If navigate_to_screen tool is available, USE IT to move between screens
 
 # GUARDRAILS
 - NEVER invent or assume information. Only save what the user explicitly tells you
-- NEVER ask about family members, personal relationships, or anything not in the field list
 - If unsure about a value, ask for clarification rather than guessing
-- Stay focused on the current screen's purpose. Don't jump ahead or go back unprompted
-- If the user asks non-business questions, answer briefly and gently redirect
+- If the user asks non-business questions, answer briefly and gently redirect back to the form
 
 Current screen: ${state.currentScreen || 'general'}
-${fieldsList ? `\nFIELDS ON THIS SCREEN:\n${fieldsList}` : ''}
+${fieldsList ? `\nFIELDS ON THIS SCREEN (collect these first):\n${fieldsList}` : '\nNo specific fields for this screen — start by collecting PROFILE information: name, email, gender, age, education, state, district'}
 ${screenContext}
 
 # GREETING
 Start with: "${greeting}"
 
 # EXAMPLES OF GOOD BEHAVIOR
-Example 1:
-User says: "Mera naam Priya hai, Nagpur se hoon, 32 saal"
-You say: "Priya ji, Nagpur se! Bahut accha. Aapka business ke baare mein batayiye — kya kaam karti hain aap?"
-(You silently use batch_update_fields to save fullName, district, age — but you NEVER mention this)
+Example 1 — Collecting profile info then moving to business:
+User: "Mera naam Priya hai, Nagpur se hoon, 32 saal"
+You: "Priya ji, Nagpur se! Bahut accha. Aapne kya padhai ki hai?"
+(Silently save fullName, district, age — then ask about education, a field you still need)
 
-Example 2:
-User says: "Main kapde ka kaam karti hoon, 5 saal se"
-You say: "Wah, 5 saal se! Bahut experience hai aapko. Aapka business ka naam kya hai?"
-(You silently save sector and yearStarted — user never knows)
+Example 2 — Transitioning from profile to business section:
+User: "Haan sab sahi hai"
+You: "Bahut accha! Ab thoda aapke business ke baare mein baat karte hain. Aapka business ka naam kya hai?"
+(Move to industry section — NEVER stop here)
 
-Example 3:
-User says: "Ruko ruko, mera naam Adarsh hai, Priya nahi"
-You say: "Oh sorry! Adarsh ji, bilkul sahi. Aage bataiye?"
-(Immediately accept the correction, save the corrected name)`;
+Example 3 — User tries to end early:
+User: "Ho gaya, bas"
+You: "Aapki personal details ho gayi! Ab bas kuch business ke sawaal hain — 2-3 minute lagenge. Aapka business ka naam kya hai?"
+(Gently redirect — don't let them stop at 25%)
+
+Example 4 — Deep into questionnaire:
+User: "Mahine mein 50,000 ki bikri hoti hai, kharch 30,000"
+You: "Accha, matlab 20,000 ka profit! Kitne log kaam karte hain aapke saath?"
+(Save revenue + expenses, naturally ask about workers)`;
   }, [state.currentScreen, currentLanguage, aiConfig, getScreenConfig]);
 
   // Connect to Voice Realtime API
@@ -639,6 +677,15 @@ You say: "Oh sorry! Adarsh ji, bilkul sahi. Aage bataiye?"
         }
         break;
 
+      case 'output_audio_buffer.stopped':
+      case 'output_audio_buffer.cleared':
+        // Server cleared its output buffer (user interrupted) — flush local playback too
+        console.log(`Quiver Voice: ${message.type} — flushing local audio`);
+        playbackQueueRef.current = [];
+        isPlayingRef.current = false;
+        setState(prev => ({ ...prev, isSpeaking: false }));
+        break;
+
       case 'response.audio_transcript.delta':
         if (message.delta) {
           setState(prev => {
@@ -786,8 +833,11 @@ You say: "Oh sorry! Adarsh ji, bilkul sahi. Aage bataiye?"
       }
 
       case 'input_audio_buffer.speech_started':
-        console.log('Quiver Voice: Speech detected');
-        setState(prev => ({ ...prev, isRecording: true }));
+        console.log('Quiver Voice: User speaking — interrupting AI playback');
+        // CRITICAL: Clear the audio playback queue immediately so the AI stops talking
+        playbackQueueRef.current = [];
+        isPlayingRef.current = false;
+        setState(prev => ({ ...prev, isRecording: true, isSpeaking: false }));
         recordingStartTimeRef.current = new Date();
         recordingChunksRef.current = [];
         break;
@@ -814,7 +864,11 @@ You say: "Oh sorry! Adarsh ji, bilkul sahi. Aage bataiye?"
             error: message.response?.status_details?.error?.message || 'Response failed'
           }));
         } else if (message.response?.status === 'cancelled') {
-          console.log('Quiver Voice: Response cancelled (user interrupted)');
+          console.log('Quiver Voice: Response cancelled (user interrupted) — flushing audio');
+          // User interrupted: flush any remaining buffered audio so AI stops immediately
+          playbackQueueRef.current = [];
+          isPlayingRef.current = false;
+          setState(prev => ({ ...prev, isSpeaking: false }));
         } else {
           console.log('Quiver Voice: Response completed');
         }
@@ -989,27 +1043,23 @@ You say: "Oh sorry! Adarsh ji, bilkul sahi. Aage bataiye?"
       console.error('Failed to persist recording:', err);
     }
 
-    // Upload to backend if session exists
-    if (currentSessionId) {
-      try {
-        console.log(`[AudioUpload] Uploading recording ${recording.id} for session ${currentSessionId}, screen=${currentScreen}, duration=${duration.toFixed(1)}s`);
-        const result = await uploadAudio(currentSessionId, wavBlob, {
-          transcript,
-          duration_seconds: duration,
-          screen: currentScreen || undefined,
-          recorded_at: recordedAt
-        });
-        console.log(`[AudioUpload] Success! record_id=${result.audio_record_id}`, result.azure_error ? `(Azure warning: ${result.azure_error})` : '');
+    // Upload to backend — works with or without a session (landing page has no session)
+    try {
+      console.log(`[AudioUpload] Uploading recording ${recording.id}, session=${currentSessionId || 'none (landing)'}, screen=${currentScreen}, duration=${duration.toFixed(1)}s`);
+      const result = await uploadAudio(currentSessionId, wavBlob, {
+        transcript,
+        duration_seconds: duration,
+        screen: currentScreen || undefined,
+        recorded_at: recordedAt
+      });
+      console.log(`[AudioUpload] Success! record_id=${result.audio_record_id}`, result.azure_error ? `(Azure warning: ${result.azure_error})` : '');
 
-        // Mark as uploaded in IndexedDB
-        try {
-          await audioStorage.markAsUploaded(recording.id);
-        } catch (_) { /* non-critical */ }
-      } catch (err) {
-        console.error(`[AudioUpload] FAILED to upload recording ${recording.id}:`, err);
-      }
-    } else {
-      console.warn('[AudioUpload] No sessionId available - audio saved locally only, will sync when session is created');
+      // Mark as uploaded in IndexedDB
+      try {
+        await audioStorage.markAsUploaded(recording.id);
+      } catch (_) { /* non-critical */ }
+    } catch (err) {
+      console.error(`[AudioUpload] FAILED to upload recording ${recording.id}:`, err);
     }
 
     setState(prev => ({

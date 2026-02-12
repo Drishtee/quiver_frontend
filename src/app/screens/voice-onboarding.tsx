@@ -224,8 +224,13 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       }
 
       case "response.done":
-        // Response completed - log for debugging
-        console.log("Response completed:", message.response?.status);
+        if (message.response?.status === "cancelled") {
+          console.log("Response cancelled (user interrupted) — flushing audio");
+          playbackQueueRef.current = [];
+          isPlayingRef.current = false;
+        } else {
+          console.log("Response completed:", message.response?.status);
+        }
         break;
 
       case "response.output_item.done": {
@@ -261,7 +266,10 @@ export function VoiceOnboarding({ onBack, onComplete, phone }: VoiceOnboardingPr
       }
 
       case "input_audio_buffer.speech_started":
-        console.log("User started speaking");
+        console.log("User speaking — interrupting AI playback");
+        // Clear playback queue so AI stops talking immediately when user interrupts
+        playbackQueueRef.current = [];
+        isPlayingRef.current = false;
         break;
 
       case "input_audio_buffer.speech_stopped":
