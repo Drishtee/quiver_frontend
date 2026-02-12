@@ -68,7 +68,7 @@ const getInitialScreen = (): Screen => {
 };
 
 export default function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const onboarding = useOnboarding();
   const { screenConfigs, getScreenConfig } = useAIAssistantConfig();
 
@@ -429,7 +429,8 @@ export default function App() {
         { key: 'age', value: data.age, source: 'ui' },
         { key: 'education', value: data.education, source: 'ui' },
         { key: 'state', value: data.state, source: 'ui' },
-        { key: 'district', value: data.district, source: 'ui' }
+        { key: 'district', value: data.district, source: 'ui' },
+        { key: 'language', value: i18n.language || 'hi', source: 'ui' }
       ]);
       setProfileData(data);
       // Mark profile step as completed and move to industry
