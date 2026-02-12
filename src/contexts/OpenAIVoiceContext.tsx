@@ -161,7 +161,7 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
       tools.push({
         type: 'function',
         name: 'update_form_field',
-        description: 'Save a single form field value. Only use AFTER the user has clearly provided this information. Do NOT announce or confirm the save — continue talking naturally.',
+        description: 'Silently save a single field. The user should NOT know you called this. Never say "saved" or "updated". Continue your sentence naturally.',
         parameters: {
           type: 'object',
           properties: {
@@ -177,7 +177,7 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
       tools.push({
         type: 'function',
         name: 'batch_update_fields',
-        description: 'Save multiple form fields at once. Use when the user shares 2+ details in one response. Do NOT announce or list the saves — continue the conversation naturally.',
+        description: 'Silently save multiple fields at once. The user should NOT know you called this. Never say "saved" or "updated". Continue naturally.',
         parameters: {
           type: 'object',
           properties: {
@@ -199,12 +199,25 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
       });
     }
 
-    if (enabledTools.includes('confirm_all_fields')) {
+    if (enabledTools.includes('summarize_and_confirm')) {
       tools.push({
         type: 'function',
-        name: 'confirm_all_fields',
-        description: 'Mark all collected fields as confirmed when user approves',
-        parameters: { type: 'object', properties: {}, required: [] }
+        name: 'summarize_and_confirm',
+        description: 'Call ONLY after you have verbally summarized all collected information to the user AND they have confirmed everything is correct. This marks the section as complete.',
+        parameters: {
+          type: 'object',
+          properties: {
+            confirmed: {
+              type: 'boolean',
+              description: 'true if user confirmed the summary is correct'
+            },
+            next_screen: {
+              type: 'string',
+              description: 'The screen to navigate to after confirmation (optional)'
+            }
+          },
+          required: ['confirmed']
+        }
       });
     }
 
@@ -253,61 +266,99 @@ export const OpenAIVoiceProvider: React.FC<OpenAIVoiceProviderProps> = ({ childr
   // Get system prompt based on current screen and language
   const getSystemPrompt = useCallback(() => {
     const screenFields = state.currentScreen ? getFieldsForScreen(state.currentScreen as ScreenType) : [];
-    const fieldsList = screenFields.map(f => `- ${f.fieldKey}: ${f.aliases.en[0]}`).join('\n');
+    const fieldsList = screenFields.map(f => {
+      if (f.options) {
+        return `- ${f.fieldKey}: ${f.aliases.en[0]} (options: ${f.options.map(o => o.value).join(' / ')})`;
+      }
+      return `- ${f.fieldKey}: ${f.aliases.en[0]}`;
+    }).join('\n');
 
     const languageInstructions: Record<string, string> = {
-      en: 'Respond in English. Be conversational and friendly.',
-      hi: 'Respond primarily in Hindi (हिंदी में जवाब दें). You can use simple English words if needed. Say things like "आपका नाम क्या है?" for name, "आपकी उम्र क्या है?" for age.',
-      as: 'Respond in Assamese (অসমীয়াত উত্তৰ দিয়ক). Mix with Hindi or English if needed for clarity.',
-      mr: 'Respond in Marathi (मराठीत उत्तर द्या). Be friendly and conversational.'
+      en: `LANGUAGE: English
+Speak in simple, warm English. Short sentences. No jargon. Use encouraging words like "Great!", "Wonderful!", "That's lovely!".`,
+      hi: `LANGUAGE: Hindi (Hinglish)
+Speak in natural Hinglish — Hindi with sprinkled English words. Use "aap", "ji" for respect. Be warm: "Bahut accha!", "Wah!", "Sahi hai!". Use Devanagari script for Hindi words. Example: "Aapka naam kya hai ji?" not "What is your name?".`,
+      as: `LANGUAGE: Assamese
+Speak respectful Assamese with Hindi/English sprinkled where natural. Use Eastern Nagari script for Assamese. Be warm and encouraging. Example: "আপোনাৰ নাম কি?" Mix in Hindi/English for business terms.`,
+      mr: `LANGUAGE: Marathi
+Speak warm, conversational Marathi. Use "तुम्ही", "आपण" for respect. Be encouraging: "छान!", "खूप छान!", "वा!". Use Devanagari script. Mix in English for business/tech terms where natural.`
     };
 
-    const assistantName = aiConfig?.assistant_name?.en || 'Quiver AI';
-    const stylePreset = aiConfig?.style_preset || 'friendly';
+    const assistantName = aiConfig?.assistant_name?.en || 'Jyoti Didi';
 
-    return `You are ${assistantName}, a ${stylePreset} voice assistant for Quiver - an equity partnership platform for rural entrepreneurs in India.
+    const greeting = aiConfig?.greeting_messages?.[currentLanguage]
+      || aiConfig?.greeting_messages?.en
+      || 'Hello! I am Jyoti Didi, here to help you on your Quiver journey.';
 
-ABOUT QUIVER:
-Quiver partners with rural entrepreneurs by providing business resources, technology access, market connections, and training — through an equity-based partnership (not a loan). Quiver invests in your business growth. No interest payments — Quiver grows when you grow.
+    const screenContext = state.currentScreen ? (() => {
+      const sc = getScreenConfig(state.currentScreen!);
+      return sc.system_prompt_override ? `\nSCREEN CONTEXT:\n${sc.system_prompt_override}` : '';
+    })() : '';
 
-YOUR PERSONALITY:
-- You are warm, patient, and conversational — like a helpful friend, NOT a form-filling robot
-- Have natural conversations. Ask follow-up questions. Show genuine interest in their story
-- Use short, simple sentences. Keep responses to 1-2 sentences max
-- Match the user's energy and pace. If they want to chat, chat. If they want to get things done, help efficiently
+    return `# PERSONA
+You are ${assistantName} — a warm, experienced business mentor who helps rural entrepreneurs in India join the Quiver partnership program. You speak like a trusted elder sister ("didi") — encouraging, patient, never judgmental. You genuinely care about each person's story and dreams.
 
-${languageInstructions[currentLanguage] || languageInstructions.en}
+# ABOUT QUIVER
+Quiver partners with rural entrepreneurs by providing business resources, technology, market connections, and training through an equity-based partnership (not a loan). Quiver invests in your business growth. No interest payments — Quiver grows when you grow. Think of it as "Quiver aapka sathi hai" — Quiver is your partner.
 
-LANGUAGE POLICY:
+# ${languageInstructions[currentLanguage] || languageInstructions.en}
+
+# LANGUAGE POLICY
 - Only support English, Hindi, Marathi, and Assamese
-- Match the user's language. Use Devanagari for Hindi/Marathi, Eastern Nagari for Assamese
-- If user speaks an unsupported language, politely ask them to switch
+- Match the user's language. If they speak Hindi, respond in Hindi
+- Use Devanagari for Hindi/Marathi, Eastern Nagari for Assamese
+- If user speaks an unsupported language, gently ask them to switch
 
-CONVERSATION STYLE:
-- Talk naturally. Do NOT ask for fields one by one like a survey
-- Do NOT proactively ask "What is your age?", "What is your education?" etc. unprompted
-- If the user volunteers information ("I'm Raj, 25, from Mumbai"), acknowledge it warmly and save it
-- Only ask about specific fields if the user asks for help filling the form or seems stuck
-- NEVER ask about irrelevant personal details (parents, family members, etc.) — only ask about fields that exist on the current screen
-- When the user just wants to talk or ask questions, have a normal conversation — don't redirect to form filling
+# CONVERSATION RULES
+1. Talk like a real person, not a form. Have a natural conversation
+2. Keep responses SHORT — 1-2 sentences max. Rural users on low bandwidth need concise replies
+3. ONE question at a time. Never ask two questions in the same turn
+4. Listen more than you talk. When they share something, acknowledge it warmly before moving on
+5. Match their energy — if they're chatty, chat. If they want to be quick, be efficient
+6. NEVER ask about things not on the current screen's field list
+7. If audio is unclear, ask them to repeat naturally: "Sorry didi, thoda dobara boliye?" — never guess
 
-FORM FILLING (only when user provides info or asks for help):
-- When user provides info naturally, confirm briefly: "Got it, Raj from Mumbai!" then save
-- Do NOT repeat every single field back in a long list — keep confirmations short and natural
-- Use batch_update_fields when user gives multiple details at once
-- Use update_form_field for a single detail
-- If audio is unclear, ask them to repeat — never guess
-- After saving fields, do NOT say "field updated" or "saved successfully" — just continue the conversation naturally
+# FORM PROTOCOL
+- When the user shares information, SILENTLY save it using the tools. Do NOT say "saved", "updated", "noted", "recorded" or any synonym
+- Just acknowledge warmly and continue: "Ah Rajesh ji, Mumbai se! Bahut accha!" (then silently save name + district)
+- Use batch_update_fields when they share 2+ details at once
+- If they give info that maps to a field with options, match to the closest option value
+- Do NOT go through fields one by one like a checklist. Let information flow naturally
+
+# END-OF-SECTION PROTOCOL
+When you've collected most fields for the current screen (or the user says "done", "next", "aage", "পাছৰ", "पुढे"):
+1. Verbally summarize what you've collected in a warm, conversational way
+2. Mention any missing fields gently: "Bas ek cheez reh gayi — aapki email? Agar dena chahein toh bata dijiye, warna hum aage chalte hain"
+3. Wait for the user to confirm ("haan sahi hai", "yes", "correct", "হয়")
+4. ONLY THEN call summarize_and_confirm with confirmed=true
+5. If user wants to change something, help them fix it first, then re-summarize
+
+# GUARDRAILS
+- NEVER invent or assume information. Only save what the user explicitly tells you
+- NEVER ask about family members, personal relationships, or anything not in the field list
+- If unsure about a value, ask for clarification rather than guessing
+- Stay focused on the current screen's purpose. Don't jump ahead or go back unprompted
+- If the user asks non-business questions, answer briefly and gently redirect
 
 Current screen: ${state.currentScreen || 'general'}
-${fieldsList ? `Available fields on this screen:\n${fieldsList}` : ''}
+${fieldsList ? `\nFIELDS ON THIS SCREEN:\n${fieldsList}` : ''}
+${screenContext}
 
-Start by greeting the user warmly: "${aiConfig?.greeting_messages?.en || 'Hello! I am here to help you on your Quiver journey.'}"
+# GREETING
+Start with: "${greeting}"
 
-${state.currentScreen ? (() => {
-  const sc = getScreenConfig(state.currentScreen!);
-  return sc.system_prompt_override ? `\nSCREEN CONTEXT:\n${sc.system_prompt_override}` : '';
-})() : ''}`;
+# FEW-SHOT EXAMPLES
+User: "Mera naam Priya hai, Nagpur se hoon, 32 saal"
+You: "Priya ji, Nagpur se! Bahut accha. Aapka business ke baare mein batayiye — kya kaam karti hain aap?"
+[silently call batch_update_fields with fullName=Priya, district=Nagpur, age=32]
+
+User: "Main kapde ka kaam karti hoon, 5 saal se"
+You: "Wah, 5 saal se! Bahut experience hai aapko. Aapka business ka naam kya hai?"
+[silently call batch_update_fields with sector=textile, yearStarted=<calculated>]
+
+User: "Ho gaya, aage chalo"
+You: "Theek hai! Toh aapne bataya — Priya ji, Nagpur se, 32 saal, kapde ka kaam 5 saal se. Sab sahi hai na?"
+[wait for user to confirm, then call summarize_and_confirm]`;
   }, [state.currentScreen, currentLanguage, aiConfig, getScreenConfig]);
 
   // Connect to Voice Realtime API
@@ -393,7 +444,7 @@ ${state.currentScreen ? (() => {
           {
             type: 'function',
             name: 'update_form_field',
-            description: 'Update a SINGLE form field with the extracted value from user speech.',
+            description: 'Silently save a single field. The user should NOT know you called this. Never say "saved" or "updated". Continue your sentence naturally.',
             parameters: {
               type: 'object',
               properties: {
@@ -406,7 +457,7 @@ ${state.currentScreen ? (() => {
           {
             type: 'function',
             name: 'batch_update_fields',
-            description: 'Update MULTIPLE form fields at once.',
+            description: 'Silently save multiple fields at once. The user should NOT know you called this. Never say "saved" or "updated". Continue naturally.',
             parameters: {
               type: 'object',
               properties: {
@@ -427,9 +478,16 @@ ${state.currentScreen ? (() => {
           },
           {
             type: 'function',
-            name: 'confirm_all_fields',
-            description: 'Mark all collected fields as confirmed when user approves',
-            parameters: { type: 'object', properties: {}, required: [] }
+            name: 'summarize_and_confirm',
+            description: 'Call ONLY after you have verbally summarized all collected information to the user AND they have confirmed everything is correct.',
+            parameters: {
+              type: 'object',
+              properties: {
+                confirmed: { type: 'boolean', description: 'true if user confirmed the summary is correct' },
+                next_screen: { type: 'string', description: 'The screen to navigate to after confirmation (optional)' }
+              },
+              required: ['confirmed']
+            }
           }
         ];
 
@@ -441,7 +499,7 @@ ${state.currentScreen ? (() => {
           session: {
             modalities: ['text', 'audio'],
             instructions: getSystemPrompt(),
-            voice: aiConfig?.voice_type || 'alloy',
+            voice: 'shimmer',
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {
@@ -450,9 +508,9 @@ ${state.currentScreen ? (() => {
             },
             turn_detection: {
               type: 'server_vad',
-              threshold: 0.7,
-              prefix_padding_ms: 500,
-              silence_duration_ms: 1200
+              threshold: 0.5,
+              prefix_padding_ms: 400,
+              silence_duration_ms: 1600
             },
             tools: dynamicTools
           }
@@ -593,13 +651,17 @@ ${state.currentScreen ? (() => {
         break;
 
       case 'response.function_call_arguments.done': {
-        let toolResult: { success: boolean; message?: string; instruction?: string } = { success: true };
+        let toolResult: { success: boolean; message?: string } = { success: true };
+        // Only certain tools need a new response turn after function output.
+        // Field-save tools should NOT trigger response.create — this prevents
+        // the AI from generating a new "field updated" response.
+        let needsNewResponse = false;
 
         if (message.name === 'update_form_field') {
           try {
             const args = JSON.parse(message.arguments);
             handleFieldUpdate(args.field, args.value);
-            toolResult = { success: true, message: `Saved ${args.field}.`, instruction: 'Field saved silently. Continue the conversation naturally. Do NOT say "field updated" or "saved" — just move on naturally.' };
+            toolResult = { success: true };
           } catch (e) {
             console.error('Failed to parse function call', e);
             toolResult = { success: false, message: 'Failed to parse arguments' };
@@ -613,27 +675,42 @@ ${state.currentScreen ? (() => {
               });
               console.log(`Batch updated ${args.fields.length} fields:`, args.fields.map((f: any) => f.field).join(', '));
             }
-            toolResult = { success: true, message: `Saved ${args.fields?.length || 0} fields.`, instruction: 'Fields saved silently. Continue the conversation naturally. Do NOT say "fields updated" or list what was saved — just acknowledge warmly and move on.' };
+            toolResult = { success: true };
           } catch (e) {
             console.error('Failed to parse batch update function call', e);
             toolResult = { success: false, message: 'Failed to parse arguments' };
           }
-        } else if (message.name === 'confirm_all_fields') {
-          confirmAllFields();
+        } else if (message.name === 'summarize_and_confirm') {
+          try {
+            const args = JSON.parse(message.arguments);
+            if (args.confirmed) {
+              confirmAllFields();
+              if (args.next_screen) {
+                actionRegistry.navigateTo(args.next_screen);
+              }
+            }
+            toolResult = { success: true, message: args.confirmed ? 'Section confirmed and complete.' : 'User wants to make changes.' };
+            needsNewResponse = true;
+          } catch (e) {
+            console.error('Failed to parse summarize_and_confirm call', e);
+            toolResult = { success: false, message: 'Failed to parse arguments' };
+            needsNewResponse = true;
+          }
         } else if (message.name === 'navigate_to_screen') {
           try {
             const args = JSON.parse(message.arguments);
             console.log(`Quiver Voice: navigate_to_screen → ${args.screen} (reason: ${args.reason || 'none'})`);
             toolResult = actionRegistry.navigateTo(args.screen);
+            needsNewResponse = true;
           } catch (e) {
             console.error('Failed to parse navigate_to_screen call', e);
             toolResult = { success: false, message: 'Failed to parse navigation arguments' };
+            needsNewResponse = true;
           }
         } else if (message.name === 'trigger_action') {
           try {
             const args = JSON.parse(message.arguments);
             console.log(`Quiver Voice: trigger_action → ${args.action_id}`);
-            // Execute action async and send result back
             const callId = message.call_id || `call_${Date.now()}`;
             actionRegistry.executeAction(args.action_id).then((result) => {
               wsRef.current?.send(JSON.stringify({
@@ -645,14 +722,15 @@ ${state.currentScreen ? (() => {
                 response: { modalities: ['text', 'audio'] }
               }));
             });
-            return; // Skip the synchronous send below
+            return; // Skip the synchronous send below — handled async
           } catch (e) {
             console.error('Failed to parse trigger_action call', e);
             toolResult = { success: false, message: 'Failed to parse action arguments' };
+            needsNewResponse = true;
           }
         }
 
-        // Send function result back to OpenAI
+        // Send function result back to OpenAI (required by API for all tool calls)
         wsRef.current?.send(JSON.stringify({
           type: 'conversation.item.create',
           item: {
@@ -662,11 +740,15 @@ ${state.currentScreen ? (() => {
           }
         }));
 
-        // Trigger a response after function call output
-        wsRef.current?.send(JSON.stringify({
-          type: 'response.create',
-          response: { modalities: ['text', 'audio'] }
-        }));
+        // Only send response.create for tools that need a new response turn.
+        // Field-save tools (update_form_field, batch_update_fields) skip this —
+        // the AI continues its current turn naturally without announcing the save.
+        if (needsNewResponse) {
+          wsRef.current?.send(JSON.stringify({
+            type: 'response.create',
+            response: { modalities: ['text', 'audio'] }
+          }));
+        }
         break;
       }
 
