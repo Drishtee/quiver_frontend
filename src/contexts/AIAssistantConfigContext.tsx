@@ -55,7 +55,7 @@ export function AIAssistantConfigProvider({ children }: { children: ReactNode })
       // Fetch both configs in parallel
       const [publicData, screenData] = await Promise.allSettled([
         fetchPublicAIConfig(),
-        fetchScreenAssistantConfigs(),
+        fetchScreenAssistantConfigs(),7--
       ]);
 
       if (publicData.status === 'fulfilled') {
